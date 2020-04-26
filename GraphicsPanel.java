@@ -2,9 +2,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.ImageObserver;
 
 import javax.swing.*;
 
+import java.util.LinkedList; 
+import java.util.Queue; 
 
 public class GraphicsPanel extends JFrame {
 
@@ -17,31 +20,29 @@ public class GraphicsPanel extends JFrame {
 	private boolean back = false;
 	private boolean jumping = false;
 	
-	private Image currentImage = new ImageIcon(getExt(STANDINGIMAGE)).getImage();
+	private ImageObserver observer = this;
+	private JPanel bottomPanel = new JPanel();
+	
+	private Image currentImage = getCurrentImage();
+	private Image backgroundImage = new ImageIcon("res/Backgrounds/BasicMarioBackground.png").getImage().getScaledInstance((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(), 700, Image.SCALE_DEFAULT);
 	
 	private int frame = 0;
 	private int xCord = 100;
-	private int yCord = 400;
+	private int yCord = 700 - currentImage.getHeight(observer);
 	private int jumpCount = 0;
 	private final int MOVELENGTH = 1;
-	private final int FPS = 10;
+	private final int REFRESHRATE = 10;
 	private final int SPEED = 5;
 	private final int JUMPHEIGHT = 150;
 	
-	private Timer timer = new Timer(FPS, new ActionListener() {
+	private LinkedList<Block> allBlocks = new LinkedList<Block>();
+	
+	private Timer timer = new Timer(REFRESHRATE, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
-				
-				currentImage = new ImageIcon(getExt(WALKINGIMAGE1)).getImage();
-				
-			} else {
-				
-				currentImage = new ImageIcon(getExt(WALKINGIMAGE2)).getImage();
-				
-			}
+			currentImage = getCurrentImage();
 			
 			mainPanel.updateUI();
 			
@@ -62,7 +63,19 @@ public class GraphicsPanel extends JFrame {
 				
 			} else {
 				
-				if (yCord < getFloor()) {
+				Image temp;
+				
+				if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
+					
+					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE1).getImage();
+					
+				} else {
+					
+					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE2).getImage();
+					
+				}
+				
+				if (yCord + temp.getHeight(observer) < getFloor()) {
 					
 					yCord += MOVELENGTH;
 					jumping = true;
@@ -114,10 +127,12 @@ public class GraphicsPanel extends JFrame {
 		protected void paintComponent(Graphics g) {
 			
 			super.paintComponent(g);
+
+			g.drawImage(backgroundImage, 0, 0, observer);
 			
-			if (xCord + currentImage.getWidth(this) >= this.getWidth()) {
+			if (xCord + currentImage.getWidth(observer) >= getWall()) {
 				
-				xCord = getWidth() - currentImage.getWidth(this) - 10;
+				xCord = getWall() - currentImage.getWidth(observer) - 10;
 				
 			} else if (xCord <= 0) {
 				
@@ -126,7 +141,7 @@ public class GraphicsPanel extends JFrame {
 			}
 			
 			if (currentImage != null) {
-				g.drawImage(currentImage, xCord, yCord, this);
+				g.drawImage(currentImage, xCord, yCord, observer);
 			}
 			
 		}
@@ -137,11 +152,13 @@ public class GraphicsPanel extends JFrame {
 		
 		super(name);
 		
-		mainPanel.setLayout(new OverlayLayout(mainPanel));
-		
-		startAnimation();
+		mainPanel.setLayout(new BorderLayout());
 		
 		setKeyBindings();
+		
+		setBlocks();
+		
+		startAnimation();
 		
 	}
 	
@@ -153,7 +170,13 @@ public class GraphicsPanel extends JFrame {
 	
 	private int getFloor() {
 		
-		return 400;
+		return 700;
+		
+	}
+	
+	private int getWall() {
+		
+		return getWidth();
 		
 	}
 	
@@ -252,12 +275,66 @@ public class GraphicsPanel extends JFrame {
 		});
 
 	}
+	
+	private Image getCurrentImage() {
+		
+		Image answer;
+		
+		if (frame == 0) {
+			
+			return new ImageIcon(getExt(STANDINGIMAGE)).getImage();
+			
+		}
+		
+		if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
+			
+			answer = new ImageIcon(getExt(WALKINGIMAGE1)).getImage();
+			
+		} else {
+			
+			answer = new ImageIcon(getExt(WALKINGIMAGE2)).getImage();
+			
+		}
+		
+		return answer;
+		
+	}
+	
+	private void setBlocks() {
+		
+		for (int i = 0; i < 1440/20; i ++) {
+			
+			for (int k = 700; k <= 800; k +=20) {
+				
+				allBlocks.add(new FloorBlock(i * 20, k));
+				
+			}
+			
+		}
+		
+	}
+	
+	private void addAllBlocks() {
+		
+		for (int i = 0; i < allBlocks.size(); i ++) {
+			
+			bottomPanel.add(new JLabel(allBlocks.get(i).getImageIcon()));
+			
+		}
+		
+	}
 
 	private void startAnimation() {
 		
 		Container c = getContentPane();
 		
 		timer.start();
+		
+		bottomPanel.setLayout(new GridLayout(0, 1440/20));
+		
+		addAllBlocks();
+		
+		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 		
 		c.add(mainPanel);
 		

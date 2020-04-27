@@ -109,11 +109,6 @@ public class GraphicsPanel extends JFrame {
 					yCord += MOVELENGTH;
 
 				}
-				if (yCord + temp.getHeight(observer) > getFloor()) {
-
-					yCord = getFloor() - temp.getHeight(observer);
-
-				}
 			}
 		}
 		
@@ -169,10 +164,15 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			xCord -= MOVELENGTH;
-			trueX -= MOVELENGTH;
+			moveBack();
 			frame ++;
 			back = true;
+			
+			if (yCord + currentImage.getHeight(observer)-1 > getFloor()) {
+
+				moveForward();
+
+			}
 			
 		}
 		
@@ -183,10 +183,15 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			xCord += MOVELENGTH;
-			trueX += MOVELENGTH;
+			moveForward();
 			frame ++;
 			back = false;
+			
+			if (yCord + currentImage.getHeight(observer)-1 > getFloor()) {
+
+				moveBack();
+
+			}
 			
 		}
 		
@@ -209,15 +214,14 @@ public class GraphicsPanel extends JFrame {
 				
 			}
 			
-			if (xCord + currentImage.getWidth(observer) > getWall()) {
+			if (xCord + currentImage.getWidth(observer) > getWidth() - 500) {
 				
 				xCord -= MOVELENGTH;
 				scrollStage();
 				
 			} else if (xCord <= 0) {
 				
-				xCord += MOVELENGTH;
-				trueX += MOVELENGTH;
+				moveForward();
 				
 			}
 			
@@ -264,12 +268,6 @@ public class GraphicsPanel extends JFrame {
 		}
 		
 		return answer;
-		
-	}
-	
-	private int getWall() {
-		
-		return getWidth() - 500;
 		
 	}
 	
@@ -367,6 +365,20 @@ public class GraphicsPanel extends JFrame {
 			}
 		});
 
+	}
+	
+	private void moveBack() {
+		
+		xCord -= MOVELENGTH;
+		trueX -= MOVELENGTH;
+		
+	}
+	
+	private void moveForward() {
+		
+		xCord += MOVELENGTH;
+		trueX += MOVELENGTH;
+		
 	}
 	
 	private Image getCurrentImage() {

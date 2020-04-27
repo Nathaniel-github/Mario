@@ -21,17 +21,22 @@ public class GraphicsPanel extends JFrame {
 	private boolean jumping = false;
 	
 	private ImageObserver observer = this;
-	private JPanel bottomPanel = new JPanel();
+	
+	private final int SCREENWIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	private final int SCREENHEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	
 	private Image currentImage = getCurrentImage();
-	private Image backgroundImage = new ImageIcon("res/Backgrounds/BasicMarioBackground.png").getImage().getScaledInstance((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(), 700, Image.SCALE_DEFAULT);
+	private Image backgroundImage = new ImageIcon("res/Backgrounds/BasicMarioBackground.png").getImage().getScaledInstance(SCREENWIDTH, 812, Image.SCALE_DEFAULT);
 	
 	private int frame = 0;
 	private int xCord = 100;
-	private int yCord = 700 - currentImage.getHeight(observer);
+	private int yCord = 600 - currentImage.getHeight(observer);
 	private int jumpCount = 0;
-	private final int MOVELENGTH = 1;
-	private final int REFRESHRATE = 10;
+	private int backX = 0;
+	private int backX2 = SCREENWIDTH;
+	private int backX3 = SCREENWIDTH * 2;
+	private final int MOVELENGTH = 3;
+	private final int REFRESHRATE = 1;
 	private final int SPEED = 5;
 	private final int JUMPHEIGHT = 150;
 	
@@ -46,6 +51,39 @@ public class GraphicsPanel extends JFrame {
 			
 			mainPanel.updateUI();
 			
+		}
+		
+	});
+	
+	private Timer gravity = new Timer(SPEED, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if (!jump.isRunning()) {
+				Image temp;
+
+				if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 2)) {
+
+					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE1).getImage();
+
+				} else {
+
+					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE2).getImage();
+
+				}
+
+				if (yCord + temp.getHeight(observer) < getFloor()) {
+
+					yCord += MOVELENGTH;
+
+				}
+				if (yCord + temp.getHeight(observer) > getFloor()) {
+
+					yCord = getFloor() - temp.getHeight(observer);
+
+				}
+			}
 		}
 		
 	});
@@ -128,11 +166,14 @@ public class GraphicsPanel extends JFrame {
 			
 			super.paintComponent(g);
 
-			g.drawImage(backgroundImage, 0, 0, observer);
+			g.drawImage(backgroundImage, backX, 0, observer);
+			g.drawImage(backgroundImage, backX2, 0, observer);
+			g.drawImage(backgroundImage, backX3, 0, observer);
 			
-			if (xCord + currentImage.getWidth(observer) >= getWall()) {
+			if (xCord + currentImage.getWidth(observer) > getWidth() - 500) {
 				
-				xCord = getWall() - currentImage.getWidth(observer) - 10;
+				xCord = getWidth() - currentImage.getWidth(observer) - 500;
+				scrollStage();
 				
 			} else if (xCord <= 0) {
 				
@@ -160,6 +201,8 @@ public class GraphicsPanel extends JFrame {
 		
 		startAnimation();
 		
+		gravity.start();
+		
 	}
 	
 	private void updateAll() {
@@ -170,7 +213,7 @@ public class GraphicsPanel extends JFrame {
 	
 	private int getFloor() {
 		
-		return 700;
+		return 704;
 		
 	}
 	
@@ -302,25 +345,29 @@ public class GraphicsPanel extends JFrame {
 	
 	private void setBlocks() {
 		
-		for (int i = 0; i < 1440/20; i ++) {
-			
-			for (int k = 700; k <= 800; k +=20) {
-				
-				allBlocks.add(new FloorBlock(i * 20, k));
-				
-			}
-			
-		}
+		
 		
 	}
 	
-	private void addAllBlocks() {
+	private void scrollStage() {
 		
-		for (int i = 0; i < allBlocks.size(); i ++) {
+		if (backX < 0 - backgroundImage.getWidth(observer)) {
 			
-			bottomPanel.add(new JLabel(allBlocks.get(i).getImageIcon()));
+			backX = SCREENWIDTH * 2 - 10;
+			
+		} else if (backX2 < 0 - backgroundImage.getWidth(observer)) {
+			
+			backX2 = SCREENWIDTH * 2 - 10;
+			
+		} else if (backX3 < 0 - backgroundImage.getWidth(observer)) {
+			
+			backX3 = SCREENWIDTH * 2 - 10;
 			
 		}
+		
+		backX -= MOVELENGTH;
+		backX2 -= MOVELENGTH;
+		backX3 -= MOVELENGTH;
 		
 	}
 
@@ -329,12 +376,6 @@ public class GraphicsPanel extends JFrame {
 		Container c = getContentPane();
 		
 		timer.start();
-		
-		bottomPanel.setLayout(new GridLayout(0, 1440/20));
-		
-		addAllBlocks();
-		
-		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 		
 		c.add(mainPanel);
 		

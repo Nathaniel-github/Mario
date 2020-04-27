@@ -1,2 +1,2 @@
 # Mario
-Final end of the year project for java. Hi
+Final end of the year project for java.

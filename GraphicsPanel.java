@@ -7,7 +7,8 @@ import java.awt.image.ImageObserver;
 import javax.swing.*;
 
 import java.util.LinkedList; 
-import java.util.Queue; 
+import java.util.Queue;
+import java.util.concurrent.ThreadLocalRandom; 
 
 public class GraphicsPanel extends JFrame {
 
@@ -23,26 +24,31 @@ public class GraphicsPanel extends JFrame {
 	private ImageObserver observer = this;
 	
 	private final int SCREENWIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-	private final int SCREENHEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	private final int SCREENHEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 100;
 	
 	private Image currentImage = getCurrentImage();
-	private Image backgroundImage = new ImageIcon("res/Backgrounds/BasicMarioBackground.png").getImage().getScaledInstance(SCREENWIDTH, 812, Image.SCALE_DEFAULT);
+	private Image backgroundImage = new ImageIcon("res/Backgrounds/BasicMarioBackground.png").getImage().getScaledInstance(SCREENWIDTH, SCREENHEIGHT, Image.SCALE_DEFAULT);
 	
 	private int frame = 0;
 	private int xCord = 100;
+	private int trueX = 100;
 	private int yCord = 600 - currentImage.getHeight(observer);
 	private int jumpCount = 0;
 	private int backX = 0;
 	private int backX2 = SCREENWIDTH;
 	private int backX3 = SCREENWIDTH * 2;
-	private final int MOVELENGTH = 3;
+	private int scroll = 0;
+	private final int MOVELENGTH = 2;
 	private final int REFRESHRATE = 1;
 	private final int SPEED = 5;
 	private final int JUMPHEIGHT = 150;
+	private final int BASEFLOOR = SCREENHEIGHT - 107;
+	private final int BLOCKWIDTH = 54;
 	
 	private LinkedList<Block> allBlocks = new LinkedList<Block>();
+	private LinkedList<Block> renderBlocks = new LinkedList<Block>();
 	
-	private Timer timer = new Timer(REFRESHRATE, new ActionListener() {
+	private Timer refresh = new Timer(REFRESHRATE, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -50,6 +56,31 @@ public class GraphicsPanel extends JFrame {
 			currentImage = getCurrentImage();
 			
 			mainPanel.updateUI();
+			
+		}
+		
+	});
+	
+	private Timer render = new Timer(REFRESHRATE, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			for (int i = 0; i < allBlocks.size(); i ++) {
+				
+				if (allBlocks.get(i).getXCord() - backgroundImage.getWidth(observer) <= trueX && !renderBlocks.contains(allBlocks.get(i))) {
+					
+					renderBlocks.add(allBlocks.get(i));
+					
+				}
+				
+				if (allBlocks.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX) {
+					
+					renderBlocks.remove(allBlocks.get(i));
+					
+				}
+				
+			}
 			
 		}
 		
@@ -139,6 +170,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			xCord -= MOVELENGTH;
+			trueX -= MOVELENGTH;
 			frame ++;
 			back = true;
 			
@@ -152,6 +184,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			xCord += MOVELENGTH;
+			trueX += MOVELENGTH;
 			frame ++;
 			back = false;
 			
@@ -170,14 +203,21 @@ public class GraphicsPanel extends JFrame {
 			g.drawImage(backgroundImage, backX2, 0, observer);
 			g.drawImage(backgroundImage, backX3, 0, observer);
 			
-			if (xCord + currentImage.getWidth(observer) > getWidth() - 500) {
+			for (int i = 0; i < renderBlocks.size(); i ++) {
 				
-				xCord = getWidth() - currentImage.getWidth(observer) - 500;
+				g.drawImage(renderBlocks.get(i).getImage(), renderBlocks.get(i).getXCord() - scroll, renderBlocks.get(i).getYCord(), observer);
+				
+			}
+			
+			if (xCord + currentImage.getWidth(observer) > getWall()) {
+				
+				xCord -= MOVELENGTH;
 				scrollStage();
 				
 			} else if (xCord <= 0) {
 				
-				xCord = 10;
+				xCord += MOVELENGTH;
+				trueX += MOVELENGTH;
 				
 			}
 			
@@ -201,8 +241,6 @@ public class GraphicsPanel extends JFrame {
 		
 		startAnimation();
 		
-		gravity.start();
-		
 	}
 	
 	private void updateAll() {
@@ -213,13 +251,25 @@ public class GraphicsPanel extends JFrame {
 	
 	private int getFloor() {
 		
-		return 704;
+		int answer = SCREENHEIGHT - 107;
+		
+		for (int i = 0; i < renderBlocks.size(); i ++) {
+			
+			if ((trueX + currentImage.getWidth(observer) >= renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) <= renderBlocks.get(i).getXCord() + BLOCKWIDTH) || (trueX >= renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH)) {
+				
+				answer = renderBlocks.get(i).getYCord();
+				
+			}
+			
+		}
+		
+		return answer;
 		
 	}
 	
 	private int getWall() {
 		
-		return getWidth();
+		return getWidth() - 500;
 		
 	}
 	
@@ -345,7 +395,7 @@ public class GraphicsPanel extends JFrame {
 	
 	private void setBlocks() {
 		
-		
+		allBlocks.add(new StairBlock(BLOCKWIDTH * 10, BASEFLOOR - BLOCKWIDTH));
 		
 	}
 	
@@ -369,13 +419,17 @@ public class GraphicsPanel extends JFrame {
 		backX2 -= MOVELENGTH;
 		backX3 -= MOVELENGTH;
 		
+		scroll += MOVELENGTH;
+		
 	}
 
 	private void startAnimation() {
 		
 		Container c = getContentPane();
 		
-		timer.start();
+		refresh.start();
+		gravity.start();
+		render.start();
 		
 		c.add(mainPanel);
 		

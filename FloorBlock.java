@@ -14,7 +14,7 @@ public class FloorBlock implements Block {
 		
 		XCORD = x;
 		YCORD = y;
-		IMAGEICON = new ImageIcon(new ImageIcon("res/TileImages/FloorBlock.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+		IMAGEICON = new ImageIcon(new ImageIcon("res/TileImages/FloorBlock.png").getImage().getScaledInstance(54, 54, Image.SCALE_DEFAULT));
 		IMAGE = IMAGEICON.getImage();
 		
 	}

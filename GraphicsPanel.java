@@ -3,20 +3,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
+import java.net.URL;
 
 import javax.swing.*;
 
-import java.util.LinkedList; 
-import java.util.Queue;
-import java.util.concurrent.ThreadLocalRandom; 
+import java.util.LinkedList;
 
 public class GraphicsPanel extends JFrame {
 
-	final String STANDINGIMAGE = "MarioStanding.png";
-	final String JUMPINGIMAGE = "MarioJumping.png";
-	final String WALKINGIMAGE1 = "MarioWalking1.png";
-	final String WALKINGIMAGE2 = "MarioWalking2.png";
-	final String EXTENSION = "res/MarioImages/";
+	final String STANDINGIMAGE = "MarioStanding";
+	final String JUMPINGIMAGE = "MarioJumping";
+	final String WALKINGIMAGE1 = "MarioWalking1";
+	final String WALKINGIMAGE2 = "MarioWalking2";
+	final String EXTENSION = "MarioImages/";
 	
 	private boolean back = false;
 	private boolean jumping = false;
@@ -27,7 +26,7 @@ public class GraphicsPanel extends JFrame {
 	private final int SCREENHEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 100;
 	
 	private Image currentImage = getCurrentImage();
-	private Image backgroundImage = new ImageIcon("res/Backgrounds/BasicMarioBackground.png").getImage().getScaledInstance(SCREENWIDTH, SCREENHEIGHT, Image.SCALE_DEFAULT);
+	private Image backgroundImage = new ImageIcon(getClass().getClassLoader().getResource("Backgrounds/BasicMarioBackground.png")).getImage().getScaledInstance(SCREENWIDTH, SCREENHEIGHT, Image.SCALE_DEFAULT);
 	
 	private int frame = 0;
 	private int xCord = 100;
@@ -92,17 +91,8 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			if (!jump.isRunning()) {
-				Image temp;
-
-				if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 2)) {
-
-					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE1).getImage();
-
-				} else {
-
-					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE2).getImage();
-
-				}
+				
+				Image temp = getFrameImage();
 
 				if (yCord + temp.getHeight(observer) < getFloor()) {
 
@@ -127,17 +117,7 @@ public class GraphicsPanel extends JFrame {
 				
 			} else {
 				
-				Image temp;
-				
-				if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
-					
-					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE1).getImage();
-					
-				} else {
-					
-					temp = new ImageIcon(EXTENSION + "Front/" + WALKINGIMAGE2).getImage();
-					
-				}
+				Image temp = getFrameImage();
 				
 				if (yCord + temp.getHeight(observer) < getFloor()) {
 					
@@ -271,19 +251,19 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
-	private String getExt(String name) {
+	private URL getExt(String name) {
 		
-		String answer = "";
+		URL answer;
 		
 		if (!back) {
 			
 			if (jumping) {
 				
-				answer = EXTENSION + "Front/" + JUMPINGIMAGE;
+				answer = getClass().getClassLoader().getResource(EXTENSION + JUMPINGIMAGE + ".png");
 				
 			} else {
 			
-				answer = EXTENSION + "Front/" + name;
+				answer = getClass().getClassLoader().getResource(EXTENSION + name + ".png");
 			
 			}
 			
@@ -291,11 +271,11 @@ public class GraphicsPanel extends JFrame {
 			
 			if (jumping) {
 				
-				answer = EXTENSION + "Back/" + JUMPINGIMAGE;
+				answer = getClass().getClassLoader().getResource(EXTENSION + JUMPINGIMAGE + "_back.png");
 				
 			} else {
 				
-				answer = EXTENSION + "Back/" + name;
+				answer = getClass().getClassLoader().getResource(EXTENSION + name + "_back.png");
 			
 			}
 		}
@@ -398,6 +378,24 @@ public class GraphicsPanel extends JFrame {
 		} else {
 			
 			answer = new ImageIcon(getExt(WALKINGIMAGE2)).getImage();
+			
+		}
+		
+		return answer;
+		
+	}
+	
+	private Image getFrameImage() {
+		
+		Image answer;
+		
+		if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
+			
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE1 + ".png")).getImage();
+			
+		} else {
+			
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE2 + ".png")).getImage();
 			
 		}
 		

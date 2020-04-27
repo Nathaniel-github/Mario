@@ -14,7 +14,7 @@ public class StairBlock implements Block{
 		
 		XCORD = x;
 		YCORD = y;
-		IMAGEICON = new ImageIcon(new ImageIcon("res/TileImages/StairBlock.png").getImage().getScaledInstance(54, 54, Image.SCALE_DEFAULT));
+		IMAGEICON = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("TileImages/StairBlock.png")).getImage().getScaledInstance(54, 54, Image.SCALE_DEFAULT));
 		IMAGE = IMAGEICON.getImage();
 		
 	}

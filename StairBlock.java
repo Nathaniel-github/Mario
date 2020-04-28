@@ -5,6 +5,7 @@ import javax.swing.ImageIcon;
 
 public class StairBlock implements Block{
 
+	// Fields
 	final Image IMAGE;
 	final ImageIcon IMAGEICON;
 	final int XCORD;
@@ -12,13 +13,17 @@ public class StairBlock implements Block{
 	
 	public StairBlock(int x, int y) {
 		
+		// Save x and y coordinates given when instantiated
 		XCORD = x;
 		YCORD = y;
+		// Gets a scaled version of the stair block
 		IMAGEICON = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("TileImages/StairBlock.png")).getImage().getScaledInstance(54, 54, Image.SCALE_DEFAULT));
+		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
 	}
 	
+	// Returns the image
 	@Override
 	public Image getImage() {
 		
@@ -26,6 +31,7 @@ public class StairBlock implements Block{
 		
 	}
 
+	// Returns the x coordinate
 	@Override
 	public int getXCord() {
 		
@@ -33,6 +39,7 @@ public class StairBlock implements Block{
 		
 	}
 
+	// Returns the y coordinate
 	@Override
 	public int getYCord() {
 		
@@ -40,6 +47,7 @@ public class StairBlock implements Block{
 		
 	}
 
+	// Returns the ImageIcon
 	@Override
 	public Icon getImageIcon() {
 		

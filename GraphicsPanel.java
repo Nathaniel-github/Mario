@@ -2,6 +2,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
 import java.awt.image.ImageObserver;
 import java.net.URL;
 
@@ -18,6 +21,7 @@ public class GraphicsPanel extends JFrame {
 	final String JUMPINGIMAGE = "MarioJumping";
 	final String WALKINGIMAGE1 = "MarioWalking1";
 	final String WALKINGIMAGE2 = "MarioWalking2";
+	final String WALKINGIMAGE3 = "MarioWalking3";
 	
 	// This is the extension to access those images
 	final String EXTENSION = "MarioImages/";
@@ -27,6 +31,8 @@ public class GraphicsPanel extends JFrame {
 	
 	// Boolean for whether or not Mario is jumping, also used to determine currentImage
 	private boolean jumping = false;
+	
+	private boolean stand = false;
 	
 	// An ImageObserver is an interface for determining states of images in its window, this is used 
 	// whenever the getWidth and getHeight methods are called on images, as they require a parameter of 
@@ -180,6 +186,20 @@ public class GraphicsPanel extends JFrame {
 		
 	});
 	
+	// This timer is for esthetics more than anything else. What it does is whenever the player is not moving
+	// for 1 second it will reset the image to the basic standing image.
+	private Timer standing = new Timer(1000, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			stand = true;
+			
+			standing.stop();
+		}
+		
+	});
+	
 	// This is the timer that handles a jump, this timer updates every frame that a jump is in motion.
 	// It is done like this so that there is a smooth animation for jumps, and so that the key input for
 	// it is handled nicely
@@ -206,12 +226,18 @@ public class GraphicsPanel extends JFrame {
 					jumping = true;
 					jumpCount ++;
 					
-				} else {
+				} else { // If he is on the floor
 					
 					jumping = false;
 					jumpCount = 0;
 					jump.stop();
-					
+					// This is so that the standing timer doesn't overlap with the movement timers
+					// and make the image standing while the player is moving
+					if (!rightMove.isRunning() && !leftMove.isRunning()) {
+
+						standing.start();
+						
+					}
 				}
 				
 			}
@@ -233,9 +259,9 @@ public class GraphicsPanel extends JFrame {
 				back = true;
 				
 				// If Mario is running into a barrier
-				if (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
+				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
-					moveForward();
+					moveForward(); // Undo the moveBack
 	
 				}
 			}
@@ -264,7 +290,7 @@ public class GraphicsPanel extends JFrame {
 				back = false;
 				
 				// If Mario is running into a barrier
-				if (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
+				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
 					moveBack();
 	
@@ -322,6 +348,24 @@ public class GraphicsPanel extends JFrame {
 		
 		mainPanel.setLayout(new BorderLayout()); // Not needed but is there for the moment
 		
+		this.addWindowFocusListener(new WindowFocusListener() {
+
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				
+				stopAllMovement();
+				
+			}
+
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				
+				stopAllMovement();
+				
+			}
+			
+		});
+		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 		
 		setBlocks(); // Sets all the blocks for the current level
@@ -337,6 +381,14 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
+	private void stopAllMovement() {
+		
+		leftMove.stop();
+		rightMove.stop();
+		jump.stop();
+		
+	}
+	
 	// This is the method that determines where the floor is in relation to Mario's x coordinate
 	private int getFloor() {
 		
@@ -345,7 +397,7 @@ public class GraphicsPanel extends JFrame {
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
 			// If the block is where Mario is currently at
-			if ((trueX + currentImage.getWidth(observer) >= renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) <= renderBlocks.get(i).getXCord() + BLOCKWIDTH) || (trueX >= renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH)) {
+			if ((trueX + currentImage.getWidth(observer) >= renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) <= renderBlocks.get(i).getXCord() + BLOCKWIDTH) || (trueX >= renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH) && renderBlocks.get(i).getYCord() < answer) {
 				
 				answer = renderBlocks.get(i).getYCord();
 				
@@ -420,6 +472,8 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 				
 				leftMove.start();
+				standing.stop();
+				stand = false;
 				
 			}
 		});
@@ -429,6 +483,7 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 				
 				leftMove.stop();
+				standing.start();
 				
 			}
 		});
@@ -438,6 +493,8 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 				
 				rightMove.start();
+				standing.stop();
+				stand = false;
 				
 			}
 		});
@@ -447,6 +504,7 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 				
 				rightMove.stop();
+				standing.start();
 				
 			}
 		});
@@ -454,6 +512,9 @@ public class GraphicsPanel extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent actionEvt) {
+				
+				standing.stop();
+				stand = false;
 				
 				if (!jump.isRunning()) {
 					
@@ -495,15 +556,33 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
+		if (stand) {
+			
+			if (!back) {
+				
+				return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + STANDINGIMAGE + ".png")).getImage();
+			
+			} else {
+				
+				return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + STANDINGIMAGE + "_back.png")).getImage();
+								
+			}
+			
+		}
+		
 		// Some calculations that are way more complex than it needs to be but its is like this so it is
 		// more easily changeable
-		if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
+		if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/3)) {
 			
 			answer = new ImageIcon(getExt(WALKINGIMAGE1)).getImage();
 			
-		} else {
+		} else if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/3  * 2)) {
 			
 			answer = new ImageIcon(getExt(WALKINGIMAGE2)).getImage();
+			
+		} else {
+			
+			answer = new ImageIcon(getExt(WALKINGIMAGE3)).getImage();
 			
 		}
 		
@@ -518,13 +597,17 @@ public class GraphicsPanel extends JFrame {
 		
 		Image answer;
 		
-		if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/2)) {
+		if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/3)) {
 			
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE1 + ".png")).getImage();
 			
-		} else {
+		} else if (frame % (int)(Math.pow(SPEED, 2)) < (int)(Math.pow(SPEED, 2)/3 * 2)) {
 			
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE2 + ".png")).getImage();
+			
+		} else {
+			
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE3 + ".png")).getImage();
 			
 		}
 		
@@ -533,10 +616,7 @@ public class GraphicsPanel extends JFrame {
 	}
 	
 	// This method is where all the blocks for the level are set, this is where most of our development
-	// is going to go from now on as it is the basis for the entire level (Note: Right now I can't get
-	// it so that you can add blocks in any order without messing up the getFloor method,
-	// so for now just add blocks in ascending order, with the lowest blocks on a certain x coordinate
-	// added first
+	// is going to go from now on as it is the basis for the entire level
 	private void setBlocks() {
 		
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH)));

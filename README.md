@@ -10,3 +10,4 @@ Goals:
 - Incorporate a finish line so the level actually ends and goes to the next one (moderate)
 - Add sounds (easy)
 - Add enemy sprites (hard)
+- Add Bowser boss (hard)

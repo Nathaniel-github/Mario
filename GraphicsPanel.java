@@ -261,8 +261,7 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
-					xCord ++;
-					trueX ++; // Undo the moveBack
+					moveForward(); // Undo the moveBack
 	
 				}
 			}
@@ -293,8 +292,7 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
-					xCord --;
-					trueX --;
+					moveBack();
 	
 				}
 			}
@@ -594,7 +592,6 @@ public class GraphicsPanel extends JFrame {
 		
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH)));
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH * 2)));
-		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 12), (int)(BASEFLOOR - BLOCKWIDTH * 3)));
 		
 	}
 	

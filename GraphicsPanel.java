@@ -261,7 +261,8 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
-					moveForward(); // Undo the moveBack
+					xCord ++;
+					trueX ++; // Undo the moveBack
 	
 				}
 			}
@@ -292,7 +293,8 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
-					moveBack();
+					xCord --;
+					trueX --;
 	
 				}
 			}
@@ -348,24 +350,6 @@ public class GraphicsPanel extends JFrame {
 		
 		mainPanel.setLayout(new BorderLayout()); // Not needed but is there for the moment
 		
-		this.addWindowFocusListener(new WindowFocusListener() {
-
-			@Override
-			public void windowGainedFocus(WindowEvent e) {
-				
-				stopAllMovement();
-				
-			}
-
-			@Override
-			public void windowLostFocus(WindowEvent e) {
-				
-				stopAllMovement();
-				
-			}
-			
-		});
-		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 		
 		setBlocks(); // Sets all the blocks for the current level
@@ -378,14 +362,6 @@ public class GraphicsPanel extends JFrame {
 	private void updateAll() { 
 		
 		mainPanel.updateUI();
-		
-	}
-	
-	private void stopAllMovement() {
-		
-		leftMove.stop();
-		rightMove.stop();
-		jump.stop();
 		
 	}
 	
@@ -450,13 +426,10 @@ public class GraphicsPanel extends JFrame {
 	private void setKeyBindings() {
 		// The action map for the main panel (theoretically this could be for any object but I chose this
 		// one)
-		ActionMap actionMap = mainPanel.getActionMap(); 
+		ActionMap actionMap = mainPanel.getActionMap();
 		
-		// The integer that represents when the program in in focus/currently open
-		int condition = JComponent.WHEN_IN_FOCUSED_WINDOW;
-		
-		// The input map for the condition (in this case for whenever you are in the window)
-		InputMap inputMap = mainPanel.getInputMap(condition);
+		// The input map
+		InputMap inputMap = mainPanel.getInputMap();
 
 		// Assigns the key strokes with a "key"
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "left_pressed");
@@ -621,6 +594,7 @@ public class GraphicsPanel extends JFrame {
 		
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH)));
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH * 2)));
+		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 12), (int)(BASEFLOOR - BLOCKWIDTH * 3)));
 		
 	}
 	

@@ -292,7 +292,7 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
 	
-					moveBack();
+					moveBack(); // Undo the moveForward
 	
 				}
 			}

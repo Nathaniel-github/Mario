@@ -2,9 +2,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.awt.event.WindowListener;
 import java.awt.image.ImageObserver;
 import java.net.URL;
 
@@ -176,10 +173,18 @@ public class GraphicsPanel extends JFrame {
 				
 				Image temp = getFrameImage();
 
-				if (yCord + temp.getHeight(observer) < getFloor()) {
-
-					yCord += MOVELENGTH;
-
+				for (int i = 0; i < MOVELENGTH; i ++) {
+					
+					if (yCord + temp.getHeight(observer) < getFloor()) {
+	
+						yCord ++;
+	
+					} else {
+						
+						break;
+						
+					}
+					
 				}
 			}
 		}
@@ -209,7 +214,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			// If Mario has jumped the given jump height
-			if (jumpCount * MOVELENGTH < JUMPHEIGHT) {
+			if (jumpCount * MOVELENGTH < JUMPHEIGHT && yCord > getBottomFloor()) {
 				
 				yCord -= MOVELENGTH;
 				jumping = true;
@@ -228,6 +233,9 @@ public class GraphicsPanel extends JFrame {
 					
 				} else { // If he is on the floor
 					
+					if (jumpCount != 0) {
+						yCord --;
+					}
 					jumping = false;
 					jumpCount = 0;
 					jump.stop();
@@ -259,7 +267,7 @@ public class GraphicsPanel extends JFrame {
 				back = true;
 				
 				// If Mario is running into a barrier
-				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
+				while (trueX < getBackWall()) {
 	
 					moveForward(); // Undo the moveBack
 	
@@ -290,9 +298,10 @@ public class GraphicsPanel extends JFrame {
 				back = false;
 				
 				// If Mario is running into a barrier
-				while (yCord + currentImage.getHeight(observer) - 1 > getFloor()) {
+				while (trueX + currentImage.getWidth(observer) > getWall()) {
 	
-					moveBack(); // Undo the moveForward
+					xCord --;
+					trueX --;// Undo the moveForward
 	
 				}
 			}
@@ -370,10 +379,115 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
-			// If the block is where Mario is currently at
-			if ((trueX + currentImage.getWidth(observer) >= renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) <= renderBlocks.get(i).getXCord() + BLOCKWIDTH) || (trueX >= renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH) && renderBlocks.get(i).getYCord() < answer) {
+			// If the block is where Mario is currently at				// If this block is higher up than the		// If this block is below Mario
+																		// current answer
+			if ((endOfImageXOverlaps(i) || startOfImageXOverlaps(i)) && renderBlocks.get(i).getYCord() < answer && yCord < renderBlocks.get(i).getYCord()) {
 				
 				answer = renderBlocks.get(i).getYCord();
+				
+			}
+			
+		}
+		
+		return answer;
+		
+	}
+	
+	private int getBottomFloor() {
+		
+		int answer = -JUMPHEIGHT;
+		
+		for (int i = 0; i < renderBlocks.size(); i ++) {
+			
+			// If the block is where Mario is currently at				// If this block is closer to Mario than the current 	   // If this block is above Mario
+																		// answer
+			if ((endOfImageXOverlaps(i) || startOfImageXOverlaps(i)) && yCord - (renderBlocks.get(i).getYCord() + BLOCKWIDTH) < yCord - answer && yCord > renderBlocks.get(i).getYCord()) {
+				
+				answer = renderBlocks.get(i).getYCord() + (int)BLOCKWIDTH;
+				
+			}
+			
+		}
+		
+		return answer;
+		
+	}
+	
+	private int getWall() {
+		
+		int answer = getWidth() + trueX;
+		
+		for (int i = 0; i < renderBlocks.size(); i ++) {
+			
+			if ((endOfImageYOverlaps(i) || startOfImageYOverlaps(i)) && renderBlocks.get(i).getXCord() < answer && trueX < renderBlocks.get(i).getXCord()) {
+				
+				answer = renderBlocks.get(i).getXCord();
+				
+			}
+			
+		}
+		
+		return answer;
+		
+	}
+	
+	private int getBackWall() {
+		
+		int answer = trueX - (getWidth() - 500);
+		
+		for (int i = 0; i < renderBlocks.size(); i ++) {
+			
+			if ((endOfImageYOverlaps(i) || startOfImageYOverlaps(i)) && renderBlocks.get(i).getXCord() > answer && trueX > renderBlocks.get(i).getXCord()) {
+				
+				answer = renderBlocks.get(i).getXCord() + (int)BLOCKWIDTH;
+				
+			}
+			
+		}
+		
+		return answer;
+		
+	}
+	
+	private boolean endOfImageYOverlaps(int i) {
+		
+		return (yCord + currentImage.getHeight(observer) > renderBlocks.get(i).getYCord() && yCord + currentImage.getHeight(observer) < renderBlocks.get(i).getYCord() + BLOCKWIDTH);
+		
+	}
+	
+	private boolean startOfImageYOverlaps(int i) {
+		
+		return (yCord > renderBlocks.get(i).getYCord() && yCord < renderBlocks.get(i).getYCord() + BLOCKWIDTH);
+		
+	}
+	
+	private boolean endOfImageXOverlaps(int i) {
+		
+		return (trueX + currentImage.getWidth(observer) > renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) < renderBlocks.get(i).getXCord() + BLOCKWIDTH);
+		
+	}
+	
+	private boolean startOfImageXOverlaps(int i) {
+		
+		return (trueX > renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH);
+		
+	}
+	
+	// This method does not currently work, anyone is welcome to try and fix it if they wish
+	private boolean inBlock() {
+		
+		boolean answer = false;
+		
+		for (int i = 0; i < renderBlocks.size(); i ++) {
+			
+			// If the block is where Mario is currently at
+			if ((trueX + currentImage.getWidth(observer) >= renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) <= renderBlocks.get(i).getXCord() + BLOCKWIDTH) || (trueX >= renderBlocks.get(i).getXCord() && trueX <= renderBlocks.get(i).getXCord() + BLOCKWIDTH)) {
+				
+				if ((yCord + currentImage.getHeight(observer) >= renderBlocks.get(i).getYCord() && yCord + currentImage.getHeight(observer) <= renderBlocks.get(i).getYCord() + BLOCKWIDTH) || (yCord >= renderBlocks.get(i).getYCord() && yCord <= renderBlocks.get(i).getYCord() + BLOCKWIDTH)) {
+					
+					answer = true;
+					
+				}
 				
 			}
 			
@@ -592,6 +706,7 @@ public class GraphicsPanel extends JFrame {
 		
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH)));
 		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH * 2)));
+		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 12), (int)(BASEFLOOR - BLOCKWIDTH * 3)));
 		
 	}
 	

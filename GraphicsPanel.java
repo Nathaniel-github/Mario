@@ -95,10 +95,16 @@ public class GraphicsPanel extends JFrame {
 	private final int JUMPHEIGHT = 150;
 	
 	// This is the y coordinate of the base floor
-	private final int BASEFLOOR = SCREENHEIGHT - (int)(SCREENHEIGHT / 7.47663551402);
+	private final int BASEFLOOR = SCREENHEIGHT - 107;
 	
 	// This is the width of one block (in pixels)
-	private final double BLOCKWIDTH = 53.3;
+	private final int BLOCKWIDTH = 54;
+	
+	// This is the value used to calculate the placement of blocks
+	private final double BLOCKSPACING = 53.3;
+	
+	private SoundPlayer backgroundMusic = new SoundPlayer("MarioBasicBackgroundMusic.wav");
+	private SoundPlayer jumpSound = new SoundPlayer("MarioJumpMusic.wav");
 	
 	// This list stores all of the data for every block that needs to rendered throughout a level
 	private LinkedList<Block> allBlocks = new LinkedList<Block>();
@@ -174,6 +180,7 @@ public class GraphicsPanel extends JFrame {
 
 				for (int i = 0; i < MOVELENGTH; i ++) {
 					
+					// If Mario is above the floor
 					if (yCord + temp.getHeight(observer) < getFloor()) {
 	
 						yCord ++;
@@ -223,6 +230,8 @@ public class GraphicsPanel extends JFrame {
 				
 				Image temp = getFrameImage();
 				
+				jumpCount = JUMPHEIGHT / MOVELENGTH;
+				
 				// If Mario is not on the floor
 				if (yCord + temp.getHeight(observer) < getFloor()) {
 					
@@ -232,12 +241,15 @@ public class GraphicsPanel extends JFrame {
 					
 				} else { // If he is on the floor
 					
+					// To make landing on blocks look smoother
 					if (jumpCount != 0) {
 						yCord --;
 					}
+					
 					jumping = false;
 					jumpCount = 0;
 					jump.stop();
+					jumpSound.restart();
 					// This is so that the standing timer doesn't overlap with the movement timers
 					// and make the image standing while the player is moving
 					if (!rightMove.isRunning() && !leftMove.isRunning()) {
@@ -317,6 +329,7 @@ public class GraphicsPanel extends JFrame {
 		protected void paintComponent(Graphics g) {
 			
 			super.paintComponent(g);
+			
 
 			// Draws the 3 backgrounds
 			g.drawImage(backgroundImage, backX, 0, observer);
@@ -355,20 +368,16 @@ public class GraphicsPanel extends JFrame {
 		
 		super(name);
 		
-		mainPanel.setLayout(new BorderLayout()); // Not needed but is there for the moment
+		backgroundMusic.loop();
+		backgroundMusic.play();
+		
+		mainPanel.setLayout(new BorderLayout()); // Not needed, but is there for the moment
 		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 		
 		setBlocks(); // Sets all the blocks for the current level
 		
 		startAnimation(); // Starts up the panel and renders the animation
-		
-	}
-	
-	// Not needed method right now but in my previous programs is has been very useful
-	private void updateAll() { 
-		
-		mainPanel.updateUI();
 		
 	}
 	
@@ -379,8 +388,8 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
-			// If the block is where Mario is currently at				// If this block is higher up than the		// If this block is below Mario
-																		// current answer
+																		// If this block is higher up than the		// If this block is below Mario
+				// If the block is where Mario is currently at			// current answer
 			if ((endOfImageXOverlaps(i) || startOfImageXOverlaps(i)) && renderBlocks.get(i).getYCord() < answer && yCord < renderBlocks.get(i).getYCord()) {
 				
 				answer = renderBlocks.get(i).getYCord();
@@ -399,11 +408,11 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
-			// If the block is where Mario is currently at				// If this block is closer to Mario than the current 	   // If this block is above Mario
-																		// answer
+																		// If this block is closer to Mario than the current 	   // If this block is above Mario
+			    // If the block is where Mario is currently at		 	// answer
 			if ((endOfImageXOverlaps(i) || startOfImageXOverlaps(i)) && yCord - (renderBlocks.get(i).getYCord() + BLOCKWIDTH) < yCord - answer && yCord > renderBlocks.get(i).getYCord()) {
 				
-				answer = renderBlocks.get(i).getYCord() + (int)BLOCKWIDTH;
+				answer = renderBlocks.get(i).getYCord() + BLOCKWIDTH;
 				
 			}
 			
@@ -439,7 +448,7 @@ public class GraphicsPanel extends JFrame {
 			
 			if ((endOfImageYOverlaps(i) || startOfImageYOverlaps(i)) && renderBlocks.get(i).getXCord() > answer && trueX > renderBlocks.get(i).getXCord()) {
 				
-				answer = renderBlocks.get(i).getXCord() + (int)BLOCKWIDTH;
+				answer = renderBlocks.get(i).getXCord() + BLOCKWIDTH;
 				
 			}
 			
@@ -449,24 +458,28 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
+	// Returns true or false based on whether or not the bottom of Mario's image overlaps with a block
 	private boolean endOfImageYOverlaps(int i) {
 		
 		return (yCord + currentImage.getHeight(observer) > renderBlocks.get(i).getYCord() && yCord + currentImage.getHeight(observer) < renderBlocks.get(i).getYCord() + BLOCKWIDTH);
 		
 	}
 	
+	// Returns true or false based on whether or not the top of Mario's image overlaps with a block
 	private boolean startOfImageYOverlaps(int i) {
 		
 		return (yCord > renderBlocks.get(i).getYCord() && yCord < renderBlocks.get(i).getYCord() + BLOCKWIDTH);
 		
 	}
 	
+	// Returns true or false based on whether or not the right side of Mario's image overlaps with a block
 	private boolean endOfImageXOverlaps(int i) {
 		
 		return (trueX + currentImage.getWidth(observer) > renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) < renderBlocks.get(i).getXCord() + BLOCKWIDTH);
 		
 	}
 	
+	// Returns true or false based on whether or not the left side of Mario's image overlaps with a block
 	private boolean startOfImageXOverlaps(int i) {
 		
 		return (trueX > renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH);
@@ -474,6 +487,7 @@ public class GraphicsPanel extends JFrame {
 	}
 	
 	// This method does not currently work, anyone is welcome to try and fix it if they wish
+	// It should return true or false based on whether or not any part of Mario is in a block
 	private boolean inBlock() {
 		
 		boolean answer = false;
@@ -603,6 +617,7 @@ public class GraphicsPanel extends JFrame {
 				
 				if (!jump.isRunning()) {
 					
+					jumpSound.play();
 					jump.start();
 					
 				}
@@ -704,9 +719,9 @@ public class GraphicsPanel extends JFrame {
 	// is going to go from now on as it is the basis for the entire level
 	private void setBlocks() {
 		
-		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH)));
-		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 10), (int)(BASEFLOOR - BLOCKWIDTH * 2)));
-		allBlocks.add(new StairBlock((int)(BLOCKWIDTH * 12), (int)(BASEFLOOR - BLOCKWIDTH * 3)));
+		allBlocks.add(new StairBlock((int)(BLOCKSPACING * 10), (int)(BASEFLOOR - BLOCKSPACING)));
+		allBlocks.add(new StairBlock((int)(BLOCKSPACING * 10), (int)(BASEFLOOR - BLOCKSPACING * 2)));
+		allBlocks.add(new StairBlock((int)(BLOCKSPACING * 12), (int)(BASEFLOOR - BLOCKSPACING * 3)));
 		
 	}
 	

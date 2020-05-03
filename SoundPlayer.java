@@ -63,31 +63,9 @@ public class SoundPlayer {
 		clip.close();
 	}
 	
-	public void restart() { 
-		clip.stop(); 
-		clip.close(); 
-		resetAudioStream();
+	public void restart() {
+		while(clip.isRunning()) {}
 		clip.setMicrosecondPosition(0);
-	} 
+	}
 	
-	public void resetAudioStream() { 
-		try {
-			myobj = AudioSystem.getAudioInputStream(new File(fileName).getAbsoluteFile());
-		} catch (UnsupportedAudioFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 		
-		try {
-			clip.open(myobj);
-		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	} 
 }

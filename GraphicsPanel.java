@@ -267,9 +267,10 @@ public class GraphicsPanel extends JFrame {
 				back = true;
 				
 				// If Mario is running into a barrier
-				while (trueX < getBackWall()) {
+				while (trueX <= getBackWall()) {
 	
-					moveForward(); // Undo the moveBack
+					xCord ++;
+					trueX ++; // Undo the moveBack
 	
 				}
 			}
@@ -298,7 +299,7 @@ public class GraphicsPanel extends JFrame {
 				back = false;
 				
 				// If Mario is running into a barrier
-				while (trueX + currentImage.getWidth(observer) > getWall()) {
+				while (trueX + currentImage.getWidth(observer) >= getWall()) {
 	
 					xCord --;
 					trueX --;// Undo the moveForward

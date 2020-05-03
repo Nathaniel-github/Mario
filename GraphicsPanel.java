@@ -37,8 +37,8 @@ public class GraphicsPanel extends JFrame {
 	private ImageObserver observer = this;
 	
 	// The width and height of the window rendered
-	private final int SCREENWIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-	private final int SCREENHEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 100;
+	private final int SCREENWIDTH = 1440;
+	private final int SCREENHEIGHT = 800;
 	
 	// This is the current image for Mario, whether that be him jumping, moving or whatever, whenever his 
 	// state changes, this variable changes as well (keep it this way)
@@ -94,8 +94,7 @@ public class GraphicsPanel extends JFrame {
 	// This is the height of a jump (in pixels)
 	private final int JUMPHEIGHT = 150;
 	
-	// This is the y coordinate of the base floor (the fraction is there so that different sizes of the 
-	// window will not cause the base floor coordinate to be inaccurate)
+	// This is the y coordinate of the base floor
 	private final int BASEFLOOR = SCREENHEIGHT - (int)(SCREENHEIGHT / 7.47663551402);
 	
 	// This is the width of one block (in pixels)

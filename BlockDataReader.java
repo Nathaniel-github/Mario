@@ -1,9 +1,4 @@
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -17,11 +12,17 @@ public class BlockDataReader {
 	
 	public BlockDataReader(String fileName) {
 		
-		url = "res/BlockData/" + fileName;
+		url = "BlockData/" + fileName;
 		
 		allBlockData = breakApart();
 		
 		for (int i = 0; i < allBlockData.length; i ++) {
+			
+			if (allBlockData[i][0] == null) {
+				
+				break;
+				
+			}
 			
 			if (allBlockData[i][0].equals("BrickBlock")) {
 				
@@ -42,28 +43,20 @@ public class BlockDataReader {
 	
 	private String[][] breakApart() {
 		
-		String allLines[] = null;
-		try {
-			allLines = Files.readString(Paths.get(url)).split("\n");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Scanner sc = new Scanner(getClass().getClassLoader().getResourceAsStream(url));
 
-		String[][] file = null;
-		try {
-			file = new String[(int) Files.lines(Paths.get(url)).count()][3];
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String[][] file = new String[200][3];
 		
+		int i = 0;
 		
-		for (int i = 0; i < allLines.length; i ++) {
+		while (sc.hasNextLine()) {
 			
-			file[i] = allLines[i].split(";");
+			file[i] = sc.nextLine().split(";");
+			i++;
 			
 		}
+		
+		sc.close();
 
 		return file;
 	}

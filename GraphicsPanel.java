@@ -29,7 +29,11 @@ public class GraphicsPanel extends JFrame {
 	// Boolean for whether or not Mario is jumping, also used to determine currentImage
 	private boolean jumping = false;
 	
+	// Boolean for if Mario is standing or not
 	private boolean stand = false;
+	
+	// Boolean for if the registered jump is a short hop or not
+	private boolean shortHop = true;
 	
 	// An ImageObserver is an interface for determining states of images in its window, this is used 
 	// whenever the getWidth and getHeight methods are called on images, as they require a parameter of 
@@ -221,8 +225,20 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
+			int factor = 0;
+			
+			if (shortHop) {
+				
+				factor = 2;
+				
+			} else {
+				
+				factor = 1;
+			
+			}
+			
 			// If Mario has jumped the given jump height
-			if (jumpCount * MOVELENGTH < JUMPHEIGHT && yCord > getBottomFloor()) {
+			if (jumpCount * MOVELENGTH < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
 				
 				yCord -= MOVELENGTH;
 				jumping = true;
@@ -244,7 +260,7 @@ public class GraphicsPanel extends JFrame {
 					jumpCount ++;
 					
 					// Makes landing smoother
-					if (yCord + temp.getHeight(observer) + MOVELENGTH >= getFloor()) {
+					if (yCord + temp.getHeight(observer) + MOVELENGTH >= getFloor() && ogCount != 0) {
 						
 						yCord --;
 						
@@ -266,6 +282,18 @@ public class GraphicsPanel extends JFrame {
 				}
 				
 			}
+			
+		}
+		
+	});
+	
+	private Timer shortJump = new Timer(100, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			shortHop = false;
+			shortJump.stop();
 			
 		}
 		
@@ -428,56 +456,6 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
-	private int getWall() {
-		
-		int answer = getWidth() + trueX;
-		
-		for (int i = 0; i < renderBlocks.size(); i ++) {
-			
-			if ((endOfImageYOverlaps(i) || startOfImageYOverlaps(i)) && renderBlocks.get(i).getXCord() < answer && trueX < renderBlocks.get(i).getXCord()) {
-				
-				answer = renderBlocks.get(i).getXCord();
-				
-			}
-			
-		}
-		
-		return answer;
-		
-	}
-	
-	private int getBackWall() {
-		
-		int answer = trueX - (getWidth() - 500);
-		
-		for (int i = 0; i < renderBlocks.size(); i ++) {
-			
-			if ((endOfImageYOverlaps(i) || startOfImageYOverlaps(i)) && renderBlocks.get(i).getXCord() > answer && trueX > renderBlocks.get(i).getXCord()) {
-				
-				answer = renderBlocks.get(i).getXCord() + BLOCKWIDTH;
-				
-			}
-			
-		}
-		
-		return answer;
-		
-	}
-	
-	// Returns true or false based on whether or not the bottom of Mario's image overlaps with a block
-	private boolean endOfImageYOverlaps(int i) {
-		
-		return (yCord + currentImage.getHeight(observer) > renderBlocks.get(i).getYCord() && yCord + currentImage.getHeight(observer) < renderBlocks.get(i).getYCord() + BLOCKWIDTH);
-		
-	}
-	
-	// Returns true or false based on whether or not the top of Mario's image overlaps with a block
-	private boolean startOfImageYOverlaps(int i) {
-		
-		return (yCord > renderBlocks.get(i).getYCord() && yCord < renderBlocks.get(i).getYCord() + BLOCKWIDTH);
-		
-	}
-	
 	// Returns true or false based on whether or not the right side of Mario's image overlaps with a block
 	private boolean endOfImageXOverlaps(int i) {
 		
@@ -570,6 +548,7 @@ public class GraphicsPanel extends JFrame {
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "left_pressed");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "right_pressed");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "space_pressed");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "space_released");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "left_released");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "right_released");
 
@@ -628,8 +607,20 @@ public class GraphicsPanel extends JFrame {
 					
 					jumpSound.play();
 					jump.start();
+					shortJump.start();
 					
 				}
+				
+			}
+		});
+		
+		actionMap.put("space_released", new AbstractAction() {
+
+			@Override
+			public void actionPerformed(ActionEvent actionEvt) {
+				
+				shortHop = true;
+				shortJump.stop();
 				
 			}
 		});

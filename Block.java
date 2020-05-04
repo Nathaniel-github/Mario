@@ -16,4 +16,7 @@ public interface Block {
 	// Should return the ImageIcon of the block
 	public Icon getImageIcon();
 	
+	// Should return the rectangle that encompasses this block
+	public Rectangle getRectangle();
+	
 }

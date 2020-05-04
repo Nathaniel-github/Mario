@@ -232,6 +232,8 @@ public class GraphicsPanel extends JFrame {
 				
 				Image temp = getFrameImage();
 				
+				int ogCount = jumpCount;
+				
 				jumpCount = JUMPHEIGHT / MOVELENGTH;
 				
 				// If Mario is not on the floor
@@ -241,12 +243,14 @@ public class GraphicsPanel extends JFrame {
 					jumping = true;
 					jumpCount ++;
 					
-				} else { // If he is on the floor
-					
-					// To make landing on blocks look smoother
-					if (jumpCount != 0) {
+					// Makes landing smoother
+					if (yCord + temp.getHeight(observer) + MOVELENGTH >= getFloor()) {
+						
 						yCord --;
+						
 					}
+					
+				} else { // If he is on the floor
 					
 					jumping = false;
 					jumpCount = 0;
@@ -280,7 +284,7 @@ public class GraphicsPanel extends JFrame {
 				back = true;
 				
 				// If Mario is running into a barrier
-				while (trueX <= getBackWall()) {
+				while (inBlock()) {
 	
 					xCord ++;
 					trueX ++; // Undo the moveBack
@@ -312,7 +316,7 @@ public class GraphicsPanel extends JFrame {
 				back = false;
 				
 				// If Mario is running into a barrier
-				while (trueX + currentImage.getWidth(observer) >= getWall()) {
+				while (inBlock()) {
 	
 					xCord --;
 					trueX --;// Undo the moveForward
@@ -488,7 +492,7 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
-	// This method does not currently work, anyone is welcome to try and fix it if they wish
+	// This method does not currently work, anyone is welcome to try and fix it if they wish. It is currently way too inefficient to be used in the program
 	// It should return true or false based on whether or not any part of Mario is in a block
 	private boolean inBlock() {
 		
@@ -496,32 +500,23 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
-			for (int k = trueX; k < trueX + currentImage.getWidth(observer); k ++) {
+			if (renderBlocks.get(i).getRectangle().intersects(getMarioRectangle())) {
 				
-				for (int l = yCord; l < yCord + currentImage.getHeight(observer); l ++) {
-					
-					for (int m = renderBlocks.get(i).getXCord(); m < renderBlocks.get(i).getXCord() + BLOCKWIDTH; m ++) {
-						
-						for (int n = renderBlocks.get(i).getYCord(); n < renderBlocks.get(i).getYCord() + BLOCKWIDTH; n ++) {
-							
-							if (k == m && l == n) {
-								
-								answer = true;
-								return answer;
-								
-							}
-							
-						}
-						
-					}
-					
-				}
+				answer = true;
+				
+				return answer;
 				
 			}
 			
 		}
 		
 		return answer;
+		
+	}
+	
+	private Rectangle getMarioRectangle() {
+		
+		return new Rectangle(trueX, yCord, currentImage.getWidth(observer), currentImage.getHeight(observer));
 		
 	}
 	

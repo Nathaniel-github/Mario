@@ -1,4 +1,5 @@
 import java.awt.Image;
+import java.awt.Rectangle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -52,6 +53,13 @@ public class QuestionMarkBlock implements Block{
 	public Icon getImageIcon() {
 		
 		return IMAGEICON;
+		
+	}
+	
+	@Override
+	public Rectangle getRectangle() {
+		
+		return new Rectangle(XCORD, YCORD, IMAGEICON.getIconWidth(), IMAGEICON.getIconHeight());
 		
 	}
 

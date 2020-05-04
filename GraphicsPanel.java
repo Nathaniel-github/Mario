@@ -91,9 +91,6 @@ public class GraphicsPanel extends JFrame {
 	// will understand why when you look at how a character is moved
 	private final int SPEED = 5;
 	
-	// This is the height of a jump (in pixels)
-	private final int JUMPHEIGHT = 150;
-	
 	// This is the y coordinate of the base floor
 	private final int BASEFLOOR = SCREENHEIGHT - 107;
 	
@@ -103,11 +100,16 @@ public class GraphicsPanel extends JFrame {
 	// This is the value used to calculate the placement of blocks
 	private final double BLOCKSPACING = 53.3;
 	
+	// This is the height of a jump (in pixels)
+	private final int JUMPHEIGHT = BLOCKWIDTH * 5;
+	
 	private SoundPlayer backgroundMusic = new SoundPlayer("MarioBasicBackgroundMusic.wav");
 	private SoundPlayer jumpSound = new SoundPlayer("MarioJumpMusic.wav");
 	
 	// This list stores all of the data for every block that needs to rendered throughout a level
 	private LinkedList<Block> allBlocks = new LinkedList<Block>();
+	
+	private BlockDataReader blockData = new BlockDataReader("Mario-1-1.txt");
 	
 	// This is the list for the blocks that need to be rendered, since java can not handle rendering every
 	// block that needs to be rendered throughout the level and then constantly refreshing all those 
@@ -368,9 +370,6 @@ public class GraphicsPanel extends JFrame {
 		
 		super(name);
 		
-		backgroundMusic.loop();
-		backgroundMusic.play();
-		
 		mainPanel.setLayout(new BorderLayout()); // Not needed, but is there for the moment
 		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
@@ -378,6 +377,9 @@ public class GraphicsPanel extends JFrame {
 		setBlocks(); // Sets all the blocks for the current level
 		
 		startAnimation(); // Starts up the panel and renders the animation
+		
+		backgroundMusic.loop();
+		backgroundMusic.play();
 		
 	}
 	
@@ -494,12 +496,24 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
-			// If the block is where Mario is currently at
-			if ((trueX + currentImage.getWidth(observer) >= renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) <= renderBlocks.get(i).getXCord() + BLOCKWIDTH) || (trueX >= renderBlocks.get(i).getXCord() && trueX <= renderBlocks.get(i).getXCord() + BLOCKWIDTH)) {
+			for (int k = trueX; k < trueX + currentImage.getWidth(observer); k ++) {
 				
-				if ((yCord + currentImage.getHeight(observer) >= renderBlocks.get(i).getYCord() && yCord + currentImage.getHeight(observer) <= renderBlocks.get(i).getYCord() + BLOCKWIDTH) || (yCord >= renderBlocks.get(i).getYCord() && yCord <= renderBlocks.get(i).getYCord() + BLOCKWIDTH)) {
+				for (int l = yCord; l < yCord + currentImage.getHeight(observer); l ++) {
 					
-					answer = true;
+					for (int m = renderBlocks.get(i).getXCord(); m < renderBlocks.get(i).getXCord() + BLOCKWIDTH; m ++) {
+						
+						for (int n = renderBlocks.get(i).getYCord(); n < renderBlocks.get(i).getYCord() + BLOCKWIDTH; n ++) {
+							
+							if (k == m && l == n) {
+								
+								answer = true;
+								return answer;
+								
+							}
+							
+						}
+						
+					}
 					
 				}
 				
@@ -718,10 +732,30 @@ public class GraphicsPanel extends JFrame {
 	// This method is where all the blocks for the level are set, this is where most of our development
 	// is going to go from now on as it is the basis for the entire level
 	private void setBlocks() {
+	
+		LinkedList<String[]> temp = blockData.getAllStairBlocks();
 		
-		allBlocks.add(new StairBlock((int)(BLOCKSPACING * 10), (int)(BASEFLOOR - BLOCKSPACING)));
-		allBlocks.add(new StairBlock((int)(BLOCKSPACING * 10), (int)(BASEFLOOR - BLOCKSPACING * 2)));
-		allBlocks.add(new StairBlock((int)(BLOCKSPACING * 12), (int)(BASEFLOOR - BLOCKSPACING * 3)));
+		for (int i = 0; i < temp.size(); i ++) {
+			
+			allBlocks.add(new StairBlock((int)(BLOCKSPACING * (Integer.parseInt(temp.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp.get(i)[2]) * BLOCKSPACING))));
+			
+		}
+		
+		LinkedList<String[]> temp2 = blockData.getAllBrickBlocks();
+		
+		for (int i = 0; i < temp2.size(); i ++) {
+			
+			allBlocks.add(new BrickBlock((int)(BLOCKSPACING * (Integer.parseInt(temp2.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp2.get(i)[2]) * BLOCKSPACING))));
+			
+		}
+		
+		LinkedList<String[]> temp3 = blockData.getAllQuestionMarkBlocks();
+		
+		for (int i = 0; i < temp3.size(); i ++) {
+			
+			allBlocks.add(new QuestionMarkBlock((int)(BLOCKSPACING * (Integer.parseInt(temp3.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp3.get(i)[2]) * BLOCKSPACING))));
+			
+		}
 		
 	}
 	

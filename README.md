@@ -12,3 +12,4 @@ Goals:
 - Add enemy sprites (hard)
 - Add Bowser boss (hard)
 - Add question mark block (hard)
+- Add time system (moderate)

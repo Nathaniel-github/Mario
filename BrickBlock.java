@@ -17,8 +17,8 @@ public class BrickBlock implements Block{
 		// Save x and y coordinates given when instantiated
 		XCORD = x;
 		YCORD = y;
-		// Gets a scaled version of the brick block
-		IMAGEICON = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("TileImages/BrickBlock.png")).getImage().getScaledInstance(54, 54, Image.SCALE_DEFAULT));
+		// Gets the ImageIcon of the brick block
+		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("TileImages/BrickBlock.png"));
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
@@ -56,6 +56,7 @@ public class BrickBlock implements Block{
 		
 	}
 
+	// Returns the rectangle that surrounds the image
 	@Override
 	public Rectangle getRectangle() {
 		

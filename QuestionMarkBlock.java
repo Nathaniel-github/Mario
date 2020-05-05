@@ -17,8 +17,8 @@ public class QuestionMarkBlock implements Block{
 		// Save x and y coordinates given when instantiated
 		XCORD = x;
 		YCORD = y;
-		// Gets a scaled version of the question mark block
-		IMAGEICON = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("TileImages/QuestionMarkBlock.png")).getImage().getScaledInstance(54, 54, Image.SCALE_DEFAULT));
+		// Gets the ImageIcon of the question mark block
+		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("TileImages/QuestionMarkBlock.png"));
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
@@ -56,6 +56,7 @@ public class QuestionMarkBlock implements Block{
 		
 	}
 	
+	// Returns the rectangle that surrounds the image
 	@Override
 	public Rectangle getRectangle() {
 		

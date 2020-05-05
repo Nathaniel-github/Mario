@@ -110,10 +110,14 @@ public class GraphicsPanel extends JFrame {
 	private SoundPlayer backgroundMusic = new SoundPlayer("MarioBasicBackgroundMusic.wav");
 	private SoundPlayer jumpSound = new SoundPlayer("MarioJumpMusic.wav");
 	
-	// This list stores all of the data for every block that needs to rendered throughout a level
+	// This list stores all of the data for every block that needs to be rendered throughout a level
 	private LinkedList<Block> allBlocks = new LinkedList<Block>();
 	
-	private BlockDataReader blockData = new BlockDataReader("Mario-1-1.txt");
+	// This list stores all of the data for every prop that needs to be rendered throughout a level
+	private LinkedList<Prop> allProps = new LinkedList<Prop>();
+	
+	// This is the object that reads the text 
+	private BlockDataReader level1BlockData = new BlockDataReader("Mario-1-1.txt");
 	
 	// This is the list for the blocks that need to be rendered, since java can not handle rendering every
 	// block that needs to be rendered throughout the level and then constantly refreshing all those 
@@ -123,6 +127,9 @@ public class GraphicsPanel extends JFrame {
 	// every millisecond on a timer because that way all of those calculations can be done on a 
 	// different thread and not cause any delays in this one which renders the window)
 	private LinkedList<Block> renderBlocks = new LinkedList<Block>();
+	
+	// This list is the same as the renderBlocks except it stores all rendered props
+	private LinkedList<Prop> renderProps = new LinkedList<Prop>();
 	
 	// This is the timer that will fire every millisecond and refresh the panel and update the image of 
 	// Mario
@@ -162,6 +169,25 @@ public class GraphicsPanel extends JFrame {
 					
 					// Removes the block from those that need to be rendered
 					renderBlocks.remove(allBlocks.get(i));
+					
+				}
+				
+			}
+			
+			for (int i = 0; i < allProps.size(); i ++) {
+				
+				if (allProps.get(i).getXCord() - backgroundImage.getWidth(observer) <= trueX && !renderProps.contains(allProps.get(i))) {
+					
+					// Adds the prop from those that need to be rendered
+					renderProps.add(allProps.get(i)); 
+					
+				}
+				
+				// If the prop is "one stage" behind Mario
+				if (allProps.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX) {
+					
+					// Removes the prop from those that need to be rendered
+					renderProps.remove(allProps.get(i));
 					
 				}
 				
@@ -228,18 +254,19 @@ public class GraphicsPanel extends JFrame {
 			int factor = 0;
 			
 			if (shortHop) {
-				
 				factor = 2;
-				
 			} else {
-				
 				factor = 1;
+			}
 			
+			if (jumping && jumpCount <= 5) {
+				fixMovement();
 			}
 			
 			// If Mario has jumped the given jump height
 			if (jumpCount * MOVELENGTH < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
 				
+				fixMovement();
 				yCord -= MOVELENGTH;
 				jumping = true;
 				jumpCount ++;
@@ -265,10 +292,14 @@ public class GraphicsPanel extends JFrame {
 						yCord --;
 						
 					}
+
+					fixMovement();
 					
 				} else { // If he is on the floor
 					
 					jumping = false;
+					shortHop = true;
+					fixMovement();
 					jumpCount = 0;
 					jump.stop();
 					jumpSound.restart();
@@ -287,7 +318,7 @@ public class GraphicsPanel extends JFrame {
 		
 	});
 	
-	private Timer shortJump = new Timer(100, new ActionListener() {
+	private Timer shortJump = new Timer(300, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -314,8 +345,7 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (inBlock()) {
 	
-					xCord ++;
-					trueX ++; // Undo the moveBack
+					moveForward(); // Undo the moveBack
 	
 				}
 			}
@@ -346,8 +376,7 @@ public class GraphicsPanel extends JFrame {
 				// If Mario is running into a barrier
 				while (inBlock()) {
 	
-					xCord --;
-					trueX --;// Undo the moveForward
+					moveBack(); // Undo the moveForward
 	
 				}
 			}
@@ -374,6 +403,12 @@ public class GraphicsPanel extends JFrame {
 			for (int i = 0; i < renderBlocks.size(); i ++) {
 				
 				g.drawImage(renderBlocks.get(i).getImage(), renderBlocks.get(i).getXCord() - scroll, renderBlocks.get(i).getYCord(), observer);
+				
+			}
+			
+			for (int i = 0; i < renderProps.size(); i ++) {
+				
+				g.drawImage(renderProps.get(i).getImage(), renderProps.get(i).getXCord() - scroll, renderProps.get(i).getYCord(), observer);
 				
 			}
 			
@@ -406,7 +441,7 @@ public class GraphicsPanel extends JFrame {
 		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 		
-		setBlocks(); // Sets all the blocks for the current level
+		setStage(); // Sets all the interactions for the current level
 		
 		startAnimation(); // Starts up the panel and renders the animation
 		
@@ -424,12 +459,25 @@ public class GraphicsPanel extends JFrame {
 			
 																		// If this block is higher up than the		// If this block is below Mario
 				// If the block is where Mario is currently at			// current answer
-			if ((endOfImageXOverlaps(i) || startOfImageXOverlaps(i)) && renderBlocks.get(i).getYCord() < answer && yCord < renderBlocks.get(i).getYCord()) {
+			if ((endOfImageXOverlaps(i, renderBlocks) || startOfImageXOverlaps(i, renderBlocks)) && renderBlocks.get(i).getYCord() < answer && yCord < renderBlocks.get(i).getYCord()) {
 				
 				answer = renderBlocks.get(i).getYCord();
 				
 			}
 			
+		}
+		
+		
+		for (int i = 0; i < renderProps.size(); i ++) {
+			
+ 			  												// If this block is closer to Mario than the current 	   // If this block is above Mario
+			// If the block is where Mario is currently at	// answer
+			if ((endOfImageXOverlaps(i, renderProps, true) || startOfImageXOverlaps(i, renderProps, true)) && renderProps.get(i).getYCord() < answer && yCord < renderProps.get(i).getYCord() && renderProps.get(i).isObstructive()) {
+				
+				answer = renderProps.get(i).getYCord();
+				
+			}
+
 		}
 		
 		return answer;
@@ -442,9 +490,9 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
-																		// If this block is closer to Mario than the current 	   // If this block is above Mario
-			    // If the block is where Mario is currently at		 	// answer
-			if ((endOfImageXOverlaps(i) || startOfImageXOverlaps(i)) && yCord - (renderBlocks.get(i).getYCord() + BLOCKWIDTH) < yCord - answer && yCord > renderBlocks.get(i).getYCord()) {
+											 			// If this block is closer to Mario than the current 	   // If this block is above Mario
+		// If the block is where Mario is currently at	// answer
+			if ((endOfImageXOverlaps(i, renderBlocks) || startOfImageXOverlaps(i, renderBlocks)) && yCord - (renderBlocks.get(i).getYCord() + BLOCKWIDTH) < yCord - answer && yCord > renderBlocks.get(i).getYCord()) {
 				
 				answer = renderBlocks.get(i).getYCord() + BLOCKWIDTH;
 				
@@ -457,21 +505,34 @@ public class GraphicsPanel extends JFrame {
 	}
 	
 	// Returns true or false based on whether or not the right side of Mario's image overlaps with a block
-	private boolean endOfImageXOverlaps(int i) {
+	private boolean endOfImageXOverlaps(int i, LinkedList<Block> list) {
 		
-		return (trueX + currentImage.getWidth(observer) > renderBlocks.get(i).getXCord() && trueX + currentImage.getWidth(observer) < renderBlocks.get(i).getXCord() + BLOCKWIDTH);
+		return (trueX + currentImage.getWidth(observer) > list.get(i).getXCord() && trueX + currentImage.getWidth(observer) < list.get(i).getXCord() + BLOCKWIDTH);
 		
 	}
 	
 	// Returns true or false based on whether or not the left side of Mario's image overlaps with a block
-	private boolean startOfImageXOverlaps(int i) {
+	private boolean startOfImageXOverlaps(int i, LinkedList<Block> list) {
 		
-		return (trueX > renderBlocks.get(i).getXCord() && trueX < renderBlocks.get(i).getXCord() + BLOCKWIDTH);
+		return (trueX > list.get(i).getXCord() && trueX < list.get(i).getXCord() + BLOCKWIDTH);
 		
 	}
 	
-	// This method does not currently work, anyone is welcome to try and fix it if they wish. It is currently way too inefficient to be used in the program
-	// It should return true or false based on whether or not any part of Mario is in a block
+	// Returns true or false based on whether or not the right side of Mario's image overlaps with a block
+	private boolean endOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop) {
+		
+		return (trueX + currentImage.getWidth(observer) > list.get(i).getXCord() && trueX + currentImage.getWidth(observer) < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
+		
+	}
+	
+	// Returns true or false based on whether or not the left side of Mario's image overlaps with a block
+	private boolean startOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop) {
+		
+		return (trueX > list.get(i).getXCord() && trueX < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
+		
+	}
+	
+	// This method now works! It returns true or false based on whether or not Mario has collided with an image
 	private boolean inBlock() {
 		
 		boolean answer = false;
@@ -479,6 +540,18 @@ public class GraphicsPanel extends JFrame {
 		for (int i = 0; i < renderBlocks.size(); i ++) {
 			
 			if (renderBlocks.get(i).getRectangle().intersects(getMarioRectangle())) {
+				
+				answer = true;
+				
+				return answer;
+				
+			}
+			
+		}
+		
+		for (int i = 0; i < renderProps.size(); i ++) {
+			
+			if (renderProps.get(i).getCollider().intersects(getMarioRectangle()) && renderProps.get(i).isObstructive()) {
 				
 				answer = true;
 				
@@ -619,8 +692,9 @@ public class GraphicsPanel extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent actionEvt) {
 				
-				shortHop = true;
-				shortJump.stop();
+				if (shortJump.isRunning()) {
+					shortJump.stop();
+				}
 				
 			}
 		});
@@ -640,6 +714,18 @@ public class GraphicsPanel extends JFrame {
 		
 		xCord += MOVELENGTH;
 		trueX += MOVELENGTH;
+		
+	}
+	
+	private void fixMovement() {
+		
+		while (inBlock()) {
+			if (back) {
+				moveForward();
+			} else {
+				moveBack();
+			}
+		}
 		
 	}
 	
@@ -717,9 +803,9 @@ public class GraphicsPanel extends JFrame {
 	
 	// This method is where all the blocks for the level are set, this is where most of our development
 	// is going to go from now on as it is the basis for the entire level
-	private void setBlocks() {
+	private void setStage() {
 	
-		LinkedList<String[]> temp = blockData.getAllStairBlocks();
+		LinkedList<String[]> temp = level1BlockData.getAllStairBlocks();
 		
 		for (int i = 0; i < temp.size(); i ++) {
 			
@@ -727,7 +813,7 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp2 = blockData.getAllBrickBlocks();
+		LinkedList<String[]> temp2 = level1BlockData.getAllBrickBlocks();
 		
 		for (int i = 0; i < temp2.size(); i ++) {
 			
@@ -735,11 +821,35 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp3 = blockData.getAllQuestionMarkBlocks();
+		LinkedList<String[]> temp3 = level1BlockData.getAllQuestionMarkBlocks();
 		
 		for (int i = 0; i < temp3.size(); i ++) {
 			
 			allBlocks.add(new QuestionMarkBlock((int)(BLOCKSPACING * (Integer.parseInt(temp3.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp3.get(i)[2]) * BLOCKSPACING))));
+			
+		}
+		
+		LinkedList<String[]> temp4 = level1BlockData.getAllSmallPipes();
+		
+		for (int i = 0; i < temp4.size(); i ++) {
+			
+			allProps.add(new ShortPipe((int)(BLOCKSPACING * (Integer.parseInt(temp4.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp4.get(i)[2]) * BLOCKSPACING))));
+			
+		}
+		
+		LinkedList<String[]> temp5 = level1BlockData.getAllPipes();
+		
+		for (int i = 0; i < temp5.size(); i ++) {
+			
+			allProps.add(new Pipe((int)(BLOCKSPACING * (Integer.parseInt(temp5.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp5.get(i)[2]) * BLOCKSPACING))));
+			
+		}
+		
+		LinkedList<String[]> temp6 = level1BlockData.getAllLongPipes();
+		
+		for (int i = 0; i < temp6.size(); i ++) {
+			
+			allProps.add(new LongPipe((int)(BLOCKSPACING * (Integer.parseInt(temp6.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp6.get(i)[2]) * BLOCKSPACING))));
 			
 		}
 		

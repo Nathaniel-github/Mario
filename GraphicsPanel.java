@@ -35,6 +35,8 @@ public class GraphicsPanel extends JFrame {
 	// Boolean for if the registered jump is a short hop or not
 	private boolean shortHop = true;
 	
+	private boolean fixJump = false;
+	
 	// An ImageObserver is an interface for determining states of images in its window, this is used 
 	// whenever the getWidth and getHeight methods are called on images, as they require a parameter of 
 	// the ImageObserver
@@ -93,7 +95,7 @@ public class GraphicsPanel extends JFrame {
 	
 	// This is how quickly a character will move when you press an arrow key (it is in milliseconds an you
 	// will understand why when you look at how a character is moved
-	private final int SPEED = 5;
+	private final int SPEED = 6;
 	
 	// This is the y coordinate of the base floor
 	private final int BASEFLOOR = SCREENHEIGHT - 107;
@@ -102,7 +104,7 @@ public class GraphicsPanel extends JFrame {
 	private final int BLOCKWIDTH = 54;
 	
 	// This is the value used to calculate the placement of blocks
-	private final double BLOCKSPACING = 53.3;
+	private final double BLOCKSPACING = 53.35;
 	
 	// This is the height of a jump (in pixels)
 	private final int JUMPHEIGHT = BLOCKWIDTH * 5;
@@ -117,7 +119,7 @@ public class GraphicsPanel extends JFrame {
 	private LinkedList<Prop> allProps = new LinkedList<Prop>();
 	
 	// This is the object that reads the text 
-	private BlockDataReader level1BlockData = new BlockDataReader("Mario-1-1.txt");
+	private BlockDataReader level1Data = new BlockDataReader("Mario-1-1.txt");
 	
 	// This is the list for the blocks that need to be rendered, since java can not handle rendering every
 	// block that needs to be rendered throughout the level and then constantly refreshing all those 
@@ -253,12 +255,14 @@ public class GraphicsPanel extends JFrame {
 			
 			int factor = 0;
 			
+			// If he is supposed to do a short hop
 			if (shortHop) {
 				factor = 2;
 			} else {
 				factor = 1;
 			}
 			
+			// Makes the jump take off smoother
 			if (jumping && jumpCount <= 5) {
 				fixMovement();
 			}
@@ -273,10 +277,16 @@ public class GraphicsPanel extends JFrame {
 				
 			} else {
 				
+				// Gets what Mario's image would be if he wasn't jumping or standing
 				Image temp = getFrameImage();
 				
-				int ogCount = jumpCount;
+				// If the jump needs to be fixed
+				if (!fixJump && jumpCount != 0) {
+					fixJump = true;
+				}
 				
+				// Sets the jumpCount to the max because if it is at this point in the program it is done
+				// jumping
 				jumpCount = JUMPHEIGHT / MOVELENGTH;
 				
 				// If Mario is not on the floor
@@ -287,9 +297,10 @@ public class GraphicsPanel extends JFrame {
 					jumpCount ++;
 					
 					// Makes landing smoother
-					if (yCord + temp.getHeight(observer) + MOVELENGTH >= getFloor() && ogCount != 0) {
+					while (yCord + temp.getHeight(observer) + MOVELENGTH >= getFloor() && fixJump) {
 						
 						yCord --;
+						fixJump = false;
 						
 					}
 
@@ -299,10 +310,13 @@ public class GraphicsPanel extends JFrame {
 					
 					jumping = false;
 					shortHop = true;
+					
 					fixMovement();
+					
 					jumpCount = 0;
 					jump.stop();
 					jumpSound.restart();
+					
 					// This is so that the standing timer doesn't overlap with the movement timers
 					// and make the image standing while the player is moving
 					if (!rightMove.isRunning() && !leftMove.isRunning()) {
@@ -406,6 +420,7 @@ public class GraphicsPanel extends JFrame {
 				
 			}
 			
+			// Draws the props that need to be rendered
 			for (int i = 0; i < renderProps.size(); i ++) {
 				
 				g.drawImage(renderProps.get(i).getImage(), renderProps.get(i).getXCord() - scroll, renderProps.get(i).getYCord(), observer);
@@ -445,6 +460,9 @@ public class GraphicsPanel extends JFrame {
 		
 		startAnimation(); // Starts up the panel and renders the animation
 		
+		// Mute the sounds
+		muteSounds();
+		
 		backgroundMusic.loop();
 		backgroundMusic.play();
 		
@@ -453,6 +471,7 @@ public class GraphicsPanel extends JFrame {
 	// This is the method that determines where the floor is in relation to Mario's x coordinate
 	private int getFloor() {
 		
+		// The default return is the brick floor
 		int answer = SCREENHEIGHT - 107;
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
@@ -470,8 +489,8 @@ public class GraphicsPanel extends JFrame {
 		
 		for (int i = 0; i < renderProps.size(); i ++) {
 			
- 			  												// If this block is closer to Mario than the current 	   // If this block is above Mario
-			// If the block is where Mario is currently at	// answer
+ 			  												// If this prop is closer to Mario than the current 	   
+			// If the prop is where Mario is currently at	// answer												// If this prop is below Mario												// If the prop is obstructive to Mario
 			if ((endOfImageXOverlaps(i, renderProps, true) || startOfImageXOverlaps(i, renderProps, true)) && renderProps.get(i).getYCord() < answer && yCord < renderProps.get(i).getYCord() && renderProps.get(i).isObstructive()) {
 				
 				answer = renderProps.get(i).getYCord();
@@ -486,6 +505,7 @@ public class GraphicsPanel extends JFrame {
 	
 	private int getBottomFloor() {
 		
+		// The default return is one jump height above the top of the screen
 		int answer = -JUMPHEIGHT;
 		
 		for (int i = 0; i < renderBlocks.size(); i ++) {
@@ -518,14 +538,14 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
-	// Returns true or false based on whether or not the right side of Mario's image overlaps with a block
+	// Returns true or false based on whether or not the right side of Mario's image overlaps with a prop
 	private boolean endOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop) {
 		
 		return (trueX + currentImage.getWidth(observer) > list.get(i).getXCord() && trueX + currentImage.getWidth(observer) < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
 		
 	}
 	
-	// Returns true or false based on whether or not the left side of Mario's image overlaps with a block
+	// Returns true or false based on whether or not the left side of Mario's image overlaps with a prop
 	private boolean startOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop) {
 		
 		return (trueX > list.get(i).getXCord() && trueX < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
@@ -565,6 +585,7 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
+	// Returns the invisible rectangle that is around Mario
 	private Rectangle getMarioRectangle() {
 		
 		return new Rectangle(trueX, yCord, currentImage.getWidth(observer), currentImage.getHeight(observer));
@@ -701,6 +722,14 @@ public class GraphicsPanel extends JFrame {
 
 	}
 	
+	// Mutes all sound effects
+	private void muteSounds() {
+		
+		backgroundMusic.setVolume(0);
+		jumpSound.setVolume(0);
+		
+	}
+	
 	// Method for moving towards the left side of the screen
 	private void moveBack() {
 		
@@ -717,9 +746,10 @@ public class GraphicsPanel extends JFrame {
 		
 	}
 	
+	// Fixes Mario's current image so that it doesn't clip into blocks
 	private void fixMovement() {
 		
-		while (inBlock()) {
+		if (inBlock()) {
 			if (back) {
 				moveForward();
 			} else {
@@ -805,7 +835,7 @@ public class GraphicsPanel extends JFrame {
 	// is going to go from now on as it is the basis for the entire level
 	private void setStage() {
 	
-		LinkedList<String[]> temp = level1BlockData.getAllStairBlocks();
+		LinkedList<String[]> temp = level1Data.getAllStairBlocks();
 		
 		for (int i = 0; i < temp.size(); i ++) {
 			
@@ -813,7 +843,7 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp2 = level1BlockData.getAllBrickBlocks();
+		LinkedList<String[]> temp2 = level1Data.getAllBrickBlocks();
 		
 		for (int i = 0; i < temp2.size(); i ++) {
 			
@@ -821,7 +851,7 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp3 = level1BlockData.getAllQuestionMarkBlocks();
+		LinkedList<String[]> temp3 = level1Data.getAllQuestionMarkBlocks();
 		
 		for (int i = 0; i < temp3.size(); i ++) {
 			
@@ -829,7 +859,7 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp4 = level1BlockData.getAllSmallPipes();
+		LinkedList<String[]> temp4 = level1Data.getAllSmallPipes();
 		
 		for (int i = 0; i < temp4.size(); i ++) {
 			
@@ -837,7 +867,7 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp5 = level1BlockData.getAllPipes();
+		LinkedList<String[]> temp5 = level1Data.getAllPipes();
 		
 		for (int i = 0; i < temp5.size(); i ++) {
 			
@@ -845,13 +875,17 @@ public class GraphicsPanel extends JFrame {
 			
 		}
 		
-		LinkedList<String[]> temp6 = level1BlockData.getAllLongPipes();
+		LinkedList<String[]> temp6 = level1Data.getAllLongPipes();
 		
 		for (int i = 0; i < temp6.size(); i ++) {
 			
 			allProps.add(new LongPipe((int)(BLOCKSPACING * (Integer.parseInt(temp6.get(i)[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(temp6.get(i)[2]) * BLOCKSPACING))));
 			
 		}
+		
+		allProps.add(new FlagPole((int)(BLOCKSPACING * (Integer.parseInt(level1Data.getFlagPole()[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(level1Data.getFlagPole()[2]) * BLOCKSPACING))));
+		
+		allProps.add(new EndCastle((int)(BLOCKSPACING * (Integer.parseInt(level1Data.getEndCastle()[1])) - 1), (int)(BASEFLOOR - (Integer.parseInt(level1Data.getEndCastle()[2]) * BLOCKSPACING))));
 		
 	}
 	

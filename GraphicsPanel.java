@@ -285,7 +285,7 @@ public class GraphicsPanel extends JFrame {
 			for (int i = 0; i < allSprites.size(); i++) {
 
 				if (allSprites.get(i).getXCord() - backgroundImage.getWidth(observer) <= trueX
-						&& !renderProps.contains(allSprites.get(i))) {
+						&& !renderSprites.contains(allSprites.get(i))) {
 
 					// Adds the prop from those that need to be rendered
 					renderSprites.add(allSprites.get(i));

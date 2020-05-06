@@ -1,6 +1,9 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 
 import javax.sound.sampled.*;
+import javax.swing.Timer;
 
 public class SoundPlayer {
 	
@@ -9,6 +12,20 @@ public class SoundPlayer {
 	String fileName;
 	FloatControl volume;
 	final float muteVolume;
+	private Timer restartSound = new Timer(10, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if (!clip.isRunning()) {
+				
+				clip.setMicrosecondPosition(0);
+				
+			}
+			
+		}
+		
+	});
 	
 	public SoundPlayer(String FileName) {	
 		fileName = FileName;
@@ -64,8 +81,9 @@ public class SoundPlayer {
 	}
 	
 	public void restart() {
-		while(clip.isRunning()) {}
-		clip.setMicrosecondPosition(0);
+		
+		restartSound.start();
+		
 	}
 	
 }

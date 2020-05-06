@@ -5,27 +5,27 @@ import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class FlagPole implements Prop{
+public class Flag implements Prop{
 
 	// Fields
 	final Image IMAGE;
 	final ImageIcon IMAGEICON;
 	final int XCORD;
-	final int YCORD;
+	int YCORD;
 	final Polygon COLLIDER;
 	
-	public FlagPole(int x, int y) {
+	public Flag(int x, int y) {
 		
 		// Save x and y coordinates given when instantiated
 		XCORD = x;
 		YCORD = y;
 		// Gets the ImageIcon of the flag pole
-		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("PropImages/FlagPole.png"));
+		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("PropImages/Flag.png"));
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
-		int [] xPoints = {XCORD + 68, XCORD + 68, XCORD + 77, XCORD + 77, XCORD + 84, XCORD + 84, XCORD + 93, XCORD + 93};
-		int [] yPoints = {YCORD + 21, YCORD + 47, YCORD + 47, YCORD + 533, YCORD + 533, YCORD + 47, YCORD + 47, YCORD + 21};
+		int [] xPoints = {XCORD, XCORD, XCORD + 6, XCORD + 6, XCORD + 102, XCORD + 102, XCORD + IMAGEICON.getIconWidth(), XCORD + IMAGEICON.getIconWidth()};
+		int [] yPoints = {YCORD, YCORD + 50, YCORD + 50, YCORD + IMAGEICON.getIconHeight(), YCORD + IMAGEICON.getIconHeight(), YCORD + 50, YCORD + 50, YCORD};
 		int nPoints = xPoints.length;
 		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
 	}
@@ -84,6 +84,10 @@ public class FlagPole implements Prop{
 		
 		return COLLIDER;
 		
+	}
+	
+	public void changeYCord(int change) {
+		YCORD+=change;
 	}
 
 }

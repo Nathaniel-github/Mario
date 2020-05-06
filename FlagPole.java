@@ -24,8 +24,8 @@ public class FlagPole implements Prop{
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
-		int [] xPoints = {XCORD, XCORD, XCORD + 6, XCORD + 6, XCORD + 102, XCORD + 102, XCORD + IMAGEICON.getIconWidth(), XCORD + IMAGEICON.getIconWidth()};
-		int [] yPoints = {YCORD, YCORD + 50, YCORD + 50, YCORD + IMAGEICON.getIconHeight(), YCORD + IMAGEICON.getIconHeight(), YCORD + 50, YCORD + 50, YCORD};
+		int [] xPoints = {XCORD + 68, XCORD + 68, XCORD + 77, XCORD + 77, XCORD + 84, XCORD + 84, XCORD + 93, XCORD + 93};
+		int [] yPoints = {YCORD + 21, YCORD + 47, YCORD + 47, YCORD + 533, YCORD + 533, YCORD + 47, YCORD + 47, YCORD + 21};
 		int nPoints = xPoints.length;
 		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
 	}

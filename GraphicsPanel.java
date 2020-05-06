@@ -97,7 +97,7 @@ public class GraphicsPanel extends JFrame {
 	
 	// This is how quickly a character will move when you press an arrow key (it is in milliseconds an you
 	// will understand why when you look at how a character is moved
-	private final int SPEED = 6;
+	private final int SPEED = 5;
 	
 	// This is the y coordinate of the base floor
 	private final int BASEFLOOR = SCREENHEIGHT - 107;
@@ -357,6 +357,11 @@ public class GraphicsPanel extends JFrame {
 			
 			// If Mario is currently moving right
 			if (!rightMove.isRunning() && !endingAnimation) {
+				
+				if (!jump.isRunning()) {
+					fixMovement();
+				}
+				
 				moveBack();
 				frame ++;
 				back = true;
@@ -380,12 +385,17 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			if (!leftMove.isRunning() && !endingAnimation) {
+				
+				if (!jump.isRunning()) {
+					fixMovement();
+				}
+				
 				moveForward();
 				frame ++;
 				
 				// This is so that the frame doesn't get too large, since we are modding it anyway it can
 				// reset
-				if (frame == 25) {
+				if (frame == 36) {
 					
 					frame = 0;
 					
@@ -471,7 +481,7 @@ public class GraphicsPanel extends JFrame {
 		startAnimation(); // Starts up the panel and renders the animation
 		
 		// Mute the sounds
-		muteSounds();
+//		muteSounds();
 		
 		backgroundMusic.loop();
 		backgroundMusic.play();
@@ -674,7 +684,9 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 				
 				leftMove.stop();
-				standing.start();
+				if (!rightMove.isRunning()) {
+					standing.start();
+				}
 				
 			}
 		});
@@ -695,7 +707,9 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 				
 				rightMove.stop();
-				standing.start();
+				if (!leftMove.isRunning()) {
+					standing.start();
+				}
 				
 			}
 		});

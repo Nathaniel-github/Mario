@@ -33,7 +33,12 @@ public class Goomba implements Sprite{
 
 
 	public Goomba(int x, int y) {
-		COLLIDER = new Polygon();
+		
+		int [] xPoints = {XCORD + 18, XCORD + 3, XCORD, XCORD, XCORD + 50, XCORD + 50, XCORD + 47, XCORD + 32};
+		int [] yPoints = {YCORD, YCORD + 15, YCORD + 21, YCORD + 50, YCORD + 50, YCORD + 21, YCORD + 15, YCORD};
+		int nPoints = xPoints.length;
+		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
+		
 		IMAGEICON = new ImageIcon(goomba1);
 		IMAGE = IMAGEICON.getImage();
 		frame = 1;

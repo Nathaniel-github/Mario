@@ -195,17 +195,16 @@ public class GraphicsPanel extends JFrame {
 
 	});
 
-	private Timer slideDownPole = new Timer(SPEED, new ActionListener()  {
+	private Timer slideDownPole = new Timer(SPEED * 2, new ActionListener()  {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (yCord <= BASEFLOOR - BLOCKWIDTH * 2 && yCord <= flag.getYCord()) {
+			if (yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && yCord <= flag.getYCord()) {
 				yCord += MOVELENGTH; 
 			}
-			if (flag.getYCord() < BASEFLOOR - BLOCKWIDTH * 2) {
+			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()) {
 				flag.changeYCord(MOVELENGTH);
-			}
-			else {
+			} else {
 				jump.stop();
 				slideDownPole.stop();
 				walkToCastle.start();
@@ -216,7 +215,7 @@ public class GraphicsPanel extends JFrame {
 
 	});
 	
-	private Timer walkToCastle = new Timer( SPEED, new ActionListener() {
+	private Timer walkToCastle = new Timer(SPEED * 3, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -285,17 +284,17 @@ public class GraphicsPanel extends JFrame {
 			for (int i = 0; i < allSprites.size(); i++) {
 
 				if (allSprites.get(i).getXCord() - backgroundImage.getWidth(observer) <= trueX
-						&& !renderProps.contains(allSprites.get(i))) {
+						&& !renderSprites.contains(allSprites.get(i))) {
 
-					// Adds the prop from those that need to be rendered
+					// Adds the sprite from those that need to be rendered
 					renderSprites.add(allSprites.get(i));
 
 				}
 
-				// If the prop is "one stage" behind Mario
+				// If the sprite is "one stage" behind Mario
 				if (allSprites.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX) {
 
-					// Removes the prop from those that need to be rendered
+					// Removes the sprite from those that need to be rendered
 					renderSprites.remove(allSprites.get(i));
 
 				}
@@ -510,7 +509,7 @@ public class GraphicsPanel extends JFrame {
 				// anyway it can
 				// reset
 
-				if (frame == 25) {
+				if (frame == 100) {
 
 					frame = 0;
 
@@ -538,7 +537,7 @@ public class GraphicsPanel extends JFrame {
 
 			super.paintComponent(g);
 
-			if (flagPole.getCollider().intersects(getMarioRectangle())) {
+			if (flagPole.getCollider().intersects(getMarioRectangle()) && !endingAnimation) {
 
 				playEndingAnimation();
 
@@ -981,7 +980,7 @@ public class GraphicsPanel extends JFrame {
 
 			}
 
-		} else if(endingAnimation && yCord <= BASEFLOOR - BLOCKWIDTH * 2 ) {
+		} else if(slideDownPole.isRunning()) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
 		}
 		else {
@@ -1091,7 +1090,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 		
-		LinkedList<String[]> temp8 = level1Data.getAllGoombas();
+		LinkedList<String[]> temp8 = level1Data.getAllKoopas();
 
 		for (int i = 0; i < temp8.size(); i++) {
 

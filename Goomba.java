@@ -16,7 +16,8 @@ public class Goomba implements Sprite{
 	private int YCORD;
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
-	private int frame;
+	private int frame = 0;
+	private final int SPEED = 100;
 	private boolean killed = false;
 	private URL goomba1 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png");
 	private URL goomba2 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png");
@@ -35,7 +36,7 @@ public class Goomba implements Sprite{
 	public Goomba(int x, int y) {
 		
 		XCORD = x;
-		YCORD = y;
+		YCORD = y + 4;
 		int [] xPoints = {XCORD + 18, XCORD + 3, XCORD, XCORD, XCORD + 50, XCORD + 50, XCORD + 47, XCORD + 32};
 		int [] yPoints = {YCORD, YCORD + 15, YCORD + 21, YCORD + 50, YCORD + 50, YCORD + 21, YCORD + 15, YCORD};
 		int nPoints = xPoints.length;
@@ -44,7 +45,6 @@ public class Goomba implements Sprite{
 		
 		IMAGEICON = new ImageIcon(goomba1);
 		IMAGE = IMAGEICON.getImage();
-		frame = 1;
 	}
 
 	@Override
@@ -103,13 +103,15 @@ public class Goomba implements Sprite{
 
 	@Override
 	public Image nextImage() {
-		if(frame == 1) {
+		if(frame % SPEED <= SPEED/2) {
 			IMAGEICON = new ImageIcon(goomba1);
-			frame = 2;
 		}
 		else {
 			IMAGEICON = new ImageIcon(goomba2);
-			frame = 1;
+		}
+		frame ++;
+		if (frame >= SPEED) {
+			frame = 0;
 		}
 		IMAGE = IMAGEICON.getImage();
 		return IMAGE;

@@ -16,11 +16,12 @@ public class Koopa implements Sprite{
 	private int YCORD;
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
-	private int frame;
+	private int frame = 0;
+	private final int SPEED = 100;
 	private boolean killed = false;
-	private URL koopa1 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png");
-	private URL koopa2 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png");
-	private URL dead = getClass().getClassLoader().getResource("EnemySpriteImages/GoombaDead.png");
+	private URL koopa1 = getClass().getClassLoader().getResource("EnemySpriteImages/Koopa.png");
+	private URL koopa2 = getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2.png");
+	private URL dead = getClass().getClassLoader().getResource("EnemySpriteImages/KoopaDead.png");
 	private Timer killKoopa = new Timer(750, new ActionListener() {
 
 		@Override
@@ -41,7 +42,6 @@ public class Koopa implements Sprite{
 		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
 		IMAGEICON = new ImageIcon(koopa1);
 		IMAGE = IMAGEICON.getImage();
-		frame = 1;
 	}
 
 	@Override
@@ -100,13 +100,15 @@ public class Koopa implements Sprite{
 
 	@Override
 	public Image nextImage() {
-		if(frame == 1) {
+		if(frame % SPEED <= SPEED/2) {
 			IMAGEICON = new ImageIcon(koopa1);
-			frame = 2;
 		}
 		else {
 			IMAGEICON = new ImageIcon(koopa2);
-			frame = 1;
+		}
+		frame ++;
+		if (frame >= SPEED) {
+			frame = 0;
 		}
 		IMAGE = IMAGEICON.getImage();
 		return IMAGE;

@@ -18,23 +18,28 @@ public class Koopa implements Sprite{
 	private Image IMAGE;
 	private int frame;
 	private boolean killed = false;
-	private URL goomba1 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png");
-	private URL goomba2 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png");
+	private URL koopa1 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png");
+	private URL koopa2 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png");
 	private URL dead = getClass().getClassLoader().getResource("EnemySpriteImages/GoombaDead.png");
-	private Timer killGoomba = new Timer(750, new ActionListener() {
+	private Timer killKoopa = new Timer(750, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			killed = true;
-			killGoomba.stop();
+			killKoopa.stop();
 		}
 		
 	});
 
 
 	public Koopa(int x, int y) {
-		COLLIDER = new Polygon();
-		IMAGEICON = new ImageIcon(goomba1);
+		XCORD = x;
+		YCORD = y+8;
+		int [] xPoints = {XCORD + 36, XCORD + 47, XCORD + 50, XCORD + 50, XCORD, XCORD, XCORD + 28, XCORD + 28};
+		int [] yPoints = {YCORD + 24, YCORD + 37, YCORD + 48, YCORD + 100, YCORD + 100, YCORD + 54, YCORD + 54, YCORD + 35};
+		int nPoints = xPoints.length;
+		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
+		IMAGEICON = new ImageIcon(koopa1);
 		IMAGE = IMAGEICON.getImage();
 		frame = 1;
 	}
@@ -96,11 +101,11 @@ public class Koopa implements Sprite{
 	@Override
 	public Image nextImage() {
 		if(frame == 1) {
-			IMAGEICON = new ImageIcon(goomba1);
+			IMAGEICON = new ImageIcon(koopa1);
 			frame = 2;
 		}
 		else {
-			IMAGEICON = new ImageIcon(goomba2);
+			IMAGEICON = new ImageIcon(koopa2);
 			frame = 1;
 		}
 		IMAGE = IMAGEICON.getImage();
@@ -111,7 +116,7 @@ public class Koopa implements Sprite{
 	public void kill() {
 		IMAGEICON = new ImageIcon(dead);
 		IMAGE = IMAGEICON.getImage();
-		killGoomba.start();
+		killKoopa.start();
 	}
 
 	@Override

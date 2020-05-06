@@ -145,9 +145,15 @@ public class GraphicsPanel extends JFrame {
 	// This list stores all of the data for every prop that needs to be rendered
 	// throughout a level
 	private LinkedList<Prop> allProps = new LinkedList<Prop>();
+	
+	// This stores all the data for sprites that need to be rendered throughout the level
+	private LinkedList<Sprite> allSprites = new LinkedList<Sprite>();
+
+	// This list is the same as the renderBlocks except it stores all rendered sprites
+	private LinkedList<Sprite> renderSprites = new LinkedList<Sprite>();
 
 	// This is the object that reads the text
-	private BlockDataReader level1Data = new BlockDataReader("Mario-1-1.txt");
+	private DataReader level1Data = new DataReader("Mario-1-1.txt");
 
 	private Flag flag ;
 	private FlagPole flagPole;
@@ -271,6 +277,26 @@ public class GraphicsPanel extends JFrame {
 
 					// Removes the prop from those that need to be rendered
 					renderProps.remove(allProps.get(i));
+
+				}
+
+			}
+			
+			for (int i = 0; i < allSprites.size(); i++) {
+
+				if (allSprites.get(i).getXCord() - backgroundImage.getWidth(observer) <= trueX
+						&& !renderProps.contains(allSprites.get(i))) {
+
+					// Adds the prop from those that need to be rendered
+					renderSprites.add(allSprites.get(i));
+
+				}
+
+				// If the prop is "one stage" behind Mario
+				if (allSprites.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX) {
+
+					// Removes the prop from those that need to be rendered
+					renderSprites.remove(allSprites.get(i));
 
 				}
 
@@ -536,6 +562,13 @@ public class GraphicsPanel extends JFrame {
 
 				g.drawImage(renderProps.get(i).getImage(), renderProps.get(i).getXCord() - scroll,
 						renderProps.get(i).getYCord(), observer);
+
+			}
+			
+			for (int i = 0; i < renderSprites.size(); i++) {
+
+				g.drawImage(renderSprites.get(i).nextImage(), renderSprites.get(i).getXCord() - scroll,
+						renderSprites.get(i).getYCord(), observer);
 
 			}
 
@@ -1048,6 +1081,25 @@ public class GraphicsPanel extends JFrame {
 					(int) (BASEFLOOR - (Integer.parseInt(temp6.get(i)[2]) * BLOCKSPACING))));
 
 		}
+		
+		LinkedList<String[]> temp7 = level1Data.getAllGoombas();
+
+		for (int i = 0; i < temp7.size(); i++) {
+
+			allSprites.add(new Goomba((int) (BLOCKSPACING * (Integer.parseInt(temp7.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp7.get(i)[2]) * BLOCKSPACING))));
+
+		}
+		
+		LinkedList<String[]> temp8 = level1Data.getAllGoombas();
+
+		for (int i = 0; i < temp8.size(); i++) {
+
+			allSprites.add(new Koopa((int) (BLOCKSPACING * (Integer.parseInt(temp8.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp8.get(i)[2]) * BLOCKSPACING))));
+
+		}
+		
 		flagPole = new FlagPole((int) (BLOCKSPACING * (Integer.parseInt(level1Data.getFlagPole()[1])) - 1),
 		(int) (BASEFLOOR - (Integer.parseInt(level1Data.getFlagPole()[2]) * BLOCKSPACING)));
 		allProps.add(flagPole);

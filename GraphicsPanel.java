@@ -1035,11 +1035,11 @@ public class GraphicsPanel extends JFrame {
 			// like this so it is
 			// more easily changeable
 
-			if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3)) {
+			if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
 
 				answer = getExt(WALKINGIMAGE1);
 
-			} else if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3 * 2)) {
+			} else if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3 * 2)) {
 
 				answer = getExt(WALKINGIMAGE2);
 
@@ -1073,11 +1073,11 @@ public class GraphicsPanel extends JFrame {
 
 		Image answer;
 
-		if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3)) {
+		if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
 
 			answer = WALKINGIMAGE1;
 
-		} else if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3 * 2)) {
+		} else if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3 * 2)) {
 
 			answer = WALKINGIMAGE2;
 

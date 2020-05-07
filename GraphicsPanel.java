@@ -162,7 +162,7 @@ public class GraphicsPanel extends JFrame {
 	// This is the object that reads the text
 	private DataReader levelData = new DataReader("Mario-1-1.txt");
 
-	private Flag flag ;
+	private Flag flag;
 	private FlagPole flagPole;
 	private EndCastle castle;
 	
@@ -365,6 +365,36 @@ public class GraphicsPanel extends JFrame {
 			standing.stop();
 		}
 
+	});
+	
+	private Timer updateSprites = new Timer(SPEED * 80, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			for (int i = 0; i < renderSprites.size(); i++) {
+
+				renderSprites.get(i).nextImage();
+
+			}
+			
+		}
+		
+	});
+	
+	private Timer moveSprites = new Timer(SPEED, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			for (int i = 0; i < renderSprites.size(); i++) {
+
+				renderSprites.get(i).shiftX();
+
+			}
+			
+		}
+		
 	});
 
 	// This is the timer that handles a jump, this timer updates every frame that a
@@ -579,7 +609,7 @@ public class GraphicsPanel extends JFrame {
 			
 			for (int i = 0; i < renderSprites.size(); i++) {
 
-				g.drawImage(renderSprites.get(i).nextImage(), renderSprites.get(i).getXCord() - scroll,
+				g.drawImage(renderSprites.get(i).getImage(), renderSprites.get(i).getXCord() - scroll,
 						renderSprites.get(i).getYCord(), observer);
 
 			}
@@ -1032,8 +1062,7 @@ public class GraphicsPanel extends JFrame {
 			}
 
 			// Some calculations that are way more complex than it needs to be but its is
-			// like this so it is
-			// more easily changeable
+			// like this so it is what it is
 
 			if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
 
@@ -1224,6 +1253,8 @@ public class GraphicsPanel extends JFrame {
 		refresh.start();
 		gravity.start();
 		render.start();
+		updateSprites.start();
+		moveSprites.start();
 
 		c.add(mainPanel);
 

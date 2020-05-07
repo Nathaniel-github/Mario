@@ -11,5 +11,13 @@ public interface Sprite extends Prop {
 	public void kill();
 	
 	public boolean isAlive();
+	
+	public int getKillArea();
+	
+	public void shiftX();
+	
+	public void shiftY(int y);
+	
+	public void setDirection(int direction);
 
 }

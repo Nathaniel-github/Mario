@@ -16,8 +16,7 @@ public class Koopa implements Sprite{
 	private int YCORD;
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
-	private int frame = 0;
-	private final int SPEED = 100;
+	private int frame = 1;
 	private boolean killed = false;
 	private URL koopa1 = getClass().getClassLoader().getResource("EnemySpriteImages/Koopa.png");
 	private URL koopa2 = getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2.png");
@@ -100,15 +99,18 @@ public class Koopa implements Sprite{
 
 	@Override
 	public Image nextImage() {
-		if(frame % SPEED <= SPEED/2) {
+		if(killKoopa.isRunning()) {
+			
+			return IMAGE;
+			
+		}
+		if(frame == 1) {
 			IMAGEICON = new ImageIcon(koopa1);
+			frame = 2;
 		}
 		else {
 			IMAGEICON = new ImageIcon(koopa2);
-		}
-		frame ++;
-		if (frame >= SPEED) {
-			frame = 0;
+			frame = 1;
 		}
 		IMAGE = IMAGEICON.getImage();
 		return IMAGE;
@@ -125,6 +127,29 @@ public class Koopa implements Sprite{
 	public boolean isAlive() {
 		// TODO Auto-generated method stub
 		return !killed;
+	}
+
+	@Override
+	public int getKillArea() {
+		return YCORD + 48;
+	}
+
+	@Override
+	public void shiftX() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void shiftY(int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDirection(int direction) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

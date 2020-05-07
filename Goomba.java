@@ -16,8 +16,8 @@ public class Goomba implements Sprite{
 	private int YCORD;
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
-	private int frame = 0;
-	private final int SPEED = 100;
+	private int frame = 1;
+	private int direction = 1;
 	private boolean killed = false;
 	private ImageIcon goomba1 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png"));
 	private ImageIcon goomba2 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png"));
@@ -110,15 +110,13 @@ public class Goomba implements Sprite{
 			
 		}
 		
-		if(frame % SPEED <= SPEED/2) {
+		if(frame == 1) {
 			IMAGEICON = goomba1;
+			frame = 2;
 		}
 		else {
 			IMAGEICON = goomba2;
-		}
-		frame ++;
-		if (frame >= SPEED) {
-			frame = 0;
+			frame = 1;
 		}
 		IMAGE = IMAGEICON.getImage();
 		return IMAGE;
@@ -135,6 +133,32 @@ public class Goomba implements Sprite{
 	public boolean isAlive() {
 		// TODO Auto-generated method stub
 		return !killed;
+	}
+
+	@Override
+	public int getKillArea() {
+		return YCORD +  13;
+	}
+
+	@Override
+	public void shiftX() {
+		
+		XCORD += direction;
+		
+	}
+
+	@Override
+	public void shiftY(int y) {
+		
+		YCORD += y;
+		
+	}
+
+	@Override
+	public void setDirection(int direction) {
+		
+		this.direction = direction;
+		
 	}
 
 }

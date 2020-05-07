@@ -7,9 +7,9 @@ Base game mechanics finished. The current base code can be implemented in an inf
 
 Goals:
 - Incorporate blocks that cause you to die if you land on the (moderate)
-- Incorporate a finish line so the level actually ends and goes to the next one (moderate)
-- Add sounds (easy)
-- Add enemy sprites (hard)
-- Add Bowser boss (hard)
+- Incorporate a finish line so the level actually ends and goes to the next one (moderate) DONE
+- Add sounds (easy) DONE
+- Add enemy sprites (hard) 
 - Add question mark block (hard)
 - Add time system (moderate)
+- Incorporate life system (hard)

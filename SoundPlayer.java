@@ -7,11 +7,11 @@ import javax.swing.Timer;
 
 public class SoundPlayer {
 	
-	AudioInputStream myobj;
-	Clip clip;
-	String fileName;
-	FloatControl volume;
-	final float muteVolume;
+	private AudioInputStream myobj;
+	private Clip clip;
+	private String fileName;
+	private FloatControl volume;
+	private final float muteVolume;
 	private Timer restartSound = new Timer(10, new ActionListener() {
 
 		@Override

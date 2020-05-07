@@ -4,18 +4,18 @@ import java.util.Scanner;
 
 public class DataReader {
 	
-	String url;
-	String [][] allData;
-	String [] flagPole = new String[3];
-	String [] endCastle = new String[3];
-	LinkedList<String[]> allStairBlocks = new LinkedList<String[]>();
-	LinkedList<String[]> allBrickBlocks = new LinkedList<String[]>();
-	LinkedList<String[]> allQuestionMarkBlocks = new LinkedList<String[]>();
-	LinkedList<String[]> allSmallPipes = new LinkedList<String[]>();
-	LinkedList<String[]> allPipes = new LinkedList<String[]>();
-	LinkedList<String[]> allLongPipes = new LinkedList<String[]>();
-	LinkedList<String[]> allGoombas = new LinkedList<String[]>();
-	LinkedList<String[]> allKoopas = new LinkedList<String[]>();
+	private String url;
+	private String [][] allData;
+	private String [] flagPole = new String[3];
+	private String [] endCastle = new String[3];
+	private LinkedList<String[]> allStairBlocks = new LinkedList<String[]>();
+	private LinkedList<String[]> allBrickBlocks = new LinkedList<String[]>();
+	private LinkedList<String[]> allQuestionMarkBlocks = new LinkedList<String[]>();
+	private LinkedList<String[]> allSmallPipes = new LinkedList<String[]>();
+	private LinkedList<String[]> allPipes = new LinkedList<String[]>();
+	private LinkedList<String[]> allLongPipes = new LinkedList<String[]>();
+	private LinkedList<String[]> allGoombas = new LinkedList<String[]>();
+	private LinkedList<String[]> allKoopas = new LinkedList<String[]>();
 
 	
 	public DataReader(String fileName) {

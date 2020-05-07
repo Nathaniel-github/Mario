@@ -8,11 +8,11 @@ import javax.swing.ImageIcon;
 public class Flag implements Prop{
 
 	// Fields
-	final Image IMAGE;
-	final ImageIcon IMAGEICON;
-	final int XCORD;
-	int YCORD;
-	final Polygon COLLIDER;
+	private final Image IMAGE;
+	private final ImageIcon IMAGEICON;
+	private final int XCORD;
+	private int YCORD;
+	private final Polygon COLLIDER;
 	
 	public Flag(int x, int y) {
 		

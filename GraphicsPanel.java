@@ -40,8 +40,6 @@ public class GraphicsPanel extends JFrame {
 	private boolean fixJump = false;
 
 	private boolean endingAnimation = false;
-	
-	private boolean turningAround = false;
 
 	private boolean visible = true;
 	// An ImageObserver is an interface for determining states of images in its
@@ -69,7 +67,7 @@ public class GraphicsPanel extends JFrame {
 	// is required to have
 	// because since the action events fire so fast we can't have Mario change his
 	// image that many times as that would make it look really weird
-	private int frame = 0; 
+	private int frame = 0;
 
 	// The x coordinate of Mario relative to the window, this is used for drawing
 	// Mario on the JPanel
@@ -155,7 +153,7 @@ public class GraphicsPanel extends JFrame {
 	private LinkedList<Sprite> renderSprites = new LinkedList<Sprite>();
 
 	// This is the object that reads the text
-	private DataReader level1Data = new DataReader("Mario-1-1.txt");
+	private DataReader levelData = new DataReader("Mario-1-1.txt");
 
 	private Flag flag ;
 	private FlagPole flagPole;
@@ -196,7 +194,7 @@ public class GraphicsPanel extends JFrame {
 		}
 
 	});
-	
+
 	private Timer slideDownPole = new Timer(SPEED * 2, new ActionListener()  {
 
 		@Override
@@ -204,17 +202,11 @@ public class GraphicsPanel extends JFrame {
 			if (yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && yCord <= flag.getYCord()) {
 				yCord += MOVELENGTH; 
 			}
-			
-			
 			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()) {
 				flag.changeYCord(MOVELENGTH);
-			}
-			else {
-				xCord += flagPole.getImageIcon().getIconWidth() - currentImage.getWidth(observer) - 24;
+			} else {
 				jump.stop();
-				turningAround = true;
 				slideDownPole.stop();
-				
 				walkToCastle.start();
 				
 			}
@@ -223,17 +215,10 @@ public class GraphicsPanel extends JFrame {
 
 	});
 	
-	
 	private Timer walkToCastle = new Timer(SPEED * 3, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(turningAround) {
-
-			
-			
-			}
-//			turningAround = false;
 			if(trueX + currentImage.getWidth(observer) < castle.getXCord()+145) {
 				moveForward();
 			}
@@ -615,7 +600,7 @@ public class GraphicsPanel extends JFrame {
 
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 
-		setStage(); // Sets all the interactions for the current level
+		setStage(levelData); // Sets all the interactions for the current level
 
 		startAnimation(); // Starts up the panel and renders the animation
 
@@ -851,7 +836,7 @@ public class GraphicsPanel extends JFrame {
 		actionMap.put("right_pressed", new AbstractAction() {
 
 			@Override
-			public void actionPerformed(ActionEvent actionEvt){
+			public void actionPerformed(ActionEvent actionEvt) {
 
 				rightMove.start();
 				standing.stop();
@@ -951,7 +936,7 @@ public class GraphicsPanel extends JFrame {
 		if(!visible) {
 			return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BlankImage.png")).getImage();
 		}
-		if (!endingAnimation  ) {
+		if (!endingAnimation ) {
 
 			// Starting frame
 			if (frame == 0) {
@@ -995,11 +980,8 @@ public class GraphicsPanel extends JFrame {
 
 			}
 
-		} else if(slideDownPole.isRunning() && yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && !turningAround) {
+		} else if(slideDownPole.isRunning()) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
-		}
-		else if (turningAround) {
-			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole_back.png")).getImage();
 		}
 		else {
 			back = false;
@@ -1043,9 +1025,9 @@ public class GraphicsPanel extends JFrame {
 	// This method is where all the blocks for the level are set, this is where most
 	// of our development
 	// is going to go from now on as it is the basis for the entire level
-	private void setStage() {
+	private void setStage(DataReader data) {
 
-		LinkedList<String[]> temp = level1Data.getAllStairBlocks();
+		LinkedList<String[]> temp = data.getAllStairBlocks();
 
 		for (int i = 0; i < temp.size(); i++) {
 
@@ -1054,7 +1036,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 
-		LinkedList<String[]> temp2 = level1Data.getAllBrickBlocks();
+		LinkedList<String[]> temp2 = data.getAllBrickBlocks();
 
 		for (int i = 0; i < temp2.size(); i++) {
 
@@ -1063,7 +1045,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 
-		LinkedList<String[]> temp3 = level1Data.getAllQuestionMarkBlocks();
+		LinkedList<String[]> temp3 = data.getAllQuestionMarkBlocks();
 
 		for (int i = 0; i < temp3.size(); i++) {
 
@@ -1072,7 +1054,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 
-		LinkedList<String[]> temp4 = level1Data.getAllSmallPipes();
+		LinkedList<String[]> temp4 = data.getAllSmallPipes();
 
 		for (int i = 0; i < temp4.size(); i++) {
 
@@ -1081,7 +1063,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 
-		LinkedList<String[]> temp5 = level1Data.getAllPipes();
+		LinkedList<String[]> temp5 = data.getAllPipes();
 
 		for (int i = 0; i < temp5.size(); i++) {
 
@@ -1090,7 +1072,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 
-		LinkedList<String[]> temp6 = level1Data.getAllLongPipes();
+		LinkedList<String[]> temp6 = data.getAllLongPipes();
 
 		for (int i = 0; i < temp6.size(); i++) {
 
@@ -1099,7 +1081,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 		
-		LinkedList<String[]> temp7 = level1Data.getAllGoombas();
+		LinkedList<String[]> temp7 = data.getAllGoombas();
 
 		for (int i = 0; i < temp7.size(); i++) {
 
@@ -1108,7 +1090,7 @@ public class GraphicsPanel extends JFrame {
 
 		}
 		
-		LinkedList<String[]> temp8 = level1Data.getAllKoopas();
+		LinkedList<String[]> temp8 = data.getAllKoopas();
 
 		for (int i = 0; i < temp8.size(); i++) {
 
@@ -1117,14 +1099,14 @@ public class GraphicsPanel extends JFrame {
 
 		}
 		
-		flagPole = new FlagPole((int) (BLOCKSPACING * (Integer.parseInt(level1Data.getFlagPole()[1])) - 1),
-		(int) (BASEFLOOR - (Integer.parseInt(level1Data.getFlagPole()[2]) * BLOCKSPACING)));
+		flagPole = new FlagPole((int) (BLOCKSPACING * (Integer.parseInt(data.getFlagPole()[1])) - 1),
+		(int) (BASEFLOOR - (Integer.parseInt(data.getFlagPole()[2]) * BLOCKSPACING)));
 		allProps.add(flagPole);
-		flag = (new Flag((int) (BLOCKSPACING * (Integer.parseInt(level1Data.getFlagPole()[1])) - 1),
-				(int) (BASEFLOOR - ((Integer.parseInt(level1Data.getFlagPole()[2]) - 1) * BLOCKSPACING))));
+		flag = (new Flag((int) (BLOCKSPACING * (Integer.parseInt(data.getFlagPole()[1])) - 1),
+				(int) (BASEFLOOR - ((Integer.parseInt(data.getFlagPole()[2]) - 1) * BLOCKSPACING))));
 		allProps.add(flag);
-		castle = new EndCastle((int) (BLOCKSPACING * (Integer.parseInt(level1Data.getEndCastle()[1])) - 1),
-				(int) (BASEFLOOR - (Integer.parseInt(level1Data.getEndCastle()[2]) * BLOCKSPACING)));
+		castle = new EndCastle((int) (BLOCKSPACING * (Integer.parseInt(data.getEndCastle()[1])) - 1),
+				(int) (BASEFLOOR - (Integer.parseInt(data.getEndCastle()[2]) * BLOCKSPACING)));
 		allProps.add(castle);
 
 	}

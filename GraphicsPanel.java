@@ -40,6 +40,8 @@ public class GraphicsPanel extends JFrame {
 	private boolean fixJump = false;
 
 	private boolean endingAnimation = false;
+	
+	private boolean turningAround = false;
 
 	private boolean visible = true;
 	// An ImageObserver is an interface for determining states of images in its
@@ -67,7 +69,7 @@ public class GraphicsPanel extends JFrame {
 	// is required to have
 	// because since the action events fire so fast we can't have Mario change his
 	// image that many times as that would make it look really weird
-	private int frame = 0;
+	private int frame = 0; 
 
 	// The x coordinate of Mario relative to the window, this is used for drawing
 	// Mario on the JPanel
@@ -194,7 +196,7 @@ public class GraphicsPanel extends JFrame {
 		}
 
 	});
-
+	
 	private Timer slideDownPole = new Timer(SPEED * 2, new ActionListener()  {
 
 		@Override
@@ -202,11 +204,17 @@ public class GraphicsPanel extends JFrame {
 			if (yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && yCord <= flag.getYCord()) {
 				yCord += MOVELENGTH; 
 			}
+			
+			
 			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()) {
 				flag.changeYCord(MOVELENGTH);
-			} else {
+			}
+			else {
+				xCord += flagPole.getImageIcon().getIconWidth() - currentImage.getWidth(observer) - 24;
 				jump.stop();
+				turningAround = true;
 				slideDownPole.stop();
+				
 				walkToCastle.start();
 				
 			}
@@ -215,10 +223,17 @@ public class GraphicsPanel extends JFrame {
 
 	});
 	
+	
 	private Timer walkToCastle = new Timer(SPEED * 3, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if(turningAround) {
+
+			
+			
+			}
+//			turningAround = false;
 			if(trueX + currentImage.getWidth(observer) < castle.getXCord()+145) {
 				moveForward();
 			}
@@ -836,7 +851,7 @@ public class GraphicsPanel extends JFrame {
 		actionMap.put("right_pressed", new AbstractAction() {
 
 			@Override
-			public void actionPerformed(ActionEvent actionEvt) {
+			public void actionPerformed(ActionEvent actionEvt){
 
 				rightMove.start();
 				standing.stop();
@@ -936,7 +951,7 @@ public class GraphicsPanel extends JFrame {
 		if(!visible) {
 			return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BlankImage.png")).getImage();
 		}
-		if (!endingAnimation ) {
+		if (!endingAnimation  ) {
 
 			// Starting frame
 			if (frame == 0) {
@@ -980,8 +995,11 @@ public class GraphicsPanel extends JFrame {
 
 			}
 
-		} else if(slideDownPole.isRunning()) {
+		} else if(slideDownPole.isRunning() && yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && !turningAround) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
+		}
+		else if (turningAround) {
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole_back.png")).getImage();
 		}
 		else {
 			back = false;

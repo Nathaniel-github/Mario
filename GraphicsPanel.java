@@ -210,10 +210,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && yCord <= flag.getYCord()) {
 				yCord += MOVELENGTH; 
-			}
-			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()) {
-				flag.changeYCord(MOVELENGTH);
-			} else {
+			} else if (yCord + currentImage.getHeight(observer) + MOVELENGTH >= flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()){
 				jump.stop();
 				xCord = flagPole.getXCord() + flagPole.getImageIcon().getIconWidth() - scroll - 31;
 				trueX = xCord + scroll;
@@ -221,8 +218,9 @@ public class GraphicsPanel extends JFrame {
 				turnAround = true;
 				walkToCastle.setInitialDelay(750);
 				walkToCastle.start();
-				
-				
+			}
+			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()) {
+				flag.changeYCord(MOVELENGTH);
 			}
 
 		}
@@ -493,7 +491,7 @@ public class GraphicsPanel extends JFrame {
 				back = true;
 
 				// If Mario is running into a barrier
-				while (inBlock()) {
+				while (inBlock() && !jump.isRunning()) {
 
 					moveForward(); // Undo the moveBack
 
@@ -532,7 +530,7 @@ public class GraphicsPanel extends JFrame {
 				back = false;
 
 				// If Mario is running into a barrier
-				while (inBlock()) {
+				while (inBlock() && !jump.isRunning()) {
 
 					moveBack(); // Undo the moveForward
 
@@ -845,6 +843,8 @@ public class GraphicsPanel extends JFrame {
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "space_released");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "left_released");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "right_released");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "up_pressed");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "up_released");
 
 		// Assigns the "key" to an action
 		actionMap.put("left_pressed", new AbstractAction() {
@@ -858,6 +858,7 @@ public class GraphicsPanel extends JFrame {
 
 			}
 		});
+		
 		actionMap.put("left_released", new AbstractAction() {
 
 			@Override
@@ -870,6 +871,7 @@ public class GraphicsPanel extends JFrame {
 				}
 			}
 		});
+		
 		actionMap.put("right_pressed", new AbstractAction() {
 
 			@Override
@@ -881,6 +883,7 @@ public class GraphicsPanel extends JFrame {
 
 			}
 		});
+		
 		actionMap.put("right_released", new AbstractAction() {
 
 			@Override
@@ -892,6 +895,7 @@ public class GraphicsPanel extends JFrame {
 				}
 			}
 		});
+		
 		actionMap.put("space_pressed", new AbstractAction() {
 
 			@Override
@@ -912,6 +916,37 @@ public class GraphicsPanel extends JFrame {
 		});
 
 		actionMap.put("space_released", new AbstractAction() {
+
+			@Override
+			public void actionPerformed(ActionEvent actionEvt) {
+
+				if (shortJump.isRunning()) {
+					shortJump.stop();
+				}
+
+			}
+		});
+		
+		actionMap.put("up_pressed", new AbstractAction() {
+
+			@Override
+			public void actionPerformed(ActionEvent actionEvt) {
+
+				standing.stop();
+				stand = false;
+
+				if (!jump.isRunning()) {
+
+					jumpSound.play();
+					jump.start();
+					shortJump.start();
+
+				}
+
+			}
+		});
+
+		actionMap.put("up_released", new AbstractAction() {
 
 			@Override
 			public void actionPerformed(ActionEvent actionEvt) {
@@ -976,7 +1011,7 @@ public class GraphicsPanel extends JFrame {
 		if (!endingAnimation ) {
 
 			// Starting frame
-			if (frame == 0) {
+			if (frame == 0 && !jumping) {
 
 				return STANDINGIMAGE;
 

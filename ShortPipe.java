@@ -8,11 +8,11 @@ import javax.swing.ImageIcon;
 public class ShortPipe implements Prop{
 
 	// Fields
-	final Image IMAGE;
-	final ImageIcon IMAGEICON;
-	final int XCORD;
-	final int YCORD;
-	final Polygon COLLIDER;
+	private final Image IMAGE;
+	private final ImageIcon IMAGEICON;
+	private final int XCORD;
+	private final int YCORD;
+	private final Polygon COLLIDER;
 	
 	public ShortPipe(int x, int y) {
 		

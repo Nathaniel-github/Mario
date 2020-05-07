@@ -1,7 +1,6 @@
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,6 +10,7 @@ import javax.swing.Timer;
 
 public class Goomba implements Sprite{
 	
+	// Fields
 	private final Polygon COLLIDER;
 	private int XCORD;
 	private int YCORD;
@@ -19,9 +19,9 @@ public class Goomba implements Sprite{
 	private int frame = 0;
 	private final int SPEED = 100;
 	private boolean killed = false;
-	private URL goomba1 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png");
-	private URL goomba2 = getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png");
-	private URL dead = getClass().getClassLoader().getResource("EnemySpriteImages/GoombaDead.png");
+	private ImageIcon goomba1 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png"));
+	private ImageIcon goomba2 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png"));
+	private ImageIcon dead = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/GoombaDead.png"));
 	private Timer killGoomba = new Timer(750, new ActionListener() {
 
 		@Override
@@ -41,9 +41,9 @@ public class Goomba implements Sprite{
 		int [] yPoints = {YCORD, YCORD + 15, YCORD + 21, YCORD + 50, YCORD + 50, YCORD + 21, YCORD + 15, YCORD};
 		int nPoints = xPoints.length;
 		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
+		killGoomba.setInitialDelay(750);
 		
-		
-		IMAGEICON = new ImageIcon(goomba1);
+		IMAGEICON = goomba1;
 		IMAGE = IMAGEICON.getImage();
 	}
 
@@ -103,11 +103,18 @@ public class Goomba implements Sprite{
 
 	@Override
 	public Image nextImage() {
+		
+		if(killGoomba.isRunning()) {
+			
+			return IMAGE;
+			
+		}
+		
 		if(frame % SPEED <= SPEED/2) {
-			IMAGEICON = new ImageIcon(goomba1);
+			IMAGEICON = goomba1;
 		}
 		else {
-			IMAGEICON = new ImageIcon(goomba2);
+			IMAGEICON = goomba2;
 		}
 		frame ++;
 		if (frame >= SPEED) {
@@ -119,7 +126,7 @@ public class Goomba implements Sprite{
 
 	@Override
 	public void kill() {
-		IMAGEICON = new ImageIcon(dead);
+		IMAGEICON = dead;
 		IMAGE = IMAGEICON.getImage();
 		killGoomba.start();
 	}

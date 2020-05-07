@@ -4,10 +4,15 @@ import java.util.Scanner;
 
 public class DataReader {
 	
+	// Fields
 	private String url;
-	private String [][] allData;
+	// Holds the large linked list that contains all the data for everything that needs to be rendered in a level
+	private LinkedList<String[]> allData;
+	// Holds the data for the flag pole
 	private String [] flagPole = new String[3];
+	// Holds the data for the castle
 	private String [] endCastle = new String[3];
+	// All of these hold their appropriate data in the form of a linked list
 	private LinkedList<String[]> allStairBlocks = new LinkedList<String[]>();
 	private LinkedList<String[]> allBrickBlocks = new LinkedList<String[]>();
 	private LinkedList<String[]> allQuestionMarkBlocks = new LinkedList<String[]>();
@@ -22,55 +27,57 @@ public class DataReader {
 		
 		url = "LevelData/" + fileName;
 		
+		// Gets all the data from the text file and stores it
 		allData = breakApart();
 		
-		for (int i = 0; i < allData.length; i ++) {
+		// Pretty much self explanatory
+		for (int i = 0; i < allData.size(); i ++) {
 			
-			if (allData[i][0] == null) {
+			if (allData.get(i)[0] == null) {
 				
 				break;
 				
 			}
 			
-			if (allData[i][0].equals("BrickBlock")) {
+			if (allData.get(i)[0].equals("BrickBlock")) {
 				
-				allBrickBlocks.add(allData[i]);
+				allBrickBlocks.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("QuestionMarkBlock")) {
+			} else if (allData.get(i)[0].equals("QuestionMarkBlock")) {
 				
-				allQuestionMarkBlocks.add(allData[i]);
+				allQuestionMarkBlocks.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("StairBlock")) {
+			} else if (allData.get(i)[0].equals("StairBlock")) {
 				
-				allStairBlocks.add(allData[i]);
+				allStairBlocks.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("ShortPipe")) {
+			} else if (allData.get(i)[0].equals("ShortPipe")) {
 				
-				allSmallPipes.add(allData[i]);
+				allSmallPipes.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("Pipe")) {
+			} else if (allData.get(i)[0].equals("Pipe")) {
 				
-				allPipes.add(allData[i]);
+				allPipes.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("LongPipe")) {
+			} else if (allData.get(i)[0].equals("LongPipe")) {
 				
-				allLongPipes.add(allData[i]);
+				allLongPipes.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("FlagPole")) {
+			} else if (allData.get(i)[0].equals("FlagPole")) {
 				
-				flagPole = allData[i];
+				flagPole = allData.get(i);
 				
-			} else if (allData[i][0].equals("EndCastle")) {
+			} else if (allData.get(i)[0].equals("EndCastle")) {
 				
-				endCastle = allData[i];
+				endCastle = allData.get(i);
 				
-			} else if (allData[i][0].equals("Goomba")) {
+			} else if (allData.get(i)[0].equals("Goomba")) {
 				
-				allGoombas.add(allData[i]);
+				allGoombas.add(allData.get(i));
 				
-			} else if (allData[i][0].equals("Koopa")) {
+			} else if (allData.get(i)[0].equals("Koopa")) {
 				
-				allKoopas.add(allData[i]);
+				allKoopas.add(allData.get(i));
 				
 			}
 			
@@ -78,18 +85,17 @@ public class DataReader {
 		}
 	}
 	
-	private String[][] breakApart() {
+	// Breaks up the text file into a LinkedList that can be returned and stored into separate LinkedLists
+	private LinkedList<String[]> breakApart() {
 		
 		Scanner sc = new Scanner(getClass().getClassLoader().getResourceAsStream(url));
 
-		String[][] file = new String[200][3];
+		LinkedList<String[]> file = new LinkedList<String[]>();
 		
-		int i = 0;
 		
 		while (sc.hasNextLine()) {
 			
-			file[i] = sc.nextLine().split(";");
-			i++;
+			file.add(sc.nextLine().split(";"));
 			
 		}
 		
@@ -98,48 +104,56 @@ public class DataReader {
 		return file;
 	}
 	
+	// Returns the list of all stair blocks
 	public LinkedList<String[]> getAllStairBlocks() {
 		
 		return allStairBlocks;
 		
 	}
 	
+	// Returns the list of all the brick blocks
 	public LinkedList<String[]> getAllBrickBlocks() {
 		
 		return allBrickBlocks;
 		
 	}
 	
+	// Returns the list of all the question mark blocks
 	public LinkedList<String[]> getAllQuestionMarkBlocks() {
 		
 		return allQuestionMarkBlocks;
 		
 	}
 	
+	// Returns the list of all the small pipes
 	public LinkedList<String[]> getAllSmallPipes() {
 		
 		return allSmallPipes;
 		
 	}
 	
+	// Returns the list of all the regularly sized pipes
 	public LinkedList<String[]> getAllPipes() {
 		
 		return allPipes;
 		
 	}
 	
+	// Returns the list of all the long pipes
 	public LinkedList<String[]> getAllLongPipes() {
 		
 		return allLongPipes;
 		
 	}
 	
+	// Returns the data for the flag pole
 	public String[] getFlagPole() {
 		
 		return flagPole;
 		
 	}
 	
+	// Returns the data for the castle at the end of a level
 	public String[] getEndCastle() {
 		
 		
@@ -147,12 +161,14 @@ public class DataReader {
 		
 	}
 	
+	// Returns the data for the goombas
 	public LinkedList<String[]> getAllGoombas() {
 		
 		return allGoombas;
 		
 	}
 	
+	// Returns the data for the koopas
 	public LinkedList<String[]> getAllKoopas() {
 		
 		return allKoopas;

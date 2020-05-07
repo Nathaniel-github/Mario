@@ -7,10 +7,10 @@ import javax.swing.ImageIcon;
 public class QuestionMarkBlock implements Block{
 
 	// Fields
-	final Image IMAGE;
-	final ImageIcon IMAGEICON;
-	final int XCORD;
-	final int YCORD;
+	private final Image IMAGE;
+	private final ImageIcon IMAGEICON;
+	private final int XCORD;
+	private final int YCORD;
 	
 	public QuestionMarkBlock(int x, int y) {
 		

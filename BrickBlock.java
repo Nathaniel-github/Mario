@@ -7,10 +7,10 @@ import javax.swing.ImageIcon;
 public class BrickBlock implements Block{
 
 	// Fields
-	final Image IMAGE;
-	final ImageIcon IMAGEICON;
-	final int XCORD;
-	final int YCORD;
+	private final Image IMAGE;
+	private final ImageIcon IMAGEICON;
+	private final int XCORD;
+	private final int YCORD;
 	
 	public BrickBlock(int x, int y) {
 		
@@ -56,7 +56,7 @@ public class BrickBlock implements Block{
 		
 	}
 
-	// Returns the rectangle that surrounds the image
+	// Returns the rectangle that surrounds the image (used as collider)
 	@Override
 	public Rectangle getRectangle() {
 		

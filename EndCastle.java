@@ -24,6 +24,7 @@ public class EndCastle implements Prop{
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
+		// These points are not corresponding to the castle because the castle is not an obstruction to mario
 		int [] xPoints = {XCORD, XCORD, XCORD + 6, XCORD + 6, XCORD + 102, XCORD + 102, XCORD + IMAGEICON.getIconWidth(), XCORD + IMAGEICON.getIconWidth()};
 		int [] yPoints = {YCORD, YCORD + 50, YCORD + 50, YCORD + IMAGEICON.getIconHeight(), YCORD + IMAGEICON.getIconHeight(), YCORD + 50, YCORD + 50, YCORD};
 		int nPoints = xPoints.length;
@@ -78,7 +79,8 @@ public class EndCastle implements Prop{
 		
 	}
 
-	// Returns the polygon collider that encompasses the image
+	// Returns the polygon collider that encompasses the image (in this case it isn't accurate but it doesn't
+	// matter because it is not used)
 	@Override
 	public Polygon getCollider() {
 		

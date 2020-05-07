@@ -13,16 +13,21 @@ public class GraphicsPanel extends JFrame {
 
 	// Fields
 
-	// These are the names of the images that are in the resource folder
-	final String STANDINGIMAGE = "MarioStanding";
-	final String JUMPINGIMAGE = "MarioJumping";
-	final String WALKINGIMAGE1 = "MarioWalking1";
-	final String WALKINGIMAGE2 = "MarioWalking2";
-	final String WALKINGIMAGE3 = "MarioWalking3";
-
 	// This is the extension to access those images
-	final String EXTENSION = "MarioImages/";
+	private final String EXTENSION = "MarioImages/";
 
+	// These are the names of the images that are in the resource folder
+	private final Image STANDINGIMAGE = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioStanding.png")).getImage();
+	private final Image JUMPINGIMAGE = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioJumping.png")).getImage();
+	private final Image WALKINGIMAGE1 = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioWalking1.png")).getImage();
+	private final Image WALKINGIMAGE2 = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioWalking2.png")).getImage();
+	private final Image WALKINGIMAGE3 = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3.png")).getImage();
+	private final Image STANDINGIMAGE_BACK = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioStanding_back.png")).getImage();
+	private final Image JUMPINGIMAGE_BACK = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioJumping_back.png")).getImage();
+	private final Image WALKINGIMAGE1_BACK = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioWalking1_back.png")).getImage();
+	private final Image WALKINGIMAGE2_BACK = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioWalking2_back.png")).getImage();
+	private final Image WALKINGIMAGE3_BACK = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3_back.png")).getImage();
+	
 	// Boolean that says if Mario is facing backwards or not, this is to determine
 	// the currentImage
 	private boolean back = false;
@@ -763,21 +768,21 @@ public class GraphicsPanel extends JFrame {
 	}
 
 	// Returns the full path for the current image
-	private URL getExt(String name) {
+	private Image getExt(Image image) {
 
 		// This method is mainly self explanatory
 
-		URL answer;
+		Image answer;
 
 		if (!back) {
 
 			if (jumping) {
 
-				answer = getClass().getClassLoader().getResource(EXTENSION + JUMPINGIMAGE + ".png");
+				answer = JUMPINGIMAGE;
 
 			} else {
 
-				answer = getClass().getClassLoader().getResource(EXTENSION + name + ".png");
+				answer = image;
 
 			}
 
@@ -785,17 +790,39 @@ public class GraphicsPanel extends JFrame {
 
 			if (jumping) {
 
-				answer = getClass().getClassLoader().getResource(EXTENSION + JUMPINGIMAGE + "_back.png");
+				answer = JUMPINGIMAGE_BACK;
 
 			} else {
 
-				answer = getClass().getClassLoader().getResource(EXTENSION + name + "_back.png");
+				answer = getBackImage(image);
 
 			}
 		}
 
 		return answer;
 
+	}
+	
+	private Image getBackImage(Image image) {
+		
+		if(image.equals(WALKINGIMAGE1)) {
+			
+			return WALKINGIMAGE1_BACK;
+			
+		} else if(image.equals(WALKINGIMAGE2)) {
+			
+			return WALKINGIMAGE2_BACK;
+			
+		} else if(image.equals(WALKINGIMAGE3)) {
+			
+			return WALKINGIMAGE3_BACK;
+			
+		} else {
+			
+			return STANDINGIMAGE;
+			
+		}
+		
 	}
 
 	// Sets up the key inputs (now this method is probably the most complex (at
@@ -951,7 +978,7 @@ public class GraphicsPanel extends JFrame {
 			// Starting frame
 			if (frame == 0) {
 
-				return new ImageIcon(getExt(STANDINGIMAGE)).getImage();
+				return STANDINGIMAGE;
 
 			}
 
@@ -959,14 +986,11 @@ public class GraphicsPanel extends JFrame {
 
 				if (!back) {
 
-					return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + STANDINGIMAGE + ".png"))
-							.getImage();
+					return STANDINGIMAGE;
 
 				} else {
 
-					return new ImageIcon(
-							getClass().getClassLoader().getResource(EXTENSION + STANDINGIMAGE + "_back.png"))
-									.getImage();
+					return STANDINGIMAGE_BACK;
 
 				}
 
@@ -978,15 +1002,15 @@ public class GraphicsPanel extends JFrame {
 
 			if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3)) {
 
-				answer = new ImageIcon(getExt(WALKINGIMAGE1)).getImage();
+				answer = getExt(WALKINGIMAGE1);
 
 			} else if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3 * 2)) {
 
-				answer = new ImageIcon(getExt(WALKINGIMAGE2)).getImage();
+				answer = getExt(WALKINGIMAGE2);
 
 			} else {
 
-				answer = new ImageIcon(getExt(WALKINGIMAGE3)).getImage();
+				answer = getExt(WALKINGIMAGE3);
 
 			}
 
@@ -1016,18 +1040,15 @@ public class GraphicsPanel extends JFrame {
 
 		if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3)) {
 
-			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE1 + ".png"))
-					.getImage();
+			answer = WALKINGIMAGE1;
 
 		} else if (frame % (int) (Math.pow(SPEED, 2)) < (int) (Math.pow(SPEED, 2) / 3 * 2)) {
 
-			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE2 + ".png"))
-					.getImage();
+			answer = WALKINGIMAGE2;
 
 		} else {
 
-			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + WALKINGIMAGE3 + ".png"))
-					.getImage();
+			answer = WALKINGIMAGE3;
 
 		}
 

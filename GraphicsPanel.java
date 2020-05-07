@@ -42,6 +42,8 @@ public class GraphicsPanel extends JFrame {
 	private boolean endingAnimation = false;
 
 	private boolean visible = true;
+	
+	private boolean turnAround = false;
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
 	// whenever the getWidth and getHeight methods are called on images, as they
@@ -194,6 +196,8 @@ public class GraphicsPanel extends JFrame {
 		}
 
 	});
+	
+	
 
 	private Timer slideDownPole = new Timer(SPEED * 2, new ActionListener()  {
 
@@ -206,8 +210,13 @@ public class GraphicsPanel extends JFrame {
 				flag.changeYCord(MOVELENGTH);
 			} else {
 				jump.stop();
+				xCord = flagPole.getXCord() + flagPole.getImageIcon().getIconWidth() - scroll - 31;
+				trueX = xCord + scroll;
 				slideDownPole.stop();
+				turnAround = true;
+				walkToCastle.setInitialDelay(750);
 				walkToCastle.start();
+				
 				
 			}
 
@@ -219,6 +228,7 @@ public class GraphicsPanel extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			turnAround = false;
 			if(trueX + currentImage.getWidth(observer) < castle.getXCord()+145) {
 				moveForward();
 			}
@@ -982,6 +992,9 @@ public class GraphicsPanel extends JFrame {
 
 		} else if(slideDownPole.isRunning()) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
+		}
+		else if(turnAround) {
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole_back.png")).getImage();
 		}
 		else {
 			back = false;

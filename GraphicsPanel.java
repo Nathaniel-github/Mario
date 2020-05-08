@@ -49,6 +49,8 @@ public class GraphicsPanel extends JFrame {
 	private boolean visible = true;
 	
 	private boolean turnAround = false;
+	
+	private boolean isDead = false;
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
 	// whenever the getWidth and getHeight methods are called on images, as they
@@ -381,6 +383,24 @@ public class GraphicsPanel extends JFrame {
 		}
 		
 	});
+	private Timer deathAnimation = new Timer (SPEED, new ActionListener() {
+		int trueY = yCord;
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if(trueY > BASEFLOOR - 12 * BLOCKWIDTH) {
+				yCord -= 3;
+				trueY -= 3;
+				
+			}
+			else {
+				yCord += 3;
+				}
+			}
+			
+		}
+		
+	);
 	
 	private Timer checkCollision = new Timer(REFRESHRATE, new ActionListener() {
 
@@ -395,10 +415,14 @@ public class GraphicsPanel extends JFrame {
 						
 						renderSprites.get(i).kill();
 						
+						
 					} else {
 						
 						renderSprites.get(i).reverseDirection();
+						jump.stop();
+						moveSprites.stop();
 						die();
+						
 						
 					}
 					
@@ -409,6 +433,8 @@ public class GraphicsPanel extends JFrame {
 		}
 		
 	});
+	
+	
 	
 	private Timer moveSprites = new Timer((int)(SPEED * 1.5), new ActionListener() {
 
@@ -469,7 +495,7 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			if (!endingAnimation) {
+			if (!endingAnimation && !isDead) {
 
 				int factor = 0;
 
@@ -572,7 +598,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			// If Mario is currently moving right
-			if (!rightMove.isRunning() && !endingAnimation) {
+			if (!rightMove.isRunning() && !endingAnimation && !isDead) {
 				
 				if (!jump.isRunning()) {
 					fixMovement();
@@ -601,7 +627,7 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			if (!leftMove.isRunning() && !endingAnimation) {
+			if (!leftMove.isRunning() && !endingAnimation && !isDead) {
 				
 				if (!jump.isRunning()) {
 					fixMovement();
@@ -642,7 +668,7 @@ public class GraphicsPanel extends JFrame {
 
 			super.paintComponent(g);
 
-			if (flagPole.getCollider().intersects(getMarioRectangle()) && !endingAnimation) {
+			if (flagPole.getCollider().intersects(getMarioRectangle()) && !endingAnimation && !isDead) {
 
 				playEndingAnimation();
 
@@ -917,9 +943,31 @@ public class GraphicsPanel extends JFrame {
 	
 	// This method needs to be completed with the death animation for Mario and the sounds as well
 	private void die() {
+		isDead = true;
+		xCord -= 1;
+		trueX = xCord - scroll;
+		//stopAllTimers();
+		deathAnimation.start();
 		
 		
 		
+		
+		
+		
+	}
+	
+	private void stopAllTimers() {
+		rightMove.stop();
+		leftMove.stop();
+		shortJump.stop();
+		jump.stop();
+		moveSprites.stop();
+		checkCollision.stop();
+		//updateSprites.stop();
+		standing.stop();
+		gravity.stop();
+		//render.stop();
+		//refresh.stop();
 	}
 
 	// Sets up the key inputs (now this method is probably the most complex (at
@@ -1107,8 +1155,9 @@ public class GraphicsPanel extends JFrame {
 		if(!visible) {
 			return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BlankImage.png")).getImage();
 		}
-		if (!endingAnimation ) {
+		if (!endingAnimation && !isDead ) {
 
+			 
 			// Starting frame
 			if (frame == 0 && !jumping) {
 
@@ -1141,18 +1190,26 @@ public class GraphicsPanel extends JFrame {
 
 				answer = getExt(WALKINGIMAGE2);
 
-			} else {
+			} 
+			else {
 
 				answer = getExt(WALKINGIMAGE3);
 
 			}
 
-		} else if(slideDownPole.isRunning()) {
+		}
+		
+		else if(slideDownPole.isRunning()) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
 		}
 		else if(turnAround) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole_back.png")).getImage();
 		}
+		else if(isDead) {
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioDead.png")).getImage();
+
+		}
+		
 		else {
 			back = false;
 			answer = getFrameImage();

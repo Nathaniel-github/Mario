@@ -442,7 +442,7 @@ public class GraphicsPanel extends JFrame {
 						renderSprites.get(i).kill();
 						
 						
-					} else if (!renderSprites.get(i).isDying()) {
+					} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
 						
 						renderSprites.get(i).reverseDirection();
 						die();

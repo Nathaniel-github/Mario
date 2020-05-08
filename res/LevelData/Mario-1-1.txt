@@ -1,4 +1,5 @@
 Goomba;10;1;
+Koopa;12;2;
 QuestionMarkBlock;17;4;
 BrickBlock;21;4;
 QuestionMarkBlock;22;4;

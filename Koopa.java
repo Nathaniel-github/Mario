@@ -17,8 +17,11 @@ public class Koopa implements Sprite{
 	private int frame = 1;
 	private int direction = 1;
 	private boolean killed = false;
+	private boolean back = false;
 	private ImageIcon koopa1 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa.png"));
 	private ImageIcon koopa2 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2.png"));
+	private ImageIcon koopa1_back = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa_back.png"));
+	private ImageIcon koopa2_back = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2_back.png"));
 	private ImageIcon dead = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/KoopaDead.png"));
 	private Timer killKoopa = new Timer(750, new ActionListener() {
 
@@ -102,14 +105,20 @@ public class Koopa implements Sprite{
 			return IMAGE;
 			
 		}
-		if(frame == 1) {
+		if(frame == 1 && !back) {
 			IMAGEICON = koopa1;
 			frame = 2;
-		}
-		else {
+		} else if (frame == 2 && !back){
 			IMAGEICON = koopa2;
 			frame = 1;
+		} else if (frame == 1 && back){
+			IMAGEICON = koopa1_back;
+			frame = 2;
+		} else if (frame == 2 && back){
+			IMAGEICON = koopa2_back;
+			frame = 1;
 		}
+
 		IMAGE = IMAGEICON.getImage();
 		return IMAGE;
 	}
@@ -152,6 +161,22 @@ public class Koopa implements Sprite{
 	@Override
 	public void reverseDirection() {
 		
+		if(back) {
+			if (frame == 1) {
+				IMAGEICON = koopa1;
+			} else {
+				IMAGEICON = koopa2;
+			}
+			back = false;
+		} else {
+			if (frame == 1) {
+				IMAGEICON = koopa1_back;
+			} else {
+				IMAGEICON = koopa2_back;
+			}
+			back = true;
+		}
+		IMAGE = IMAGEICON.getImage();
 		direction *= -1;
 		
 	}

@@ -148,9 +148,9 @@ public class Goomba implements Sprite{
 	}
 
 	@Override
-	public void shiftY(int y) {
+	public void shiftY() {
 		
-		YCORD += y;
+		YCORD ++;
 		
 	}
 

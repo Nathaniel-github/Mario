@@ -1,7 +1,6 @@
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -119,7 +118,7 @@ public class Koopa implements Sprite{
 	public void kill() {
 		IMAGEICON = dead;
 		IMAGE = IMAGEICON.getImage();
-		YCORD += 2;
+		YCORD += 56;
 		killKoopa.start();
 	}
 
@@ -137,14 +136,16 @@ public class Koopa implements Sprite{
 	@Override
 	public void shiftX() {
 		
-		XCORD += direction;
+		if(!killKoopa.isRunning()) {
+			XCORD += direction;
+		}
 		
 	}
 
 	@Override
-	public void shiftY(int y) {
+	public void shiftY() {
 		
-		YCORD += y;
+		YCORD ++;
 		
 	}
 

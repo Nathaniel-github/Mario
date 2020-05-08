@@ -18,7 +18,7 @@ public interface Sprite extends Prop {
 	
 	public void shiftX();
 	
-	public void shiftY(int y);
+	public void shiftY();
 	
 	public void reverseDirection();
 

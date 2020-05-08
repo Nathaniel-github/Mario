@@ -350,6 +350,24 @@ public class GraphicsPanel extends JFrame {
 
 				}
 			}
+			
+			for (int i = 0; i < renderSprites.size(); i ++) {
+				
+				for (int k = 0; k < MOVELENGTH; k ++) {
+				
+					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight() + MOVELENGTH < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
+						
+						renderSprites.get(i).shiftY();
+						
+					} else {
+						
+						break;
+						
+					}
+					
+				}
+					
+			}
 		}
 
 	});
@@ -383,24 +401,32 @@ public class GraphicsPanel extends JFrame {
 		}
 		
 	});
-	private Timer deathAnimation = new Timer (SPEED, new ActionListener() {
-		int trueY = yCord;
+	
+	private Timer deathAnimation = new Timer ((int)(SPEED * 1.3), new ActionListener() {
+		
+		boolean done = false;
+		int startingFloor = getFloor();
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			if(trueY > BASEFLOOR - 12 * BLOCKWIDTH) {
+			if(yCord > startingFloor - 5 * BLOCKWIDTH && !done) {
 				yCord -= 3;
-				trueY -= 3;
-				
 			}
 			else {
 				yCord += 3;
-				}
+				done = true;
+			}
+			
+			if (yCord > SCREENHEIGHT) {
+				
+				deathAnimation.stop();
+				
 			}
 			
 		}
-		
-	);
+			
+	});
 	
 	private Timer checkCollision = new Timer(REFRESHRATE, new ActionListener() {
 
@@ -416,11 +442,9 @@ public class GraphicsPanel extends JFrame {
 						renderSprites.get(i).kill();
 						
 						
-					} else {
+					} else if (!renderSprites.get(i).isDying()) {
 						
 						renderSprites.get(i).reverseDirection();
-						jump.stop();
-						moveSprites.stop();
 						die();
 						
 						
@@ -781,6 +805,44 @@ public class GraphicsPanel extends JFrame {
 		return answer;
 
 	}
+	
+	// Returns the floor respective to the given x coordinate
+	private int getFloor(int x, int y) {
+
+		// The default return is the brick floor
+		int answer = SCREENHEIGHT - 107;
+
+		for (int i = 0; i < renderBlocks.size(); i++) {
+
+			// If this block is higher up than the // If this block is below Mario
+			// If the block is where Mario is currently at // current answer
+			if ((endOfImageXOverlaps(i, renderBlocks, x) || startOfImageXOverlaps(i, renderBlocks, x))
+					&& renderBlocks.get(i).getYCord() < answer && y < renderBlocks.get(i).getYCord()) {
+
+				answer = renderBlocks.get(i).getYCord();
+
+			}
+
+		}
+
+		for (int i = 0; i < renderProps.size(); i++) {
+
+			// If this prop is closer to Mario than the current
+			// If the prop is where Mario is currently at // answer // If this prop is below
+			// Mario // If the prop is obstructive to Mario
+			if ((endOfImageXOverlaps(i, renderProps, true, x) || startOfImageXOverlaps(i, renderProps, true, x))
+					&& renderProps.get(i).getYCord() < answer && y < renderProps.get(i).getYCord()
+					&& renderProps.get(i).isObstructive()) {
+
+				answer = renderProps.get(i).getYCord();
+
+			}
+
+		}
+
+		return answer;
+
+	}
 
 	private int getBottomFloor() {
 
@@ -838,6 +900,41 @@ public class GraphicsPanel extends JFrame {
  
 		return (trueX > list.get(i).getXCord()
 				&& trueX < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
+
+	}
+	
+	// Returns true or false based on whether or not the right side of Mario's image
+	// overlaps with a block
+	private boolean endOfImageXOverlaps(int i, LinkedList<Block> list, int x) {
+
+		return (x + currentImage.getWidth(observer) > list.get(i).getXCord()
+				&& x + currentImage.getWidth(observer) < list.get(i).getXCord() + BLOCKWIDTH);
+
+	}
+
+	// Returns true or false based on whether or not the left side of Mario's image
+	// overlaps with a block
+	private boolean startOfImageXOverlaps(int i, LinkedList<Block> list, int x) {
+
+		return (x > list.get(i).getXCord() && x < list.get(i).getXCord() + BLOCKWIDTH);
+
+	}
+
+	// Returns true or false based on whether or not the right side of Mario's image
+	// overlaps with a prop
+	private boolean endOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop, int x) {
+
+		return (x + currentImage.getWidth(observer) > list.get(i).getXCord() && x
+				+ currentImage.getWidth(observer) < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
+
+	}
+
+	// Returns true or false based on whether or not the left side of Mario's image
+	// overlaps with a prop
+	private boolean startOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop, int x) {
+ 
+		return (x > list.get(i).getXCord()
+				&& x < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
 
 	}
 
@@ -943,31 +1040,42 @@ public class GraphicsPanel extends JFrame {
 	
 	// This method needs to be completed with the death animation for Mario and the sounds as well
 	private void die() {
+
+		stopAllTimers();
 		isDead = true;
 		xCord -= 1;
-		trueX = xCord - scroll;
-		//stopAllTimers();
+		trueX -= 1;
 		deathAnimation.start();
-		
-		
-		
-		
-		
 		
 	}
 	
 	private void stopAllTimers() {
+		
 		rightMove.stop();
 		leftMove.stop();
 		shortJump.stop();
 		jump.stop();
+		walkToCastle.stop();
+		slideDownPole.stop();
+		deathAnimation.stop();
 		moveSprites.stop();
 		checkCollision.stop();
-		//updateSprites.stop();
+		updateSprites.stop();
 		standing.stop();
 		gravity.stop();
-		//render.stop();
-		//refresh.stop();
+		render.stop();
+		
+	}
+	
+	private void startUpTimers() {
+		
+		refresh.start();
+		gravity.start();
+		render.start();
+		updateSprites.start();
+		moveSprites.start();
+		checkCollision.start();
+		
 	}
 
 	// Sets up the key inputs (now this method is probably the most complex (at
@@ -1376,12 +1484,7 @@ public class GraphicsPanel extends JFrame {
 
 		Container c = getContentPane();
 
-		refresh.start();
-		gravity.start();
-		render.start();
-		updateSprites.start();
-		moveSprites.start();
-		checkCollision.start();
+		startUpTimers();
 
 		c.add(mainPanel);
 

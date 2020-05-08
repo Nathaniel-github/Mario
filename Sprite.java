@@ -12,12 +12,14 @@ public interface Sprite extends Prop {
 	
 	public boolean isAlive();
 	
+	public boolean isDying();
+	
 	public int getKillArea();
 	
 	public void shiftX();
 	
 	public void shiftY(int y);
 	
-	public void setDirection(int direction);
+	public void reverseDirection();
 
 }

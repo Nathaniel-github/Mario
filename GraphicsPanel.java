@@ -305,7 +305,7 @@ public class GraphicsPanel extends JFrame {
 				}
 
 				// If the sprite is "one stage" behind Mario
-				if (allSprites.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX) {
+				if (allSprites.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX || !allSprites.get(i).isAlive()) {
 
 					// Removes the sprite from those that need to be rendered
 					renderSprites.remove(allSprites.get(i));
@@ -382,7 +382,35 @@ public class GraphicsPanel extends JFrame {
 		
 	});
 	
-	private Timer moveSprites = new Timer(SPEED, new ActionListener() {
+	private Timer checkCollision = new Timer(REFRESHRATE, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			for (int i = 0; i < renderSprites.size(); i++) {
+
+				if (renderSprites.get(i).getCollider().intersects(getMarioRectangle())) {
+					
+					if (yCord + currentImage.getHeight(observer) <= renderSprites.get(i).getKillArea() && !renderSprites.get(i).isDying()) {
+						
+						renderSprites.get(i).kill();
+						
+					} else {
+						
+						renderSprites.get(i).reverseDirection();
+						die();
+						
+					}
+					
+				}
+
+			}
+			
+		}
+		
+	});
+	
+	private Timer moveSprites = new Timer((int)(SPEED * 1.5), new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -390,6 +418,40 @@ public class GraphicsPanel extends JFrame {
 			for (int i = 0; i < renderSprites.size(); i++) {
 
 				renderSprites.get(i).shiftX();
+				
+				for (int k = 0; k < renderBlocks.size(); k ++) {
+					
+					if(renderSprites.get(i).getCollider().intersects(renderBlocks.get(i).getRectangle())) {
+						
+						renderSprites.get(i).reverseDirection();
+						
+					}
+					
+				}
+				
+				for (int k = 0; k < renderProps.size(); k ++) {
+					
+					if(renderProps.get(k).getCollider().intersects(renderSprites.get(i).getRectangle())) {
+						
+						renderSprites.get(i).reverseDirection();
+						renderSprites.get(i).shiftX();
+						break;
+						
+					}
+					
+				}
+				
+				for (int k = 0; k < renderBlocks.size(); k ++) {
+					
+					if(renderSprites.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
+						
+						renderSprites.get(i).reverseDirection();
+						renderSprites.get(i).shiftX();
+						break;
+						
+					}
+					
+				}
 
 			}
 			
@@ -852,6 +914,13 @@ public class GraphicsPanel extends JFrame {
 		}
 		
 	}
+	
+	// This method needs to be completed with the death animation for Mario and the sounds as well
+	private void die() {
+		
+		
+		
+	}
 
 	// Sets up the key inputs (now this method is probably the most complex (at
 	// least for me) because
@@ -1255,6 +1324,7 @@ public class GraphicsPanel extends JFrame {
 		render.start();
 		updateSprites.start();
 		moveSprites.start();
+		checkCollision.start();
 
 		c.add(mainPanel);
 

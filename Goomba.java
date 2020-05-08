@@ -11,7 +11,6 @@ import javax.swing.Timer;
 public class Goomba implements Sprite{
 	
 	// Fields
-	private final Polygon COLLIDER;
 	private int XCORD;
 	private int YCORD;
 	private ImageIcon IMAGEICON;
@@ -37,12 +36,7 @@ public class Goomba implements Sprite{
 		
 		XCORD = x;
 		YCORD = y + 4;
-		int [] xPoints = {XCORD + 18, XCORD + 3, XCORD, XCORD, XCORD + 50, XCORD + 50, XCORD + 47, XCORD + 32};
-		int [] yPoints = {YCORD, YCORD + 15, YCORD + 21, YCORD + 50, YCORD + 50, YCORD + 21, YCORD + 15, YCORD};
-		int nPoints = xPoints.length;
-		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
 		killGoomba.setInitialDelay(750);
-		
 		IMAGEICON = goomba1;
 		IMAGE = IMAGEICON.getImage();
 	}
@@ -56,7 +50,10 @@ public class Goomba implements Sprite{
 	@Override
 	public Polygon getCollider() {
 		// TODO Auto-generated method stub
-		return COLLIDER;
+		int [] xPoints = {XCORD + 18, XCORD + 3, XCORD, XCORD, XCORD + 50, XCORD + 50, XCORD + 47, XCORD + 32};
+		int [] yPoints = {YCORD, YCORD + 15, YCORD + 21, YCORD + 50, YCORD + 50, YCORD + 21, YCORD + 15, YCORD};
+		int nPoints = xPoints.length;
+		return new Polygon(xPoints, yPoints, nPoints);
 	}
 
 	@Override
@@ -126,6 +123,7 @@ public class Goomba implements Sprite{
 	public void kill() {
 		IMAGEICON = dead;
 		IMAGE = IMAGEICON.getImage();
+		YCORD += 13;
 		killGoomba.start();
 	}
 
@@ -143,7 +141,9 @@ public class Goomba implements Sprite{
 	@Override
 	public void shiftX() {
 		
-		XCORD += direction;
+		if (!killGoomba.isRunning()) {
+			XCORD += direction;
+		}
 		
 	}
 
@@ -155,10 +155,16 @@ public class Goomba implements Sprite{
 	}
 
 	@Override
-	public void setDirection(int direction) {
+	public void reverseDirection() {
 		
-		this.direction = direction;
+		direction *= -1;
 		
+	}
+
+	@Override
+	public boolean isDying() {
+		// TODO Auto-generated method stub
+		return killGoomba.isRunning();
 	}
 
 }

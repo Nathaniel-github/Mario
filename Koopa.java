@@ -11,16 +11,16 @@ import javax.swing.Timer;
 
 public class Koopa implements Sprite{
 	
-	private final Polygon COLLIDER;
 	private int XCORD;
 	private int YCORD;
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
 	private int frame = 1;
+	private int direction = 1;
 	private boolean killed = false;
-	private URL koopa1 = getClass().getClassLoader().getResource("EnemySpriteImages/Koopa.png");
-	private URL koopa2 = getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2.png");
-	private URL dead = getClass().getClassLoader().getResource("EnemySpriteImages/KoopaDead.png");
+	private ImageIcon koopa1 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa.png"));
+	private ImageIcon koopa2 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2.png"));
+	private ImageIcon dead = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/KoopaDead.png"));
 	private Timer killKoopa = new Timer(750, new ActionListener() {
 
 		@Override
@@ -34,12 +34,8 @@ public class Koopa implements Sprite{
 
 	public Koopa(int x, int y) {
 		XCORD = x;
-		YCORD = y+8;
-		int [] xPoints = {XCORD + 36, XCORD + 47, XCORD + 50, XCORD + 50, XCORD, XCORD, XCORD + 28, XCORD + 28};
-		int [] yPoints = {YCORD + 24, YCORD + 37, YCORD + 48, YCORD + 100, YCORD + 100, YCORD + 54, YCORD + 54, YCORD + 35};
-		int nPoints = xPoints.length;
-		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
-		IMAGEICON = new ImageIcon(koopa1);
+		YCORD = y + 8;
+		IMAGEICON = koopa1;
 		IMAGE = IMAGEICON.getImage();
 	}
 
@@ -52,7 +48,10 @@ public class Koopa implements Sprite{
 	@Override
 	public Polygon getCollider() {
 		// TODO Auto-generated method stub
-		return COLLIDER;
+		int [] xPoints = {XCORD + 36, XCORD + 47, XCORD + 50, XCORD + 50, XCORD, XCORD, XCORD + 28, XCORD + 28};
+		int [] yPoints = {YCORD + 24, YCORD + 37, YCORD + 48, YCORD + 100, YCORD + 100, YCORD + 54, YCORD + 54, YCORD + 35};
+		int nPoints = xPoints.length;
+		return new Polygon(xPoints, yPoints, nPoints);
 	}
 
 	@Override
@@ -105,11 +104,11 @@ public class Koopa implements Sprite{
 			
 		}
 		if(frame == 1) {
-			IMAGEICON = new ImageIcon(koopa1);
+			IMAGEICON = koopa1;
 			frame = 2;
 		}
 		else {
-			IMAGEICON = new ImageIcon(koopa2);
+			IMAGEICON = koopa2;
 			frame = 1;
 		}
 		IMAGE = IMAGEICON.getImage();
@@ -118,8 +117,9 @@ public class Koopa implements Sprite{
 
 	@Override
 	public void kill() {
-		IMAGEICON = new ImageIcon(dead);
+		IMAGEICON = dead;
 		IMAGE = IMAGEICON.getImage();
+		YCORD += 2;
 		killKoopa.start();
 	}
 
@@ -136,20 +136,29 @@ public class Koopa implements Sprite{
 
 	@Override
 	public void shiftX() {
-		// TODO Auto-generated method stub
+		
+		XCORD += direction;
 		
 	}
 
 	@Override
 	public void shiftY(int y) {
-		// TODO Auto-generated method stub
+		
+		YCORD += y;
 		
 	}
 
 	@Override
-	public void setDirection(int direction) {
-		// TODO Auto-generated method stub
+	public void reverseDirection() {
 		
+		direction *= -1;
+		
+	}
+
+	@Override
+	public boolean isDying() {
+		// TODO Auto-generated method stub
+		return killKoopa.isRunning();
 	}
 
 }

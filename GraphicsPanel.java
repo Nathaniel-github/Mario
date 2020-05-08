@@ -146,6 +146,8 @@ public class GraphicsPanel extends JFrame {
 
 	private SoundPlayer backgroundMusic = new SoundPlayer("MarioBasicBackgroundMusic.wav");
 	private SoundPlayer jumpSound = new SoundPlayer("MarioJumpMusic.wav");
+	
+	private LevelTimer levelTimeLeft = new LevelTimer(400);
 
 	// This list stores all of the data for every block that needs to be rendered
 	// throughout a level
@@ -725,6 +727,15 @@ public class GraphicsPanel extends JFrame {
 						renderSprites.get(i).getYCord(), observer);
 
 			}
+			if(levelTimeLeft.getTimeLeft() <= 0) {
+				die();
+			}
+			g.setColor(Color.WHITE);
+			g.setFont(new Font("monospaced", Font.BOLD, 37));
+			g.drawString("TIME", 1000, 50);
+			g.drawString(Integer.toString(levelTimeLeft.getTimeLeft()), 1005, 90);
+			g.drawString("MARIO", 100, 50);
+			g.drawString("WORLD", 700, 50);
 
 			// If Mario is at the point in the stage where the stage needs to scroll
 			if (xCord + currentImage.getWidth(observer) > getWidth() - 500) {
@@ -1040,13 +1051,14 @@ public class GraphicsPanel extends JFrame {
 	
 	// This method needs to be completed with the death animation for Mario and the sounds as well
 	private void die() {
-
-		stopAllTimers();
-		isDead = true;
-		xCord -= 1;
-		trueX -= 1;
-		deathAnimation.start();
 		
+		if(!isDead) {
+			stopAllTimers();
+			isDead = true;
+			xCord -= 1;
+			trueX -= 1;
+			deathAnimation.start();
+		}
 	}
 	
 	private void stopAllTimers() {
@@ -1075,6 +1087,7 @@ public class GraphicsPanel extends JFrame {
 		updateSprites.start();
 		moveSprites.start();
 		checkCollision.start();
+		levelTimeLeft.startTimer();
 		
 	}
 

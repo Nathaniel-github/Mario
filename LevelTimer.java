@@ -6,7 +6,7 @@ import javax.swing.Timer;
 
 public class LevelTimer {
 	private int timeLeft;
-	Timer currentTimeLeft = new Timer(1000, new ActionListener() {
+	Timer currentTimeLeft = new Timer(400, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

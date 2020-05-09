@@ -50,6 +50,8 @@ public class GraphicsPanel extends JFrame {
 	
 	private boolean turnAround = false;
 	
+	private boolean zoomIn = false;
+	
 	private boolean isDead = false;
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
@@ -205,9 +207,10 @@ public class GraphicsPanel extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			endingImageCount ++;
-			if(endingImageCount >= 20) {
-				endingImageCount = 20;
+			zoomIn = true;
+			if(endingImageCount < 20) {
+				endingImageCount ++;
+			} else {
 				endingZoomIn.stop();
 			}
 		}
@@ -248,6 +251,7 @@ public class GraphicsPanel extends JFrame {
 				endingMusic.play();
 				endingMusic.restart();
 				walkToCastle.setInitialDelay(750);
+				gravity.start();
 				walkToCastle.start();
 			}
 
@@ -265,7 +269,7 @@ public class GraphicsPanel extends JFrame {
 			}
 			else {
 				visible = false;
-				endingZoomIn.start();
+				startEndingZoomIn();
 				walkToCastle.stop();
 			}
 			
@@ -448,6 +452,7 @@ public class GraphicsPanel extends JFrame {
 			
 			if (yCord > SCREENHEIGHT) {
 				
+				startEndingZoomIn();
 				deathAnimation.stop();
 				
 			}
@@ -784,7 +789,7 @@ public class GraphicsPanel extends JFrame {
 			if (currentImage != null) {
 				g.drawImage(currentImage, xCord, yCord, observer);
 			}
-			if(endingZoomIn.isRunning()){
+			if(zoomIn){
 				currentEndingImage = getCurrentEndingImage();
 				g.drawImage(currentEndingImage, 0, 0, observer);
 			}
@@ -814,7 +819,7 @@ public class GraphicsPanel extends JFrame {
 	}
 	
 	private Image getCurrentEndingImage() {
-		return new ImageIcon(getClass().getClassLoader().getResource("EndingImages/Ending" + Integer.toString(endingImageCount) + ".png")).getImage();
+		return new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("EndingImages/Ending" + Integer.toString(endingImageCount) + ".png")).getImage().getScaledInstance(SCREENWIDTH, SCREENHEIGHT, Image.SCALE_DEFAULT)).getImage();
 
 	}
 
@@ -1022,6 +1027,13 @@ public class GraphicsPanel extends JFrame {
 
 		return answer;
 
+	}
+	
+	private void startEndingZoomIn() {
+		
+		endingImageCount = 1;
+		endingZoomIn.start();
+		
 	}
 
 	// Returns the invisible rectangle that is around Mario
@@ -1553,6 +1565,7 @@ public class GraphicsPanel extends JFrame {
 		trueX = flagPole.getXCord()+flagPole.getImageIcon().getIconWidth() - 24 - new ImageIcon(getClass().getClassLoader().getResource("MarioImages/MarioFlagPole.png")).getIconWidth();
 		xCord=trueX-scroll;
 		stopAllSounds();
+		stopAllTimers();
 		endingAnimation = true;
 		slideDownPole.start();
 		slideDownPoleSound.play();

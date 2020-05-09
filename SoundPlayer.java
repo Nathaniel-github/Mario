@@ -12,6 +12,7 @@ public class SoundPlayer {
 	private String fileName;
 	private FloatControl volume;
 	private final float muteVolume;
+	private int initDelay = 0;
 	private Timer restartSound = new Timer(10, new ActionListener() {
 
 		@Override
@@ -60,7 +61,22 @@ public class SoundPlayer {
 	}
 	
 	public void play() {
-		clip.start();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				try {
+					Thread.sleep(initDelay);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				clip.start();
+				
+			}
+			
+		}).start();;
 	}
 	
 	public void loop() {
@@ -77,6 +93,14 @@ public class SoundPlayer {
 	
 	public void stop() {
 		clip.stop();
+	}
+	
+	public void close() {
+		clip.close();
+	}
+	
+	public void setInitialDelay(int x) {
+		initDelay = x;
 	}
 	
 	public void restart() {

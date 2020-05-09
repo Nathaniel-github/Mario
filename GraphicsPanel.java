@@ -152,6 +152,9 @@ public class GraphicsPanel extends JFrame {
 	private SoundPlayer endingMusic = new SoundPlayer("MarioLevelCompleteMusic.wav");
 	private SoundPlayer slideDownPoleSound = new SoundPlayer("MarioFlagpoleMusic.wav");
 	private SoundPlayer stompSound = new SoundPlayer("MarioStompMusic.wav");
+	private SoundPlayer timeToPointsSound =  new SoundPlayer("MarioTimeToPointsMusic.wav");
+	
+	private SoundPlayer [] allSounds = {backgroundMusic, jumpSound, deathSound, endingMusic, slideDownPoleSound, stompSound, timeToPointsSound};
 	
 	private Image currentEndingImage;
 	
@@ -205,7 +208,7 @@ public class GraphicsPanel extends JFrame {
 	// update the image of
 	// Mario
 	
-	private Timer timeToPoints = new Timer(3, new ActionListener() {
+	private Timer timeToPoints = new Timer(8 , new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -216,6 +219,7 @@ public class GraphicsPanel extends JFrame {
 			else {
 				startEndingZoomIn();
 				timeToPoints.stop();
+				timeToPointsSound.stop();
 			}
 		
 		}
@@ -272,12 +276,12 @@ public class GraphicsPanel extends JFrame {
 				trueX = xCord + scroll;
 				slideDownPole.stop();
 				turnAround = true;
+				endingMusic.setInitialDelay(750);
 				endingMusic.play();
 				endingMusic.restart();
 				walkToCastle.setInitialDelay(750);
 				gravity.start();
 				walkToCastle.start();
-				
 			}
 
 		}
@@ -295,6 +299,8 @@ public class GraphicsPanel extends JFrame {
 			}
 			else {
 				visible = false;
+				timeToPointsSound.loop();
+				timeToPointsSound.play();
 				timeToPoints.start();
 				walkToCastle.stop();
 			}
@@ -1319,21 +1325,21 @@ public class GraphicsPanel extends JFrame {
 	// Mutes all sound effects
 	private void muteSounds() {
 
-		backgroundMusic.setVolume(0);
-		jumpSound.setVolume(0);
-		deathSound.setVolume(0);
-		endingMusic.setVolume(0);
-		slideDownPoleSound.setVolume(0);
+		for (int i = 0; i < allSounds.length; i ++) {
+			
+			allSounds[i].setVolume(0);
+			
+		}
 
 	}
 	
 	private void lowerVolume(int x) {
 		
-		backgroundMusic.changeVolume(-x);
-		jumpSound.changeVolume(-x);
-		deathSound.changeVolume(-x);
-		endingMusic.changeVolume(-x);
-		slideDownPoleSound.changeVolume(-x);
+		for (int i = 0; i < allSounds.length; i ++) {
+			
+			allSounds[i].changeVolume(-x);
+			
+		}
 		
 	}
 	

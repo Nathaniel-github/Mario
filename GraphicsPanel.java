@@ -132,7 +132,7 @@ public class GraphicsPanel extends JFrame {
 	// in milliseconds an you
 	// will understand why when you look at how a character is moved
 
-	private final int SPEED = 20;
+	private final int SPEED = 5;
 
 	// This is the y coordinate of the base floor
 	private final int BASEFLOOR = SCREENHEIGHT - 107;
@@ -159,7 +159,7 @@ public class GraphicsPanel extends JFrame {
 	
 	private int points = 0;
 	
-	private LevelTimer levelTimeLeft = new LevelTimer(400);
+	private LevelTimer levelTimeLeft = new LevelTimer(120);
 
 	// This list stores all of the data for every block that needs to be rendered
 	// throughout a level
@@ -218,6 +218,8 @@ public class GraphicsPanel extends JFrame {
 		}
 		
 	});
+	
+
 	private Timer refresh = new Timer(REFRESHRATE, new ActionListener() {
 
 		@Override
@@ -776,11 +778,22 @@ public class GraphicsPanel extends JFrame {
 				
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Monospaced", Font.BOLD, 37));
-			
 			g.drawString("TIME", 1000, 50);
-			g.drawString(Integer.toString(levelTimeLeft.getTimeLeft()), 1005, 90);
+			int tl = 3 - Integer.toString(levelTimeLeft.getTimeLeft()).length();
+			String displayTime = "";
+			for(int i = 0;i < tl;i++) {
+				displayTime += "0";
+			}
+			displayTime += Integer.toString(levelTimeLeft.getTimeLeft());
+			g.drawString(displayTime, 1022, 90);
 			g.drawString("MARIO", 100, 50);
-			g.drawString(Integer.toString(points), 100, 90);
+			int rl = 6 - Integer.toString(points).length();
+			String displayPoints = "";
+			for(int i = 0;i < rl;i++) {
+				displayPoints += "0";
+			}
+			displayPoints += Integer.toString(points);
+			g.drawString(displayPoints, 100, 90);
 			g.drawString("WORLD", 700, 50);
 
 			// If Mario is at the point in the stage where the stage needs to scroll

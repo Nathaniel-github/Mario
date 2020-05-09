@@ -22,10 +22,17 @@ public class LevelTimer {
 	public LevelTimer(int timeLeft) {
 		this.timeLeft = timeLeft;	
 	}
+	
 	public void startTimer() {
 
 		currentTimeLeft.start();		
 
+	}
+	
+	public void stopTimer() {
+		
+		currentTimeLeft.stop();
+		
 	}
 	
 	public int getTimeLeft() {

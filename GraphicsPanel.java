@@ -124,7 +124,7 @@ public class GraphicsPanel extends JFrame {
 	private final int MOVELENGTH = 2;
 
 	// This is how fast the panel is refreshed (in milliseconds)
-	private final int REFRESHRATE = 1;
+	private final int REFRESHRATE = 5;
 
 	// This is how quickly a character will move when you press an arrow key (it is
 	// in milliseconds an you
@@ -160,16 +160,12 @@ public class GraphicsPanel extends JFrame {
 	// This stores all the data for sprites that need to be rendered throughout the level
 	private LinkedList<Sprite> allSprites = new LinkedList<Sprite>();
 
-	// This list is the same as the renderBlocks except it stores all rendered sprites
-	private LinkedList<Sprite> renderSprites = new LinkedList<Sprite>();
-
 	// This is the object that reads the text
 	private DataReader levelData = new DataReader("Mario-1-1.txt");
 
 	private Flag flag;
 	private FlagPole flagPole;
 	private EndCastle castle;
-	
 
 	// This is the list for the blocks that need to be rendered, since java can not
 	// handle rendering every
@@ -190,6 +186,9 @@ public class GraphicsPanel extends JFrame {
 	// This list is the same as the renderBlocks except it stores all rendered props
 	private LinkedList<Prop> renderProps = new LinkedList<Prop>();
 
+	// This list is the same as the renderBlocks except it stores all rendered sprites
+	private LinkedList<Sprite> renderSprites = new LinkedList<Sprite>();
+	
 	// This is the timer that will fire every millisecond and refresh the panel and
 	// update the image of
 	// Mario
@@ -688,7 +687,7 @@ public class GraphicsPanel extends JFrame {
 	// This is where all the action happens, this the main JPanel that renders
 	// everything
 	private JPanel mainPanel = new JPanel() {
-
+		
 		@Override
 		protected void paintComponent(Graphics g) {
 
@@ -699,7 +698,7 @@ public class GraphicsPanel extends JFrame {
 				playEndingAnimation();
 
 			}
-
+			
 			// Draws the 3 backgrounds
 			g.drawImage(backgroundImage, backX, 0, observer);
 			g.drawImage(backgroundImage, backX2, 0, observer);
@@ -730,8 +729,10 @@ public class GraphicsPanel extends JFrame {
 			if(levelTimeLeft.getTimeLeft() <= 0) {
 				die();
 			}
+				
 			g.setColor(Color.WHITE);
-			g.setFont(new Font("monospaced", Font.BOLD, 37));
+			g.setFont(new Font("Monospaced", Font.BOLD, 37));
+			
 			g.drawString("TIME", 1000, 50);
 			g.drawString(Integer.toString(levelTimeLeft.getTimeLeft()), 1005, 90);
 			g.drawString("MARIO", 100, 50);
@@ -761,8 +762,6 @@ public class GraphicsPanel extends JFrame {
 	public GraphicsPanel(String name) {
 
 		super(name);
-
-		mainPanel.setLayout(new BorderLayout()); // Not needed, but is there for the moment
 
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 
@@ -1076,6 +1075,7 @@ public class GraphicsPanel extends JFrame {
 		standing.stop();
 		gravity.stop();
 		render.stop();
+		levelTimeLeft.stopTimer();
 		
 	}
 	

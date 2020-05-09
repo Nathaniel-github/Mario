@@ -146,6 +146,9 @@ public class GraphicsPanel extends JFrame {
 
 	private SoundPlayer backgroundMusic = new SoundPlayer("MarioBasicBackgroundMusic.wav");
 	private SoundPlayer jumpSound = new SoundPlayer("MarioJumpMusic.wav");
+	private SoundPlayer deathSound = new SoundPlayer("MarioDeathMusic.wav");
+	private SoundPlayer endingMusic = new SoundPlayer("MarioLevelCompleteMusic.wav");
+	private SoundPlayer slideDownPoleSound = new SoundPlayer("MarioFlagpoleMusic.wav");
 	
 	private LevelTimer levelTimeLeft = new LevelTimer(400);
 
@@ -198,6 +201,8 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			currentImage = getCurrentImage();
+			
+			fixMovement();
 
 			mainPanel.updateUI();
 
@@ -207,23 +212,25 @@ public class GraphicsPanel extends JFrame {
 	
 	
 
-	private Timer slideDownPole = new Timer(SPEED * 2, new ActionListener()  {
+	private Timer slideDownPole = new Timer((int)(SPEED * 1.25), new ActionListener()  {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && yCord <= flag.getYCord()) {
 				yCord += MOVELENGTH; 
-			} else if (yCord + currentImage.getHeight(observer) + MOVELENGTH >= flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()){
+			}
+			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight() && yCord >= flag.getYCord()) {
+				flag.changeYCord(MOVELENGTH);
+			} else if (flag.getYCord() + flag.getImageIcon().getIconHeight() >= flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()){
 				jump.stop();
 				xCord = flagPole.getXCord() + flagPole.getImageIcon().getIconWidth() - scroll - 31;
 				trueX = xCord + scroll;
 				slideDownPole.stop();
 				turnAround = true;
+				endingMusic.play();
+				endingMusic.restart();
 				walkToCastle.setInitialDelay(750);
 				walkToCastle.start();
-			}
-			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()) {
-				flag.changeYCord(MOVELENGTH);
 			}
 
 		}
@@ -445,7 +452,6 @@ public class GraphicsPanel extends JFrame {
 						
 					} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
 						
-						renderSprites.get(i).reverseDirection();
 						die();
 						
 						
@@ -523,6 +529,7 @@ public class GraphicsPanel extends JFrame {
 			if (!endingAnimation && !isDead) {
 
 				int factor = 0;
+				jumping = true;
 
 				// If he is supposed to do a short hop
 				if (shortHop) {
@@ -541,7 +548,6 @@ public class GraphicsPanel extends JFrame {
 
 					fixMovement();
 					yCord -= MOVELENGTH;
-					jumping = true;
 					jumpCount++;
 
 				} else {
@@ -770,7 +776,7 @@ public class GraphicsPanel extends JFrame {
 		startAnimation(); // Starts up the panel and renders the animation
 
 		// Mute the sounds
-		muteSounds();
+//		muteSounds();
 
 		backgroundMusic.loop();
 		backgroundMusic.play();
@@ -1053,10 +1059,13 @@ public class GraphicsPanel extends JFrame {
 		
 		if(!isDead) {
 			stopAllTimers();
+			stopAllSounds();
 			isDead = true;
 			xCord -= 1;
 			trueX -= 1;
 			deathAnimation.start();
+			deathSound.play();
+			deathSound.restart();
 		}
 	}
 	
@@ -1233,7 +1242,20 @@ public class GraphicsPanel extends JFrame {
 
 		backgroundMusic.setVolume(0);
 		jumpSound.setVolume(0);
+		deathSound.setVolume(0);
+		endingMusic.setVolume(0);
+		slideDownPoleSound.setVolume(0);
 
+	}
+	
+	private void stopAllSounds() {
+		
+		backgroundMusic.stop();
+		jumpSound.stop();
+		deathSound.stop();
+		endingMusic.stop();
+		slideDownPoleSound.stop();
+		
 	}
 
 	// Method for moving towards the left side of the screen
@@ -1485,10 +1507,12 @@ public class GraphicsPanel extends JFrame {
 
 		trueX = flagPole.getXCord()+flagPole.getImageIcon().getIconWidth() - 24 - new ImageIcon(getClass().getClassLoader().getResource("MarioImages/MarioFlagPole.png")).getIconWidth();
 		xCord=trueX-scroll;
+		stopAllSounds();
 		endingAnimation = true;
 		slideDownPole.start();
+		slideDownPoleSound.play();
+		slideDownPoleSound.restart();
 		
-
 	}
 
 

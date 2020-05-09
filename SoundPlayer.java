@@ -77,7 +77,6 @@ public class SoundPlayer {
 	
 	public void stop() {
 		clip.stop();
-		clip.close();
 	}
 	
 	public void restart() {

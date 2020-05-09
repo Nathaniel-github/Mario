@@ -149,6 +149,7 @@ public class GraphicsPanel extends JFrame {
 	private SoundPlayer deathSound = new SoundPlayer("MarioDeathMusic.wav");
 	private SoundPlayer endingMusic = new SoundPlayer("MarioLevelCompleteMusic.wav");
 	private SoundPlayer slideDownPoleSound = new SoundPlayer("MarioFlagpoleMusic.wav");
+	private SoundPlayer stompSound = new SoundPlayer("MarioStompMusic.wav");
 	
 	private LevelTimer levelTimeLeft = new LevelTimer(400);
 
@@ -447,7 +448,9 @@ public class GraphicsPanel extends JFrame {
 					
 					if (yCord + currentImage.getHeight(observer) <= renderSprites.get(i).getKillArea() && !renderSprites.get(i).isDying()) {
 						
+						stompSound.play();
 						renderSprites.get(i).kill();
+						stompSound.restart();
 						
 						
 					} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
@@ -530,6 +533,7 @@ public class GraphicsPanel extends JFrame {
 
 				int factor = 0;
 				jumping = true;
+				currentImage = getCurrentImage();
 
 				// If he is supposed to do a short hop
 				if (shortHop) {
@@ -777,6 +781,7 @@ public class GraphicsPanel extends JFrame {
 
 		// Mute the sounds
 //		muteSounds();
+		lowerVolume();
 
 		backgroundMusic.loop();
 		backgroundMusic.play();
@@ -1246,6 +1251,16 @@ public class GraphicsPanel extends JFrame {
 		endingMusic.setVolume(0);
 		slideDownPoleSound.setVolume(0);
 
+	}
+	
+	private void lowerVolume() {
+		
+		backgroundMusic.changeVolume(-10);
+		jumpSound.changeVolume(-10);
+		deathSound.changeVolume(-10);
+		endingMusic.changeVolume(-10);
+		slideDownPoleSound.changeVolume(-10);
+		
 	}
 	
 	private void stopAllSounds() {

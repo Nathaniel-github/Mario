@@ -139,7 +139,7 @@ public class Koopa implements Sprite{
 
 	@Override
 	public int getKillArea() {
-		return YCORD + 52;
+		return YCORD + 64;
 	}
 
 	@Override

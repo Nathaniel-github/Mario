@@ -132,7 +132,7 @@ public class GraphicsPanel extends JFrame {
 	// in milliseconds an you
 	// will understand why when you look at how a character is moved
 
-	private final int SPEED = 5;
+	private final int SPEED = 20;
 
 	// This is the y coordinate of the base floor
 	private final int BASEFLOOR = SCREENHEIGHT - 107;
@@ -156,6 +156,8 @@ public class GraphicsPanel extends JFrame {
 	private Image currentEndingImage;
 	
 	private int endingImageCount = 1;
+	
+	private int points = 0;
 	
 	private LevelTimer levelTimeLeft = new LevelTimer(400);
 
@@ -475,6 +477,12 @@ public class GraphicsPanel extends JFrame {
 						stompSound.play();
 						renderSprites.get(i).kill();
 						stompSound.restart();
+						if(renderSprites.get(i) instanceof Goomba) {
+							points += renderSprites.get(i).killPoints();
+						}
+						if(renderSprites.get(i) instanceof Koopa) {
+							points += renderSprites.get(i).killPoints();
+						}
 						
 						
 					} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
@@ -772,6 +780,7 @@ public class GraphicsPanel extends JFrame {
 			g.drawString("TIME", 1000, 50);
 			g.drawString(Integer.toString(levelTimeLeft.getTimeLeft()), 1005, 90);
 			g.drawString("MARIO", 100, 50);
+			g.drawString(Integer.toString(points), 100, 90);
 			g.drawString("WORLD", 700, 50);
 
 			// If Mario is at the point in the stage where the stage needs to scroll

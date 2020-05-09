@@ -95,7 +95,7 @@ public class Goomba implements Sprite{
 	@Override
 	public int killPoints() {
 		// TODO Auto-generated method stub
-		return 200;
+		return 100;
 	}
 
 	@Override

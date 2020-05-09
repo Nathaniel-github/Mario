@@ -1279,7 +1279,7 @@ public class GraphicsPanel extends JFrame {
 	// Fixes Mario's current image so that it doesn't clip into blocks
 	private void fixMovement() {
 
-		if (inBlock()) {
+		if (inBlock() && !isDead) {
 			if (back) {
 				moveForward();
 			} else {

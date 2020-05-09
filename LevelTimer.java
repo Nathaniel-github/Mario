@@ -47,5 +47,10 @@ public class LevelTimer {
 		}
 		return displayTime;
 	}
+	
+	//For the ending Time to Points conversion
+	public void decreaseTime() {
+		timeLeft--;
+	}
 
 }

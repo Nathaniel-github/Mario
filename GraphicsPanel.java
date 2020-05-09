@@ -156,10 +156,8 @@ public class GraphicsPanel extends JFrame {
 	private Image currentEndingImage;
 	
 	private int endingImageCount = 1;
-	
-	private int points = 0;
-	
-	private LevelTimer levelTimeLeft = new LevelTimer(120);
+		
+	private LevelTimer levelTimeLeft = new LevelTimer(400);
 	
 	private Points PointCounter = new Points();
 
@@ -207,6 +205,24 @@ public class GraphicsPanel extends JFrame {
 	// update the image of
 	// Mario
 	
+	private Timer timeToPoints = new Timer(3, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(levelTimeLeft.getTimeLeft() > 0) {
+				levelTimeLeft.decreaseTime();
+				PointCounter.addPoints(50);
+			}
+			else {
+				startEndingZoomIn();
+				timeToPoints.stop();
+			}
+		
+		}
+		
+	});
+
+	
 	private Timer endingZoomIn = new Timer(100, new ActionListener() {
 
 		@Override
@@ -221,7 +237,9 @@ public class GraphicsPanel extends JFrame {
 		
 	});
 	
-
+	// This is the timer that will fire every millisecond and refresh the panel and
+	// update the image of
+	// Mario
 	private Timer refresh = new Timer(REFRESHRATE, new ActionListener() {
 
 		@Override
@@ -259,11 +277,13 @@ public class GraphicsPanel extends JFrame {
 				walkToCastle.setInitialDelay(750);
 				gravity.start();
 				walkToCastle.start();
+				
 			}
 
 		}
 
 	});
+	
 	
 	private Timer walkToCastle = new Timer(SPEED * 3, new ActionListener() {
 
@@ -275,7 +295,7 @@ public class GraphicsPanel extends JFrame {
 			}
 			else {
 				visible = false;
-				startEndingZoomIn();
+				timeToPoints.start();
 				walkToCastle.stop();
 			}
 			
@@ -774,7 +794,7 @@ public class GraphicsPanel extends JFrame {
 						renderSprites.get(i).getYCord(), observer);
 
 			}
-			if(levelTimeLeft.getTimeLeft() <= 0) {
+			if(levelTimeLeft.getTimeLeft() <= 0 && !endingAnimation) {
 				die();
 			}
 				
@@ -1582,6 +1602,7 @@ public class GraphicsPanel extends JFrame {
 		slideDownPole.start();
 		slideDownPoleSound.play();
 		slideDownPoleSound.restart();
+		
 		
 	}
 

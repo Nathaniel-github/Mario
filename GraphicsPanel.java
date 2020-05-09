@@ -151,6 +151,10 @@ public class GraphicsPanel extends JFrame {
 	private SoundPlayer slideDownPoleSound = new SoundPlayer("MarioFlagpoleMusic.wav");
 	private SoundPlayer stompSound = new SoundPlayer("MarioStompMusic.wav");
 	
+	private Image currentEndingImage;
+	
+	private int endingImageCount = 1;
+	
 	private LevelTimer levelTimeLeft = new LevelTimer(400);
 
 	// This list stores all of the data for every block that needs to be rendered
@@ -196,6 +200,19 @@ public class GraphicsPanel extends JFrame {
 	// This is the timer that will fire every millisecond and refresh the panel and
 	// update the image of
 	// Mario
+	
+	private Timer endingZoomIn = new Timer(100, new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			endingImageCount ++;
+			if(endingImageCount >= 20) {
+				endingImageCount = 20;
+				endingZoomIn.stop();
+			}
+		}
+		
+	});
 	private Timer refresh = new Timer(REFRESHRATE, new ActionListener() {
 
 		@Override
@@ -247,7 +264,9 @@ public class GraphicsPanel extends JFrame {
 				moveForward();
 			}
 			else {
-				visible=false;
+				visible = false;
+				endingZoomIn.start();
+				walkToCastle.stop();
 			}
 			
 		}
@@ -765,6 +784,10 @@ public class GraphicsPanel extends JFrame {
 			if (currentImage != null) {
 				g.drawImage(currentImage, xCord, yCord, observer);
 			}
+			if(endingZoomIn.isRunning()){
+				currentEndingImage = getCurrentEndingImage();
+				g.drawImage(currentEndingImage, 0, 0, observer);
+			}
 
 		}
 
@@ -787,6 +810,11 @@ public class GraphicsPanel extends JFrame {
 
 		backgroundMusic.loop();
 		backgroundMusic.play();
+
+	}
+	
+	private Image getCurrentEndingImage() {
+		return new ImageIcon(getClass().getClassLoader().getResource("EndingImages/Ending" + Integer.toString(endingImageCount) + ".png")).getImage();
 
 	}
 

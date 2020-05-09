@@ -781,7 +781,7 @@ public class GraphicsPanel extends JFrame {
 
 		// Mute the sounds
 //		muteSounds();
-		lowerVolume();
+		lowerVolume(15);
 
 		backgroundMusic.loop();
 		backgroundMusic.play();
@@ -1253,13 +1253,13 @@ public class GraphicsPanel extends JFrame {
 
 	}
 	
-	private void lowerVolume() {
+	private void lowerVolume(int x) {
 		
-		backgroundMusic.changeVolume(-10);
-		jumpSound.changeVolume(-10);
-		deathSound.changeVolume(-10);
-		endingMusic.changeVolume(-10);
-		slideDownPoleSound.changeVolume(-10);
+		backgroundMusic.changeVolume(-x);
+		jumpSound.changeVolume(-x);
+		deathSound.changeVolume(-x);
+		endingMusic.changeVolume(-x);
+		slideDownPoleSound.changeVolume(-x);
 		
 	}
 	

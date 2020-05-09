@@ -15,9 +15,9 @@ public class Koopa implements Sprite{
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
 	private int frame = 1;
-	private int direction = 1;
+	private int direction = -1;
 	private boolean killed = false;
-	private boolean back = false;
+	private boolean back = true;
 	private ImageIcon koopa1 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa.png"));
 	private ImageIcon koopa2 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa2.png"));
 	private ImageIcon koopa1_back = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Koopa_back.png"));
@@ -37,7 +37,7 @@ public class Koopa implements Sprite{
 	public Koopa(int x, int y) {
 		XCORD = x;
 		YCORD = y + 8;
-		IMAGEICON = koopa1;
+		IMAGEICON = koopa1_back;
 		IMAGE = IMAGEICON.getImage();
 	}
 

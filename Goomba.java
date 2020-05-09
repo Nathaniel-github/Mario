@@ -16,7 +16,7 @@ public class Goomba implements Sprite{
 	private ImageIcon IMAGEICON;
 	private Image IMAGE;
 	private int frame = 1;
-	private int direction = 1;
+	private int direction = -1;
 	private boolean killed = false;
 	private ImageIcon goomba1 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Goomba.png"));
 	private ImageIcon goomba2 = new ImageIcon(getClass().getClassLoader().getResource("EnemySpriteImages/Goomba2.png"));

@@ -499,31 +499,33 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			for (int i = 0; i < renderSprites.size(); i++) {
-
-				if (renderSprites.get(i).getCollider().intersects(getMarioRectangle())) {
-					
-					if (yCord + currentImage.getHeight(observer) <= renderSprites.get(i).getKillArea() && !renderSprites.get(i).isDying()) {
+				try {
+					if (renderSprites.get(i).getCollider().intersects(getMarioRectangle())) {
 						
-						stompSound.play();
-						renderSprites.get(i).kill();
-						stompSound.restart();
-						if(renderSprites.get(i) instanceof Goomba) {
-							PointCounter.addPoints(renderSprites.get(i).killPoints());
+						if (yCord + currentImage.getHeight(observer) <= renderSprites.get(i).getKillArea() && !renderSprites.get(i).isDying()) {
+							
+							stompSound.play();
+							renderSprites.get(i).kill();
+							stompSound.restart();
+							if(renderSprites.get(i) instanceof Goomba) {
+								PointCounter.addPoints(renderSprites.get(i).killPoints());
+							}
+							if(renderSprites.get(i) instanceof Koopa) {
+								PointCounter.addPoints(renderSprites.get(i).killPoints());
+							}
+							
+							
+						} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
+							
+							die();
+							
+							
 						}
-						if(renderSprites.get(i) instanceof Koopa) {
-							PointCounter.addPoints(renderSprites.get(i).killPoints());
-						}
-						
-						
-					} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
-						
-						die();
-						
 						
 					}
+				} catch(Exception e1) {
 					
 				}
-
 			}
 			
 		}
@@ -537,47 +539,52 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
+		
 			for (int i = 0; i < renderSprites.size(); i++) {
-
-				renderSprites.get(i).shiftX();
-				
-				for (int k = 0; k < renderBlocks.size(); k ++) {
+				try {
+					renderSprites.get(i).shiftX();
 					
-					if(renderSprites.get(i).getCollider().intersects(renderBlocks.get(i).getRectangle())) {
+					for (int k = 0; k < renderBlocks.size(); k ++) {
 						
-						renderSprites.get(i).reverseDirection();
+						if(renderSprites.get(i).getCollider().intersects(renderBlocks.get(i).getRectangle())) {
+							
+							renderSprites.get(i).reverseDirection();
+							
+						}
 						
 					}
 					
-				}
-				
-				for (int k = 0; k < renderProps.size(); k ++) {
-					
-					if(renderProps.get(k).getCollider().intersects(renderSprites.get(i).getRectangle())) {
+					for (int k = 0; k < renderProps.size(); k ++) {
 						
-						renderSprites.get(i).reverseDirection();
-						renderSprites.get(i).shiftX();
-						break;
-						
-					}
-					
-				}
-				
-				for (int k = 0; k < renderBlocks.size(); k ++) {
-					
-					if(renderSprites.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
-						
-						renderSprites.get(i).reverseDirection();
-						renderSprites.get(i).shiftX();
-						break;
+						if(renderProps.get(k).getCollider().intersects(renderSprites.get(i).getRectangle())) {
+							
+							renderSprites.get(i).reverseDirection();
+							renderSprites.get(i).shiftX();
+							break;
+							
+						}
 						
 					}
+					
+					for (int k = 0; k < renderBlocks.size(); k ++) {
+						
+						if(renderSprites.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
+							
+							renderSprites.get(i).reverseDirection();
+							renderSprites.get(i).shiftX();
+							break;
+							
+						}
+						
+					} 
+				} catch(Exception e1) {
 					
 				}
 
 			}
 			
 		}
+
 		
 	});
 

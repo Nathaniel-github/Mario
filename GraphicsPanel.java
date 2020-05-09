@@ -1125,8 +1125,8 @@ public class GraphicsPanel extends JFrame {
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "space_released");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "left_released");
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "right_released");
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "up_pressed");
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "up_released");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), "up_pressed");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "up_released");
 
 		// Assigns the "key" to an action
 		actionMap.put("left_pressed", new AbstractAction() {

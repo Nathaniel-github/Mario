@@ -9,7 +9,8 @@ Goals:
 - Incorporate blocks that cause you to die if you land on the (moderate)
 - Incorporate a finish line so the level actually ends and goes to the next one (moderate) DONE
 - Add sounds (easy) DONE
-- Add enemy sprites (hard) 
+- Add enemy sprites (hard) DONE
 - Add question mark block (hard)
-- Add time system (moderate)
+- Add time system (moderate) DONE
+- Add point system (moderate) DONE
 - Incorporate life system (hard)

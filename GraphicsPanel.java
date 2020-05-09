@@ -607,6 +607,8 @@ public class GraphicsPanel extends JFrame {
 					}
 
 				}
+			} else {
+				jump.stop();
 			}
 
 		}
@@ -1186,7 +1188,7 @@ public class GraphicsPanel extends JFrame {
 				standing.stop();
 				stand = false;
 
-				if (!jump.isRunning()) {
+				if (!jump.isRunning() && yCord + currentImage.getHeight(observer) + 1 >= getFloor()) {
 
 					jumpSound.play();
 					jump.start();
@@ -1217,7 +1219,7 @@ public class GraphicsPanel extends JFrame {
 				standing.stop();
 				stand = false;
 
-				if (!jump.isRunning()) {
+				if (!jump.isRunning() && yCord + currentImage.getHeight(observer) + 1 >= getFloor()) {
 
 					jumpSound.play();
 					jump.start();

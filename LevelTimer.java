@@ -38,5 +38,14 @@ public class LevelTimer {
 	public int getTimeLeft() {
 		return timeLeft;
 	}
+	
+	public String timeStartingZeros() {
+		int tl = 3 - Integer.toString(timeLeft).length();
+		String displayTime = "";
+		for(int i = 0;i < tl;i++) {
+			displayTime += "0";
+		}
+		return displayTime;
+	}
 
 }

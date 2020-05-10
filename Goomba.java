@@ -135,7 +135,7 @@ public class Goomba implements Sprite{
 
 	@Override
 	public int getKillArea() {
-		return YCORD +  20;
+		return YCORD +  18;
 	}
 
 	@Override

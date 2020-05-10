@@ -42,8 +42,6 @@ public class GraphicsPanel extends JFrame {
 	// Boolean for if the registered jump is a short hop or not
 	private boolean shortHop = true;
 
-	private boolean fixJump = false;
-
 	private boolean endingAnimation = false;
 
 	private boolean visible = true;
@@ -139,6 +137,8 @@ public class GraphicsPanel extends JFrame {
 
 	// This is the width of one block (in pixels)
 	private final int BLOCKWIDTH = 54;
+	
+	private double jumpVelocity = 3.4;
 
 	// This is the value used to calculate the placement of blocks
 	private final double BLOCKSPACING = 53.35;
@@ -399,7 +399,7 @@ public class GraphicsPanel extends JFrame {
 
 				Image temp = getFrameImage();
 
-				for (int i = 0; i < MOVELENGTH; i++) {
+				for (int i = 0; i < jumpVelocity - 0.4; i++) {
 
 					// If Mario is above the floor
 					if (yCord + temp.getHeight(observer) < getFloor()) {
@@ -413,6 +413,10 @@ public class GraphicsPanel extends JFrame {
 					}
 
 				}
+			}
+			
+			if (jumping && onFloor()) {
+				jumping = false;
 			}
 			
 			for (int i = 0; i < renderSprites.size(); i ++) {
@@ -620,62 +624,30 @@ public class GraphicsPanel extends JFrame {
 				if (jumpCount * MOVELENGTH < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
 
 					fixMovement();
-					yCord -= MOVELENGTH;
+					yCord -= jumpVelocity;
+					changeJumpVelocity();
 					jumpCount++;
 
-				} else {
+				} else { // If he is done jumping
 
-					// Gets what Mario's image would be if he wasn't jumping or standing
-					Image temp = getFrameImage();
+					shortHop = true;
 
-					// If the jump needs to be fixed
-					if (!fixJump && jumpCount != 0) {
-						fixJump = true;
+					fixMovement();
+
+					jumpCount = 0;
+					jumpVelocity = 3.4;
+					jump.stop();
+					jumpSound.restart();
+
+					// This is so that the standing timer doesn't overlap with the movement timers
+					// and make the image standing while the player is moving
+					if (!rightMove.isRunning() && !leftMove.isRunning()) {
+
+						standing.start();
+
 					}
-
-					// Sets the jumpCount to the max because if it is at this point in the program
-					// it is done
-					// jumping
-					jumpCount = JUMPHEIGHT / MOVELENGTH;
-
-					// If Mario is not on the floor
-					if (yCord + temp.getHeight(observer) < getFloor()) {
-
-						yCord += MOVELENGTH;
-						jumping = true;
-						jumpCount++;
-
-						// Makes landing smoother
-						while (yCord + temp.getHeight(observer) + MOVELENGTH >= getFloor() && fixJump) {
-
-							yCord--;
-							fixJump = false;
-
-						}
-
-						fixMovement();
-
-					} else { // If he is on the floor
-
-						jumping = false;
-						shortHop = true;
-
-						fixMovement();
-
-						jumpCount = 0;
-						jump.stop();
-						jumpSound.restart();
-
-						// This is so that the standing timer doesn't overlap with the movement timers
-						// and make the image standing while the player is moving
-						if (!rightMove.isRunning() && !leftMove.isRunning()) {
-
-							standing.start();
-
-						}
-					}
-
 				}
+
 			} else {
 				jump.stop();
 			}
@@ -706,16 +678,14 @@ public class GraphicsPanel extends JFrame {
 			// If Mario is currently moving right
 			if (!rightMove.isRunning() && !endingAnimation && !isDead) {
 				
-				if (!jump.isRunning()) {
-					fixMovement();
-				}
+				fixMovement();
 				
 				moveBack();
 				
 				back = true;
 
 				// If Mario is running into a barrier
-				while (inBlock() && !jump.isRunning()) {
+				while (inBlock()) {
 
 					moveForward(); // Undo the moveBack
 
@@ -735,9 +705,7 @@ public class GraphicsPanel extends JFrame {
 
 			if (!leftMove.isRunning() && !endingAnimation && !isDead) {
 				
-				if (!jump.isRunning()) {
-					fixMovement();
-				}
+				fixMovement();
 				
 				moveForward();
 				
@@ -754,7 +722,7 @@ public class GraphicsPanel extends JFrame {
 				back = false;
 
 				// If Mario is running into a barrier
-				while (inBlock() && !jump.isRunning()) {
+				while (inBlock()) {
 
 					moveBack(); // Undo the moveForward
 
@@ -855,8 +823,8 @@ public class GraphicsPanel extends JFrame {
 		startAnimation(); // Starts up the panel and renders the animation
 
 		// Mute the sounds
-//		muteSounds();
-		lowerVolume(15);
+		muteSounds();
+//		lowerVolume(15);
 
 		backgroundMusic.loop();
 		backgroundMusic.play();
@@ -866,6 +834,12 @@ public class GraphicsPanel extends JFrame {
 	private Image getCurrentEndingImage() {
 		return new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("EndingImages/Ending" + Integer.toString(endingImageCount) + ".png")).getImage().getScaledInstance(SCREENWIDTH, SCREENHEIGHT, Image.SCALE_DEFAULT)).getImage();
 
+	}
+	
+	private void changeJumpVelocity() {
+		
+		jumpVelocity -= 0.03;
+		
 	}
 
 	// This is the method that determines where the floor is in relation to Mario's
@@ -1390,6 +1364,16 @@ public class GraphicsPanel extends JFrame {
 		}
 
 	}
+	
+	private boolean onFloor() {
+		
+		try {
+			return yCord + currentImage.getHeight(observer) + MOVELENGTH >= getFloor();
+		} catch(Exception e) {
+			return true;
+		}
+		
+	}
 
 	// This is the method that determines the current image based on multiple
 	// factors such as direction
@@ -1404,13 +1388,13 @@ public class GraphicsPanel extends JFrame {
 
 			 
 			// Starting frame
-			if (frame == 0 && !jumping) {
+			if (frame == 0 && !jumping && onFloor()) {
 
 				return STANDINGIMAGE;
 
 			}
 
-			if (stand) {
+			if (stand && onFloor()) {
 
 				if (!back) {
 

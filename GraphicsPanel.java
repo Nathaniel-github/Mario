@@ -94,14 +94,7 @@ public class GraphicsPanel extends JFrame {
 	private int yCord = 600 - currentImage.getHeight(observer);
 
 	// This variable is NOT the number of times Mario has jumped, but actually the
-	// number of times his
-	// movement for a jump is rendered, this is used because when you jump the
-	// program will move you a
-	// little bit every frame so that you can actually see the jump animation,
-	// because of this it also
-	// needs to know when to stop making you move up and start moving you back to
-	// the ground which is
-	// why this variable is there
+	// number of pixels he has gone up from his ground position
 	private int jumpCount = 0;
 
 	// These three coordinates are the current x coordinates in relation to the
@@ -119,9 +112,13 @@ public class GraphicsPanel extends JFrame {
 	// used to render stage
 	// hazards and other blocks that are location specific in a level
 	private int scroll = 0;
+	
+	private double leftVelocity = 0;
+	
+	private double rightVelocity = 0;
 
 	// This is how much Mario moves every frame (in pixels)
-	private final int MOVELENGTH = 2;
+	private final int MOVELENGTH = 3;
 
 	// This is how fast the panel is refreshed (in milliseconds)
 	private final int REFRESHRATE = 5;
@@ -604,13 +601,13 @@ public class GraphicsPanel extends JFrame {
 
 			if (!endingAnimation && !isDead) {
 
-				int factor = 0;
+				double factor = 0;
 				jumping = true;
 				currentImage = getCurrentImage();
 
 				// If he is supposed to do a short hop
 				if (shortHop) {
-					factor = 2;
+					factor = 2.5;
 				} else {
 					factor = 1;
 				}
@@ -621,7 +618,7 @@ public class GraphicsPanel extends JFrame {
 				}
 
 				// If Mario has jumped the given jump height
-				if (jumpCount * MOVELENGTH < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
+				if (jumpCount * 2 < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
 
 					fixMovement();
 					yCord -= jumpVelocity;
@@ -1208,6 +1205,7 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 
 				leftMove.stop();
+				leftVelocity = 0;
 
 				if (!rightMove.isRunning()) {
 					standing.start();
@@ -1233,6 +1231,8 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 
 				rightMove.stop();
+				rightVelocity = 0;
+				
 				if (!leftMove.isRunning()) {
 					standing.start();
 				}
@@ -1337,17 +1337,25 @@ public class GraphicsPanel extends JFrame {
 	// Method for moving towards the left side of the screen
 	private void moveBack() {
 
-		xCord -= MOVELENGTH;
-		trueX -= MOVELENGTH;
+		if (leftVelocity < MOVELENGTH) {
+			leftVelocity += 0.02;
+		}
+		
+		xCord -= leftVelocity;
+		trueX -= leftVelocity;
 		frame++;
 
 	}
 
 	// Method for moving towards the right side of the screen
 	private void moveForward() {
-
-		xCord += MOVELENGTH;
-		trueX += MOVELENGTH;
+		
+		if (rightVelocity < MOVELENGTH) {
+			rightVelocity += 0.05;
+		}
+		
+		xCord += rightVelocity;
+		trueX += rightVelocity;
 		frame++;
 
 	}

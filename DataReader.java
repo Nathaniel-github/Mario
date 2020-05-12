@@ -16,6 +16,7 @@ public class DataReader {
 	private LinkedList<String[]> allStairBlocks = new LinkedList<String[]>();
 	private LinkedList<String[]> allBrickBlocks = new LinkedList<String[]>();
 	private LinkedList<String[]> allQuestionMarkBlocks = new LinkedList<String[]>();
+	private LinkedList<String[]> allBarrierBlocks = new LinkedList<String[]>();
 	private LinkedList<String[]> allSmallPipes = new LinkedList<String[]>();
 	private LinkedList<String[]> allPipes = new LinkedList<String[]>();
 	private LinkedList<String[]> allLongPipes = new LinkedList<String[]>();
@@ -50,6 +51,10 @@ public class DataReader {
 			} else if (allData.get(i)[0].equals("StairBlock")) {
 				
 				allStairBlocks.add(allData.get(i));
+				
+			} else if (allData.get(i)[0].equals("BarrierBlock")) {
+				
+				allBarrierBlocks.add(allData.get(i));
 				
 			} else if (allData.get(i)[0].equals("ShortPipe")) {
 				
@@ -124,6 +129,14 @@ public class DataReader {
 		return allQuestionMarkBlocks;
 		
 	}
+	
+	// Returns the list of all the barrier blocks
+	public LinkedList<String[]> getAllBarrierBlocks() {
+		
+		return allBarrierBlocks;
+		
+	}
+	
 	
 	// Returns the list of all the small pipes
 	public LinkedList<String[]> getAllSmallPipes() {

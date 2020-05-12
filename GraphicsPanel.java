@@ -617,7 +617,7 @@ public class GraphicsPanel extends JFrame {
 				}
 
 				// If Mario has jumped the given jump height
-				if (jumpCount * 2 < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
+				if (jumpCount * MOVELENGTH < JUMPHEIGHT / factor && yCord > getBottomFloor()) {
 
 					fixMovement();
 					yCord -= jumpVelocity;
@@ -651,7 +651,7 @@ public class GraphicsPanel extends JFrame {
 
 	});
 
-	private Timer shortJump = new Timer(250, new ActionListener() {
+	private Timer shortJump = new Timer(200, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -801,7 +801,7 @@ public class GraphicsPanel extends JFrame {
 			
 			for (int i = 0; i < temp.size(); i ++) {
 				
-				g.drawString(Integer.toString(temp.get(i)[2]), temp.get(i)[0], temp.get(i)[1]);
+				g.drawString(Integer.toString(temp.get(i)[2]), temp.get(i)[0] - scroll, temp.get(i)[1]);
 				
 			}
 
@@ -856,7 +856,7 @@ public class GraphicsPanel extends JFrame {
 	
 	private void changeJumpVelocity() {
 		
-		jumpVelocity -= 0.03;
+		jumpVelocity -= 0.02;
 		
 	}
 
@@ -1592,6 +1592,15 @@ public class GraphicsPanel extends JFrame {
 
 			allSprites.add(new Koopa((int) (BLOCKSPACING * (Integer.parseInt(temp8.get(i)[1])) - 1),
 					(int) (BASEFLOOR - (Integer.parseInt(temp8.get(i)[2]) * BLOCKSPACING))));
+
+		}
+		
+		LinkedList<String[]> temp9 = data.getAllBarrierBlocks();
+
+		for (int i = 0; i < temp9.size(); i++) {
+
+			allBlocks.add(new BarrierBlock((int) (BLOCKSPACING * (Integer.parseInt(temp9.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp9.get(i)[2]) * BLOCKSPACING))));
 
 		}
 		

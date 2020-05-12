@@ -107,6 +107,9 @@ public class GraphicsPanel extends JFrame {
 	private int backX = 0;
 	private int backX2 = SCREENWIDTH;
 	private int backX3 = SCREENWIDTH * 2;
+	
+	private int currentWorld = 1;
+	private int currentLevel = 1;
 
 	// This is the number of pixels the stage has been scrolled already, this is
 	// used to render stage
@@ -793,6 +796,7 @@ public class GraphicsPanel extends JFrame {
 			g.drawString("MARIO", 100, 50);
 			g.drawString(PointCounter.timeStartingZeros() + Integer.toString(PointCounter.getPoints()), 100, 90);
 			g.drawString("WORLD", 700, 50);
+			g.drawString(currentWorld + "-" + currentLevel, 722, 90);
 
 			// If Mario is at the point in the stage where the stage needs to scroll
 			if (xCord + currentImage.getWidth(observer) > getWidth() - 500) {

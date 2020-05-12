@@ -116,9 +116,9 @@ public class GraphicsPanel extends JFrame {
 	// hazards and other blocks that are location specific in a level
 	private int scroll = 0;
 	
-	private double leftVelocity = 0;
+	private double leftVelocity = 1;
 	
-	private double rightVelocity = 0;
+	private double rightVelocity = 1;
 
 	// This is how much Mario moves every frame (in pixels)
 	private final int MOVELENGTH = 3;
@@ -156,13 +156,15 @@ public class GraphicsPanel extends JFrame {
 	
 	private SoundPlayer [] allSounds = {backgroundMusic, jumpSound, deathSound, endingMusic, slideDownPoleSound, stompSound, timeToPointsSound};
 	
+	private PointData displayPoints = new PointData();
+	
 	private Image currentEndingImage;
 	
 	private int endingImageCount = 1;
 		
 	private LevelTimer levelTimeLeft = new LevelTimer(400);
 	
-	private Points PointCounter = new Points();
+	private Points pointCounter = new Points();
 
 	// This list stores all of the data for every block that needs to be rendered
 	// throughout a level
@@ -214,7 +216,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if(levelTimeLeft.getTimeLeft() > 0) {
 				levelTimeLeft.decreaseTime();
-				PointCounter.addPoints(50);
+				pointCounter.addPoints(50);
 			}
 			else {
 				startEndingZoomIn();
@@ -511,13 +513,8 @@ public class GraphicsPanel extends JFrame {
 							stompSound.play();
 							renderSprites.get(i).kill();
 							stompSound.restart();
-							if(renderSprites.get(i) instanceof Goomba) {
-								PointCounter.addPoints(renderSprites.get(i).killPoints());
-							}
-							if(renderSprites.get(i) instanceof Koopa) {
-								PointCounter.addPoints(renderSprites.get(i).killPoints());
-							}
-							
+							pointCounter.addPoints(renderSprites.get(i).killPoints());
+							displayPoints.addData(new int[] {renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord(), renderSprites.get(i).killPoints()});
 							
 						} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
 							
@@ -794,9 +791,19 @@ public class GraphicsPanel extends JFrame {
 			g.drawString("TIME", 1000, 50);
 			g.drawString(levelTimeLeft.timeStartingZeros() + Integer.toString(levelTimeLeft.getTimeLeft()), 1022, 90);
 			g.drawString("MARIO", 100, 50);
-			g.drawString(PointCounter.timeStartingZeros() + Integer.toString(PointCounter.getPoints()), 100, 90);
+			g.drawString(pointCounter.timeStartingZeros() + Integer.toString(pointCounter.getPoints()), 100, 90);
 			g.drawString("WORLD", 700, 50);
 			g.drawString(currentWorld + "-" + currentLevel, 722, 90);
+			
+			g.setFont(new Font("Monospaced", Font.BOLD, 18));
+			
+			LinkedList<int[]> temp = displayPoints.getAllData();
+			
+			for (int i = 0; i < temp.size(); i ++) {
+				
+				g.drawString(Integer.toString(temp.get(i)[2]), temp.get(i)[0], temp.get(i)[1]);
+				
+			}
 
 			// If Mario is at the point in the stage where the stage needs to scroll
 			if (xCord + currentImage.getWidth(observer) > getWidth() - 500) {
@@ -1219,7 +1226,7 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 
 				leftMove.stop();
-				leftVelocity = 0;
+				leftVelocity = 0.5;
 
 				if (!rightMove.isRunning()) {
 					standing.start();
@@ -1245,7 +1252,7 @@ public class GraphicsPanel extends JFrame {
 			public void actionPerformed(ActionEvent actionEvt) {
 
 				rightMove.stop();
-				rightVelocity = 0;
+				rightVelocity = 0.5;
 				
 				if (!leftMove.isRunning()) {
 					standing.start();

@@ -611,8 +611,7 @@ public class GraphicsPanel extends JFrame {
 				} else {
 					factor = 1;
 				}
-
-				// Makes the jump take off smoother
+				
 				if (jumping && jumpCount <= 5) {
 					fixMovement();
 				}
@@ -630,7 +629,6 @@ public class GraphicsPanel extends JFrame {
 					shortHop = true;
 
 					fixMovement();
-
 					jumpCount = 0;
 					jumpVelocity = 3.4;
 					jump.stop();
@@ -653,7 +651,7 @@ public class GraphicsPanel extends JFrame {
 
 	});
 
-	private Timer shortJump = new Timer(300, new ActionListener() {
+	private Timer shortJump = new Timer(250, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -681,10 +679,16 @@ public class GraphicsPanel extends JFrame {
 				
 				back = true;
 
+				int count = 0;
 				// If Mario is running into a barrier
-				while (inBlock()) {
+				while (inBlock() && !jump.isRunning()) {
 
-					moveForward(); // Undo the moveBack
+					undoBack();
+					
+					count ++;
+					if (count >= 5) {
+						break;
+					}
 
 				}
 			}
@@ -717,11 +721,17 @@ public class GraphicsPanel extends JFrame {
 
 				}
 				back = false;
-
+				
+				int count = 0;
 				// If Mario is running into a barrier
-				while (inBlock()) {
+				while (inBlock() && !jump.isRunning()) {
 
-					moveBack(); // Undo the moveForward
+					undoForward();
+					
+					count ++;
+					if (count >= 5) {
+						break;
+					}
 
 				}
 			}
@@ -1346,6 +1356,13 @@ public class GraphicsPanel extends JFrame {
 		frame++;
 
 	}
+	
+	private void undoBack() {
+		
+		xCord += leftVelocity;
+		trueX += leftVelocity;
+		
+	}
 
 	// Method for moving towards the right side of the screen
 	private void moveForward() {
@@ -1358,6 +1375,13 @@ public class GraphicsPanel extends JFrame {
 		trueX += rightVelocity;
 		frame++;
 
+	}
+	
+	private void undoForward() {
+		
+		xCord -= rightVelocity;
+		trueX -= rightVelocity;
+		
 	}
 
 	// Fixes Mario's current image so that it doesn't clip into blocks

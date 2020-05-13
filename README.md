@@ -14,3 +14,6 @@ Goals:
 - Add time system (moderate) DONE
 - Add point system (moderate) DONE
 - Incorporate life system (hard)
+
+Setup:
+Copy all *.java files into the src folder. Copy the resource folder into the java project folder. Use res folder as the source folder by right clicking on the res folder, hover over "Build Path" and click on "Use as Source Folder". 

@@ -151,6 +151,6 @@ StairBlock;190;5;
 StairBlock;190;6;
 StairBlock;190;7;
 StairBlock;190;8;
-FlagPole;198;11
+FlagPole;10;11
 StairBlock;199;1;
-EndCastle;203;6;
+EndCastle;15;6;

@@ -28,6 +28,9 @@ public class LevelTimer {
 		currentTimeLeft.start();		
 
 	}
+	public void restartTimer() {
+		timeLeft = 400;
+	}
 	
 	public void stopTimer() {
 		

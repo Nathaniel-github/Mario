@@ -11,6 +11,7 @@ public class Flag implements Prop{
 	private final Image IMAGE;
 	private final ImageIcon IMAGEICON;
 	private final int XCORD;
+	private final int ORIGINALYCORD;
 	private int YCORD;
 	private final Polygon COLLIDER;
 	
@@ -19,6 +20,7 @@ public class Flag implements Prop{
 		// Save x and y coordinates given when instantiated
 		XCORD = x;
 		YCORD = y;
+		ORIGINALYCORD = y;
 		// Gets the ImageIcon of the flag pole
 		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("PropImages/Flag.png"));
 		// Gets the image from the ImageIcon
@@ -90,6 +92,11 @@ public class Flag implements Prop{
 	
 	public void changeYCord(int change) {
 		YCORD+=change;
+	}
+	
+	public void resetYCord() {
+		
+		YCORD = ORIGINALYCORD;
 	}
 
 }

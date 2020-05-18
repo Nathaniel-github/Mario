@@ -91,7 +91,7 @@ public class GraphicsPanel extends JFrame {
 	private int frame = 0;
 
 	// The x coordinate of Mario relative to the window, this is used for drawing
-	// Mario on the JPanel
+	// Mario on the JPanel 
 	private int xCord = 100;
 
 	// The x coordinate of Mario relative to the level, this is used to determine
@@ -194,6 +194,8 @@ public class GraphicsPanel extends JFrame {
 	// This is the object that reads the text
 	private DataReader levelData = new DataReader("Mario-1-1.txt");
 
+	
+
 	private Flag flag;
 	private FlagPole flagPole;
 	private EndCastle castle;
@@ -270,8 +272,15 @@ public class GraphicsPanel extends JFrame {
 				endingImageCount--;
 			} else {
 				endingZoomOut.stop();
+				if(!isDead) {
+					currentLevel++;
+				}
 				resetAllFields();
 				flag.resetYCord();
+				if(!isDead) {
+					removeStage();
+					goToNextLevel();
+				}
 				
 				
 
@@ -871,7 +880,6 @@ public class GraphicsPanel extends JFrame {
 
 		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
-
 		setStage(levelData); // Sets all the interactions for the current level
 
 		startAnimation(); // Starts up the panel and renders the animation
@@ -1577,6 +1585,7 @@ public class GraphicsPanel extends JFrame {
 	private void setStage(DataReader data) {
 
 		LinkedList<String[]> temp = data.getAllStairBlocks();
+		
 
 		for (int i = 0; i < temp.size(); i++) {
 
@@ -1668,6 +1677,15 @@ public class GraphicsPanel extends JFrame {
 		allProps.add(castle);
 
 	}
+	private void removeStage() {
+		allProps.clear();
+		allSprites.clear();
+		allBlocks.clear();
+		renderProps.clear();
+		renderSprites.clear();
+		renderBlocks.clear();
+	}
+	
 
 	// This method scrolls the stage
 	private void scrollStage() {
@@ -1746,11 +1764,9 @@ public class GraphicsPanel extends JFrame {
 	}
 
 	private void goToNextLevel() {
-		stopAllSounds();
-		stopAllTimers();
-		resetAllFields();
-		currentLevel++;
-		
+		levelData = new DataReader("Mario-1-"+currentLevel+".txt");
+		setStage(levelData);
 	}
+	
 
 }

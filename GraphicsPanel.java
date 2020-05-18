@@ -572,7 +572,7 @@ public class GraphicsPanel extends JFrame {
 
 					}
 				} catch (Exception e1) {
-
+					e1.printStackTrace();
 				}
 			}
 
@@ -591,7 +591,7 @@ public class GraphicsPanel extends JFrame {
 
 					for (int k = 0; k < renderBlocks.size(); k++) {
 
-						if (renderSprites.get(i).getCollider().intersects(renderBlocks.get(i).getRectangle())) {
+						if (renderSprites.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
 
 							renderSprites.get(i).reverseDirection();
 
@@ -623,7 +623,7 @@ public class GraphicsPanel extends JFrame {
 
 					}
 				} catch (Exception e1) {
-
+					e1.printStackTrace();
 				}
 
 			}

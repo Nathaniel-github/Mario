@@ -21,6 +21,7 @@ public class Flag implements Prop{
 		XCORD = x;
 		YCORD = y;
 		ORIGINALYCORD = y;
+
 		// Gets the ImageIcon of the flag pole
 		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("PropImages/Flag.png"));
 		// Gets the image from the ImageIcon

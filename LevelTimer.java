@@ -29,9 +29,7 @@ public class LevelTimer {
 
 	}
 	public void restartTimer() {
-		
 		timeLeft = 400;
-		
 	}
 	
 	public void stopTimer() {

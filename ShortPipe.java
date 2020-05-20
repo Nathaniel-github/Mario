@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class ShortPipe implements Prop{
+public class ShortPipe extends Pipe implements Prop{
 
 	// Fields
 	private final Image IMAGE;
@@ -15,6 +15,8 @@ public class ShortPipe implements Prop{
 	private final Polygon COLLIDER;
 	
 	public ShortPipe(int x, int y) {
+		
+		super(x, y);
 		
 		// Save x and y coordinates given when instantiated
 		XCORD = x;

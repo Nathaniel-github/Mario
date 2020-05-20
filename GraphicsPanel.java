@@ -255,9 +255,15 @@ public class GraphicsPanel extends JFrame {
 				endingImageCount++;
 			} else {
 				endingZoomIn.stop();
-				endingZoomOut.start();
-				startUpTimers();
-				levelTimeLeft.restartTimer();
+				if(!isDead) {
+					resetAllFields();
+					flag.resetYCord();
+					removeStage();
+					goToNextLevel();
+					levelTimeLeft.restartTimer();
+					currentLevel++;
+					endingZoomOut.start();
+				}
 
 			}
 		}
@@ -272,18 +278,9 @@ public class GraphicsPanel extends JFrame {
 				endingImageCount--;
 			} else {
 				endingZoomOut.stop();
-				if(!isDead) {
-					currentLevel++;
-				}
-				resetAllFields();
-				flag.resetYCord();
-				if(!isDead) {
-					removeStage();
-					goToNextLevel();
-				}
-				
-				
-
+				endingAnimation = false;
+				zoomIn = false;
+				startUpTimers();
 			}
 		}
 
@@ -307,7 +304,7 @@ public class GraphicsPanel extends JFrame {
 
 	});
 
-	private Timer slideDownPole = new Timer((int) (SPEED * 1.25), new ActionListener() {
+	private Timer slideDownPole = new Timer((int) (SPEED * 1.3), new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -472,7 +469,7 @@ public class GraphicsPanel extends JFrame {
 				for (int k = 0; k < MOVELENGTH; k++) {
 
 					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight()
-							+ MOVELENGTH < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
+							 < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
 
 						renderSprites.get(i).shiftY();
 
@@ -1738,15 +1735,14 @@ public class GraphicsPanel extends JFrame {
 
 	}
 
+	// I have left out endingAnimation and zoomIn because they will mess up the zoom out animation
 	private void resetAllFields() {
 		back = false;
 		jumping = false;
 		stand = false;
 		shortHop = true;
-		endingAnimation = false;
 		visible = true;
 		turnAround = false;
-		zoomIn = false;
 		isDead = false;
 		endingImageCount = 1;
 		frame = 0;

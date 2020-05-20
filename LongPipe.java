@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class LongPipe implements Prop{
+public class LongPipe extends Pipe implements Prop{
 
 	// Fields
 	private final Image IMAGE;
@@ -15,6 +15,8 @@ public class LongPipe implements Prop{
 	private final Polygon COLLIDER;
 	
 	public LongPipe(int x, int y) {
+		
+		super(x, y);
 		
 		// Save x and y coordinates given when instantiated
 		XCORD = x;

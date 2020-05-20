@@ -84,7 +84,7 @@ public class EndCastle implements Prop{
 	@Override
 	public Polygon getCollider() {
 		
-		return COLLIDER;
+		return new Polygon();
 		
 	}
 	

@@ -22,6 +22,9 @@ public class DataReader {
 	private LinkedList<String[]> allLongPipes = new LinkedList<String[]>();
 	private LinkedList<String[]> allGoombas = new LinkedList<String[]>();
 	private LinkedList<String[]> allKoopas = new LinkedList<String[]>();
+	private LinkedList<String[]> allLongTrees = new LinkedList<String[]>();
+	private LinkedList<String[]> allShortTrees = new LinkedList<String[]>();
+	private LinkedList<String[]> allGates = new LinkedList<String[]>();
 
 	
 	public DataReader(String fileName) {
@@ -83,6 +86,18 @@ public class DataReader {
 			} else if (allData.get(i)[0].equals("Koopa")) {
 				
 				allKoopas.add(allData.get(i));
+				
+			} else if (allData.get(i)[0].equals("LongTree")) {
+				
+				allLongTrees.add(allData.get(i));
+				
+			} else if (allData.get(i)[0].equals("ShortTree")) {
+				
+				allShortTrees.add(allData.get(i));
+				
+			} else if (allData.get(i)[0].equals("Gate")) {
+				
+				allGates.add(allData.get(i));
 				
 			}
 			
@@ -185,6 +200,24 @@ public class DataReader {
 	public LinkedList<String[]> getAllKoopas() {
 		
 		return allKoopas;
+		
+	}
+	
+	public LinkedList<String[]> getAllLongTrees() {
+		
+		return allLongTrees;
+		
+	}
+	
+	public LinkedList<String[]> getAllShortTrees() {
+		
+		return allShortTrees;
+		
+	}
+	
+	public LinkedList<String[]> getAllGates() {
+		
+		return allGates;
 		
 	}
 	

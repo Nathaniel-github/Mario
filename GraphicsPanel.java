@@ -1665,6 +1665,33 @@ public class GraphicsPanel extends JFrame {
 					(int) (BASEFLOOR - (Integer.parseInt(temp9.get(i)[2]) * BLOCKSPACING))));
 
 		}
+		
+		LinkedList<String[]> temp10 = data.getAllLongTrees();
+
+		for (int i = 0; i < temp10.size(); i++) {
+
+			allProps.add(new LongTree((int) (BLOCKSPACING * (Integer.parseInt(temp10.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp10.get(i)[2]) * BLOCKSPACING))));
+
+		}
+		
+		LinkedList<String[]> temp11 = data.getAllShortTrees();
+
+		for (int i = 0; i < temp11.size(); i++) {
+
+			allProps.add(new ShortTree((int) (BLOCKSPACING * (Integer.parseInt(temp11.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp11.get(i)[2]) * BLOCKSPACING))));
+
+		}
+		
+		LinkedList<String[]> temp12 = data.getAllGates();
+
+		for (int i = 0; i < temp12.size(); i++) {
+
+			allProps.add(new Gate((int) (BLOCKSPACING * (Integer.parseInt(temp12.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp12.get(i)[2]) * BLOCKSPACING))));
+
+		}
 
 		flagPole = new FlagPole((int) (BLOCKSPACING * (Integer.parseInt(data.getFlagPole()[1])) - 1),
 				(int) (BASEFLOOR - (Integer.parseInt(data.getFlagPole()[2]) * BLOCKSPACING)));

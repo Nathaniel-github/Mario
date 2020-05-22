@@ -109,4 +109,10 @@ public class SoundPlayer {
 		
 	}
 	
+	public void forceRestart() {
+		
+		clip.setMicrosecondPosition(0);
+		
+	}
+	
 }

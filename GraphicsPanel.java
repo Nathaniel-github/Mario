@@ -257,6 +257,7 @@ public class GraphicsPanel extends JFrame {
 				endingZoomIn.stop();
 				if(!isDead) {
 					resetAllFields();
+					endingImageCount = 20;
 					flag.resetYCord();
 					removeStage();
 					goToNextLevel();
@@ -281,6 +282,8 @@ public class GraphicsPanel extends JFrame {
 				endingAnimation = false;
 				zoomIn = false;
 				startUpTimers();
+				backgroundMusic.forceRestart();
+				backgroundMusic.play();
 			}
 		}
 
@@ -882,8 +885,8 @@ public class GraphicsPanel extends JFrame {
 		startAnimation(); // Starts up the panel and renders the animation
 
 		// Mute the sounds
-		muteSounds();
-//		lowerVolume(15);
+//		muteSounds();
+		lowerVolume(15);
 
 		backgroundMusic.loop();
 		backgroundMusic.play();

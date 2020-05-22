@@ -469,7 +469,7 @@ public class GraphicsPanel extends JFrame {
 				for (int k = 0; k < MOVELENGTH; k++) {
 
 					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight()
-							+ MOVELENGTH < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
+							< getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
 
 						renderSprites.get(i).shiftY();
 
@@ -856,7 +856,7 @@ public class GraphicsPanel extends JFrame {
 				moveForward();
 
 			}
-
+   
 			if (currentImage != null) {
 				g.drawImage(currentImage, xCord, yCord, observer);
 			}
@@ -1092,16 +1092,19 @@ public class GraphicsPanel extends JFrame {
 		}
 
 		for (int i = 0; i < renderProps.size(); i++) {
+			
+			if(renderProps.get(i).isObstructive()) {
 
-			if (renderProps.get(i).getCollider().intersects(getMarioRectangle())
-					&& renderProps.get(i).isObstructive()) {
+				if (renderProps.get(i).getCollider().intersects(getMarioRectangle())
+						&& renderProps.get(i).isObstructive()) {
 
-				answer = true;
+					answer = true;
 
-				return answer;
+					return answer;
+
+				}
 
 			}
-
 		}
 
 		return answer;

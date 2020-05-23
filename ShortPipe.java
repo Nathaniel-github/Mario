@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class ShortPipe extends Pipe implements Prop{
+public class ShortPipe extends Pipe {
 
 	// Fields
 	private final Image IMAGE;
@@ -69,14 +69,6 @@ public class ShortPipe extends Pipe implements Prop{
 	public Rectangle getRectangle() {
 		
 		return new Rectangle(XCORD, YCORD, IMAGEICON.getIconWidth(), IMAGEICON.getIconHeight());
-		
-	}
-
-	// Returns whether or not the prop is obstructive
-	@Override
-	public boolean isObstructive() {
-		
-		return true;
 		
 	}
 

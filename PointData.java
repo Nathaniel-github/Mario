@@ -16,4 +16,10 @@ public class PointData {
 		
 	}
 	
+	public void clearList() {
+		
+		allData.clear();
+		
+	}
+	
 }

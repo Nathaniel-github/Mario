@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
-import java.net.URL;
 
 import javax.swing.*;
 
@@ -38,6 +37,30 @@ public class GraphicsPanel extends JFrame {
 	private final Image WALKINGIMAGE3_BACK = new ImageIcon(
 			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3_back.png")).getImage();
 
+	private final Image BIGSTANDINGIMAGE = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioStanding.png")).getImage();
+	private final Image BIGJUMPINGIMAGE = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioJumping.png")).getImage();
+	private final Image BIGWALKINGIMAGE1 = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking1.png")).getImage();
+	private final Image BIGWALKINGIMAGE2 = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking2.png")).getImage();
+	private final Image BIGWALKINGIMAGE3 = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3.png")).getImage();
+	private final Image BIGSTANDINGIMAGE_BACK = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioStanding_back.png")).getImage();
+	private final Image BIGJUMPINGIMAGE_BACK = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioJumping_back.png")).getImage();
+	private final Image BIGWALKINGIMAGE1_BACK = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking1_back.png")).getImage();
+	private final Image BIGWALKINGIMAGE2_BACK = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking2_back.png")).getImage();
+	private final Image BIGWALKINGIMAGE3_BACK = new ImageIcon(
+			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3_back.png")).getImage();
+
+
+
+
 	// Boolean that says if Mario is facing backwards or not, this is to determine
 	// the currentImage
 	private boolean back = false;
@@ -61,6 +84,8 @@ public class GraphicsPanel extends JFrame {
 	private boolean zoomIn = false;
 
 	private boolean isDead = false;
+
+	private boolean isBig = false;
 
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
@@ -108,6 +133,8 @@ public class GraphicsPanel extends JFrame {
 	// This variable is NOT the number of times Mario has jumped, but actually the
 	// number of pixels he has gone up from his ground position
 	private int jumpCount = 0;
+
+	private int changeCount = 0;
 
 	// These three coordinates are the current x coordinates in relation to the
 	// JPanel of the background,
@@ -250,6 +277,31 @@ public class GraphicsPanel extends JFrame {
 
 	});
 
+	private Timer marioGrow = new Timer(200, new ActionListener(){
+
+			public void actionPerformed(ActionEvent e){
+
+				changeCount++;
+				
+				endingAnimation = true;
+				
+				if (changeCount == 3) {
+					yCord -= 27;
+				} else if (changeCount == 4) {
+					yCord += 27;
+				} else if (changeCount == 6) {
+					yCord -= 54;
+				} else if (changeCount == 7) {
+					yCord += 54;
+				} else if (changeCount == 10) {
+					marioGrow.stop();
+					isBig = true;
+					endingAnimation = false;
+				}
+				
+			}
+	});
+
 	private Timer endingZoomIn = new Timer(100, new ActionListener() {
 
 		@Override
@@ -261,13 +313,12 @@ public class GraphicsPanel extends JFrame {
 				endingZoomIn.stop();
 				if(!isDead) {
 					resetAllFields();
-					endingImageCount = 20;
 					flag.resetYCord();
 					removeStage();
 					goToNextLevel();
 					levelTimeLeft.restartTimer();
 					currentLevel++;
-					endingZoomOut.start();
+					startEndingZoomOut();
 				}
 
 			}
@@ -472,7 +523,7 @@ public class GraphicsPanel extends JFrame {
 			// Checks if Mario is currently jumping because if so we don't want to inflict
 			// gravity
 			// Mario obeys no physics :)
-			if (!jump.isRunning()) {
+			if (!jump.isRunning() && !endingAnimation) {
 
 				Image temp = getFrameImage();
 
@@ -628,6 +679,7 @@ public class GraphicsPanel extends JFrame {
 					if (renderPowerUps.get(i).getCollider().intersects(getMarioRectangle())) {
 
 						renderPowerUps.get(i).kill();
+						marioGrow.start();
 						pointCounter.addPoints(renderPowerUps.get(i).killPoints());
 						displayPoints.addData(new int[] { renderPowerUps.get(i).getXCord(),
 								renderPowerUps.get(i).getYCord(), renderPowerUps.get(i).killPoints() });
@@ -1617,11 +1669,25 @@ public class GraphicsPanel extends JFrame {
 	// Mario is facing and the frame number
 	private Image getCurrentImage() {
 
-		Image answer;
+		Image answer = null;
 		if (!visible) {
 			return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BlankImage.png")).getImage();
 		}
-		if (!endingAnimation && !isDead) {
+
+		try {
+			if(marioGrow.isRunning()){
+				if(changeCount == 3){
+					return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioMorphing.png")).getImage();
+	
+				}
+				else if(changeCount == 6){
+					return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BigMarioStanding.png")).getImage();
+	
+				}
+			}
+		} catch(Exception e) {}
+		
+		if (!endingAnimation && !isDead && !isBig) {
 
 			// Starting frame
 			if (frame == 0 && !jumping && onFloor()) {
@@ -1662,8 +1728,45 @@ public class GraphicsPanel extends JFrame {
 			}
 
 		}
+		else if(isBig && !endingAnimation && !isDead){
+			if (frame == 0 && !jumping && onFloor()) {
+	
+				return BIGSTANDINGIMAGE;
 
-		else if (slideDownPole.isRunning()) {
+			}
+
+			if (stand && onFloor()) {
+
+				if (!back) {
+
+					return BIGSTANDINGIMAGE;
+
+				} else {
+
+					return BIGSTANDINGIMAGE_BACK;
+
+				}
+
+			}
+
+			// Some calculations that are way more complex than it needs to be but its is
+			// like this so it is what it is
+
+			if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
+
+				answer = getExt(BIGWALKINGIMAGE1);
+
+			} else if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3 * 2)) {
+
+				answer = getExt(BIGWALKINGIMAGE2);
+
+			} else {
+
+				answer = getExt(BIGWALKINGIMAGE3);
+
+			}
+
+		} else if (slideDownPole.isRunning() && !isBig) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
 		} else if (turnAround) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole_back.png"))
@@ -1843,6 +1946,7 @@ public class GraphicsPanel extends JFrame {
 		allProps.add(castle);
 
 	}
+	
 	private void removeStage() {
 		allProps.clear();
 		allSprites.clear();
@@ -1852,7 +1956,6 @@ public class GraphicsPanel extends JFrame {
 		renderBlocks.clear();
 	}
 	
-
 	// This method scrolls the stage
 	private void scrollStage() {
 
@@ -1913,6 +2016,8 @@ public class GraphicsPanel extends JFrame {
 		visible = true;
 		turnAround = false;
 		isDead = false;
+		isBig = false;
+		changeCount = 0;
 		endingImageCount = 1;
 		frame = 0;
 		xCord = 100;

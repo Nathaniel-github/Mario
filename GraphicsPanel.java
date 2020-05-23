@@ -1099,7 +1099,6 @@ public class GraphicsPanel extends JFrame {
 	public GraphicsPanel(String name) {
 
 		super(name);
-
 		
 		setKeyBindings(); // Sets up the key input tracker so that key inputs are monitored
 		setStage(levelData); // Sets all the interactions for the current level

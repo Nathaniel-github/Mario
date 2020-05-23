@@ -1934,6 +1934,15 @@ public class GraphicsPanel extends JFrame {
 					(int) (BASEFLOOR - (Integer.parseInt(temp13.get(i)[2]) * BLOCKSPACING))));
 
 		}
+		
+		LinkedList<String[]> temp14 = data.getAllSkyBlocks();
+
+		for (int i = 0; i < temp14.size(); i++) {
+
+			allProps.add(new SkyBlock((int) (BLOCKSPACING * (Integer.parseInt(temp14.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp14.get(i)[2]) * BLOCKSPACING))));
+
+		}
 
 		flagPole = new FlagPole((int) (BLOCKSPACING * (Integer.parseInt(data.getFlagPole()[1])) - 1),
 				(int) (BASEFLOOR - (Integer.parseInt(data.getFlagPole()[2]) * BLOCKSPACING)));

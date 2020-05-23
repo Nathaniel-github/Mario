@@ -987,7 +987,7 @@ public class GraphicsPanel extends JFrame {
 				moveForward();
 
 			}
-   
+
 			if (currentImage != null) {
 				g.drawImage(currentImage, xCord, yCord, observer);
 			}

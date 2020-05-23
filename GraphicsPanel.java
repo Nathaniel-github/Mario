@@ -38,25 +38,25 @@ public class GraphicsPanel extends JFrame {
 			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3_back.png")).getImage();
 
 	private final Image BIGSTANDINGIMAGE = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioStanding.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioStanding.png")).getImage();
 	private final Image BIGJUMPINGIMAGE = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioJumping.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioJumping.png")).getImage();
 	private final Image BIGWALKINGIMAGE1 = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking1.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioWalking1.png")).getImage();
 	private final Image BIGWALKINGIMAGE2 = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking2.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioWalking2.png")).getImage();
 	private final Image BIGWALKINGIMAGE3 = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioWalking3.png")).getImage();
 	private final Image BIGSTANDINGIMAGE_BACK = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioStanding_back.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioStanding_back.png")).getImage();
 	private final Image BIGJUMPINGIMAGE_BACK = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioJumping_back.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioJumping_back.png")).getImage();
 	private final Image BIGWALKINGIMAGE1_BACK = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking1_back.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioWalking1_back.png")).getImage();
 	private final Image BIGWALKINGIMAGE2_BACK = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking2_back.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioWalking2_back.png")).getImage();
 	private final Image BIGWALKINGIMAGE3_BACK = new ImageIcon(
-			getClass().getClassLoader().getResource(EXTENSION + "MarioWalking3_back.png")).getImage();
+			getClass().getClassLoader().getResource(EXTENSION + "BigMarioWalking3_back.png")).getImage();
 
 
 
@@ -86,6 +86,8 @@ public class GraphicsPanel extends JFrame {
 	private boolean isDead = false;
 
 	private boolean isBig = false;
+	
+	private boolean firstFix = true;
 
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
@@ -277,7 +279,7 @@ public class GraphicsPanel extends JFrame {
 
 	});
 
-	private Timer marioGrow = new Timer(200, new ActionListener(){
+	private Timer marioGrow = new Timer(100, new ActionListener(){
 
 			public void actionPerformed(ActionEvent e){
 
@@ -288,12 +290,13 @@ public class GraphicsPanel extends JFrame {
 				if (changeCount == 3) {
 					yCord -= 27;
 				} else if (changeCount == 4) {
-					yCord += 27;
+					yCord += 26;
 				} else if (changeCount == 6) {
 					yCord -= 54;
 				} else if (changeCount == 7) {
-					yCord += 54;
+					yCord += 53;
 				} else if (changeCount == 10) {
+					yCord -= 54;
 					marioGrow.stop();
 					isBig = true;
 					endingAnimation = false;
@@ -1323,11 +1326,15 @@ public class GraphicsPanel extends JFrame {
 		if (!back) {
 
 			if (jumping) {
-
-				answer = JUMPINGIMAGE;
-
+				
+				if (!isBig) {
+					answer = JUMPINGIMAGE;
+				} else {
+					answer = BIGJUMPINGIMAGE;
+				}
+				
 			} else {
-
+				
 				answer = image;
 
 			}
@@ -1335,8 +1342,12 @@ public class GraphicsPanel extends JFrame {
 		} else {
 
 			if (jumping) {
-
-				answer = JUMPINGIMAGE_BACK;
+				
+				if (!isBig) {
+					answer = JUMPINGIMAGE_BACK;
+				} else {
+					answer = BIGJUMPINGIMAGE_BACK;
+				}
 
 			} else {
 
@@ -1363,10 +1374,30 @@ public class GraphicsPanel extends JFrame {
 
 			return WALKINGIMAGE3_BACK;
 
+		} else if (image.equals(STANDINGIMAGE)) {
+
+			return STANDINGIMAGE_BACK;
+
+		} else if (image.equals(BIGSTANDINGIMAGE)) {
+
+			return BIGSTANDINGIMAGE_BACK;
+
+		} else if (image.equals(BIGWALKINGIMAGE3)) {
+
+			return BIGWALKINGIMAGE3_BACK;
+
+		} else if (image.equals(BIGWALKINGIMAGE2)) {
+
+			return BIGWALKINGIMAGE2_BACK;
+
+		} else if (image.equals(BIGWALKINGIMAGE1)) {
+
+			return BIGWALKINGIMAGE1_BACK;
+
 		} else {
-
-			return STANDINGIMAGE;
-
+			
+			return null;
+			
 		}
 
 	}
@@ -1643,15 +1674,30 @@ public class GraphicsPanel extends JFrame {
 
 	// Fixes Mario's current image so that it doesn't clip into blocks
 	private void fixMovement() {
-
-		if (inBlock() && !isDead) {
+		
+		if (inBlock() && !isDead && !marioGrow.isRunning()) {
 			if (back) {
 				moveForward();
 			} else {
 				moveBack();
 			}
 		}
+		
+		if (isBig && firstFix) {
+			fixGrowth();
+			firstFix = false;
+		}
 
+	}
+	
+	private void fixGrowth() {
+		
+		while (yCord + currentImage.getHeight(observer) >= getFloor()) {
+
+			yCord--;
+
+		} 
+		
 	}
 
 	private boolean onFloor() {
@@ -1677,12 +1723,27 @@ public class GraphicsPanel extends JFrame {
 		try {
 			if(marioGrow.isRunning()){
 				if(changeCount == 3){
-					return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioMorphing.png")).getImage();
-	
+					
+					if (!back) {
+						return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioMorphing.png")).getImage();
+					} else {
+						return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioMorphing_back.png")).getImage();
+					}
+					
 				}
 				else if(changeCount == 6){
-					return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BigMarioStanding.png")).getImage();
-	
+					
+					if (!back) {
+						return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BigMarioStanding.png")).getImage();
+					} else {
+						return new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BigMarioStanding_back.png")).getImage();
+					}
+				} else {
+					if (!back) {
+						return getFrameImage();
+					} else {
+						return getBackImage(getFrameImage());
+					}
 				}
 			}
 		} catch(Exception e) {}
@@ -1735,7 +1796,7 @@ public class GraphicsPanel extends JFrame {
 
 			}
 
-			if (stand && onFloor()) {
+			if (stand) {
 
 				if (!back) {
 
@@ -1793,21 +1854,37 @@ public class GraphicsPanel extends JFrame {
 	private Image getFrameImage() {
 
 		Image answer;
-
-		if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
-
-			answer = WALKINGIMAGE1;
-
-		} else if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3 * 2)) {
-
-			answer = WALKINGIMAGE2;
-
+		if (!isBig) {
+			if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
+	
+				answer = WALKINGIMAGE1;
+	
+			} else if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3 * 2)) {
+	
+				answer = WALKINGIMAGE2;
+	
+			} else {
+	
+				answer = WALKINGIMAGE3;
+	
+			}
 		} else {
+			
+			if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3)) {
 
-			answer = WALKINGIMAGE3;
+				answer = getExt(BIGWALKINGIMAGE1);
 
+			} else if (frame % (int) ((Math.pow(SPEED, 2) * 1.5)) < (int) ((Math.pow(SPEED, 2) * 1.5) / 3 * 2)) {
+
+				answer = getExt(BIGWALKINGIMAGE2);
+
+			} else {
+
+				answer = getExt(BIGWALKINGIMAGE3);
+
+			}
+			
 		}
-
 		return answer;
 
 	}

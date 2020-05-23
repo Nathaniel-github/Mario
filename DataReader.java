@@ -26,6 +26,7 @@ public class DataReader {
 	private LinkedList<String[]> allShortTrees = new LinkedList<String[]>();
 	private LinkedList<String[]> allGates = new LinkedList<String[]>();
 	private LinkedList<String[]> allMushrooms = new LinkedList<String[]>();
+	private LinkedList<String[]> allSkyBlocks = new LinkedList<String[]>();
 
 	
 	public DataReader(String fileName) {
@@ -104,6 +105,8 @@ public class DataReader {
 				
 				allMushrooms.add(allData.get(i));
 				
+			} else if (allData.get(i)[0].equals("SkyBlock")) {
+				allSkyBlocks.add(allData.get(i));
 			}
 			
 			
@@ -231,5 +234,11 @@ public class DataReader {
 		return allMushrooms;
 		
 	}
+	public LinkedList<String[]> getAllSkyBlocks(){
+		
+		return allSkyBlocks;
+		
+	}
+	
 	
 }

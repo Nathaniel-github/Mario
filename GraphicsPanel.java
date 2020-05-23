@@ -190,6 +190,8 @@ public class GraphicsPanel extends JFrame {
 	// This stores all the data for sprites that need to be rendered throughout the
 	// level
 	private LinkedList<Sprite> allSprites = new LinkedList<Sprite>();
+	
+	private LinkedList<PowerUp> allPowerUps = new LinkedList<PowerUp>();
 
 	// This is the object that reads the text
 	private DataReader levelData = new DataReader("Mario-1-1.txt");
@@ -222,6 +224,8 @@ public class GraphicsPanel extends JFrame {
 	// This list is the same as the renderBlocks except it stores all rendered
 	// sprites
 	private LinkedList<Sprite> renderSprites = new LinkedList<Sprite>();
+	
+	private LinkedList<PowerUp> renderPowerUps = new LinkedList<PowerUp>();
 
 	// This is the timer that will fire every millisecond and refresh the panel and
 	// update the image of
@@ -382,6 +386,7 @@ public class GraphicsPanel extends JFrame {
 
 					// Removes the block from those that need to be rendered
 					renderBlocks.remove(allBlocks.get(i));
+					allBlocks.remove(allBlocks.get(i));
 
 				}
 
@@ -402,6 +407,7 @@ public class GraphicsPanel extends JFrame {
 
 					// Removes the prop from those that need to be rendered
 					renderProps.remove(allProps.get(i));
+					allProps.remove(allProps.get(i));
 
 				}
 
@@ -423,6 +429,29 @@ public class GraphicsPanel extends JFrame {
 
 					// Removes the sprite from those that need to be rendered
 					renderSprites.remove(allSprites.get(i));
+					allSprites.remove(allSprites.get(i));
+
+				}
+
+			}
+			
+			for (int i = 0; i < allPowerUps.size(); i++) {
+
+				if (allPowerUps.get(i).getXCord() - backgroundImage.getWidth(observer) <= trueX
+						&& !renderPowerUps.contains(allPowerUps.get(i))) {
+
+					// Adds the sprite from those that need to be rendered
+					renderPowerUps.add(allPowerUps.get(i));
+
+				}
+
+				// If the sprite is "one stage" behind Mario
+				if (allPowerUps.get(i).getXCord() + backgroundImage.getWidth(observer) <= trueX
+						|| !allPowerUps.get(i).isAlive()) {
+
+					// Removes the sprite from those that need to be rendered
+					renderPowerUps.remove(allPowerUps.get(i));
+					allPowerUps.remove(allPowerUps.get(i));
 
 				}
 
@@ -471,10 +500,27 @@ public class GraphicsPanel extends JFrame {
 
 				for (int k = 0; k < MOVELENGTH; k++) {
 
-					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight()
-							+ MOVELENGTH < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
+					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight() < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
 
 						renderSprites.get(i).shiftY();
+
+					} else {
+
+						break;
+
+					}
+
+				}
+
+			}
+			
+			for (int i = 0; i < renderPowerUps.size(); i++) {
+
+				for (int k = 0; k < MOVELENGTH; k++) {
+
+					if (renderPowerUps.get(i).getYCord() + renderPowerUps.get(i).getImageIcon().getIconHeight() < getFloor(renderPowerUps.get(i).getXCord(), renderPowerUps.get(i).getYCord()) && renderPowerUps.get(i).hasAppeared()) {
+
+						renderPowerUps.get(i).shiftY();
 
 					} else {
 
@@ -559,6 +605,7 @@ public class GraphicsPanel extends JFrame {
 
 							stompSound.play();
 							renderSprites.get(i).kill();
+							jump.start();
 							stompSound.restart();
 							pointCounter.addPoints(renderSprites.get(i).killPoints());
 							displayPoints.addData(new int[] { renderSprites.get(i).getXCord(),
@@ -574,6 +621,31 @@ public class GraphicsPanel extends JFrame {
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
+			}
+			
+			for (int i = 0; i < renderPowerUps.size(); i++) {
+				try {
+					if (renderPowerUps.get(i).getCollider().intersects(getMarioRectangle())) {
+
+						renderPowerUps.get(i).kill();
+						pointCounter.addPoints(renderPowerUps.get(i).killPoints());
+						displayPoints.addData(new int[] { renderPowerUps.get(i).getXCord(),
+								renderPowerUps.get(i).getYCord(), renderPowerUps.get(i).killPoints() });
+
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			for (int i = 0; i < renderPowerUps.size(); i ++) {
+				
+				if ((((trueX + currentImage.getWidth(observer) > renderPowerUps.get(i).getXCord() && trueX + currentImage.getWidth(observer) < renderPowerUps.get(i).getXCord() + renderPowerUps.get(i).getImage().getWidth(observer) + 9) || (trueX > renderPowerUps.get(i).getXCord() && trueX < renderPowerUps.get(i).getXCord() + renderPowerUps.get(i).getImage().getWidth(observer) + 9)) && (yCord - MOVELENGTH < renderPowerUps.get(i).getYCord() + renderPowerUps.get(i).getImage().getHeight(observer) + 9 && yCord + MOVELENGTH > renderPowerUps.get(i).getYCord())) && !renderPowerUps.get(i).hasAppeared()) {
+					
+					renderPowerUps.get(i).appear();
+					
+				}
+				
 			}
 
 		}
@@ -601,12 +673,14 @@ public class GraphicsPanel extends JFrame {
 
 					for (int k = 0; k < renderProps.size(); k++) {
 
-						if (renderProps.get(k).getCollider().intersects(renderSprites.get(i).getRectangle())) {
-
-							renderSprites.get(i).reverseDirection();
-							renderSprites.get(i).shiftX();
-							break;
-
+						if (renderProps.get(k).isObstructive()) {
+							if (renderProps.get(k).getCollider().intersects(renderSprites.get(i).getRectangle())) {
+	
+								renderSprites.get(i).reverseDirection();
+								renderSprites.get(i).shiftX();
+								break;
+	
+							}
 						}
 
 					}
@@ -626,6 +700,52 @@ public class GraphicsPanel extends JFrame {
 					e1.printStackTrace();
 				}
 
+			}
+			
+			for (int i = 0; i < renderPowerUps.size(); i++) {
+				if (renderPowerUps.get(i).hasAppeared()) {
+					try {
+						renderPowerUps.get(i).shiftX();
+	
+						for (int k = 0; k < renderBlocks.size(); k++) {
+	
+							if (renderPowerUps.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
+	
+								renderPowerUps.get(i).reverseDirection();
+	
+							}
+	
+						}
+	
+						for (int k = 0; k < renderProps.size(); k++) {
+	
+							if (renderProps.get(k).isObstructive()) {
+								if (renderProps.get(k).getCollider().intersects(renderPowerUps.get(i).getRectangle())) {
+		
+									renderPowerUps.get(i).reverseDirection();
+									renderPowerUps.get(i).shiftX();
+									break;
+		
+								}
+							}
+	
+						}
+	
+						for (int k = 0; k < renderBlocks.size(); k++) {
+	
+							if (renderPowerUps.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
+	
+								renderPowerUps.get(i).reverseDirection();
+								renderPowerUps.get(i).shiftX();
+								break;
+	
+							}
+	
+						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 
 		}
@@ -802,6 +922,13 @@ public class GraphicsPanel extends JFrame {
 			g.drawImage(backgroundImage, backX, 0, observer);
 			g.drawImage(backgroundImage, backX2, 0, observer);
 			g.drawImage(backgroundImage, backX3, 0, observer);
+			
+			for (int i = 0; i < renderPowerUps.size(); i++) {
+
+				g.drawImage(renderPowerUps.get(i).getImage(), renderPowerUps.get(i).getXCord() - scroll,
+						renderPowerUps.get(i).getYCord(), observer);
+
+			}
 
 			// Draws the blocks that need to be rendered
 			for (int i = 0; i < renderBlocks.size(); i++) {
@@ -825,6 +952,7 @@ public class GraphicsPanel extends JFrame {
 						renderSprites.get(i).getYCord(), observer);
 
 			}
+			
 			if (levelTimeLeft.getTimeLeft() <= 0 && !endingAnimation) {
 				die();
 			}
@@ -885,8 +1013,8 @@ public class GraphicsPanel extends JFrame {
 		startAnimation(); // Starts up the panel and renders the animation
 
 		// Mute the sounds
-//		muteSounds();
-		lowerVolume(15);
+		muteSounds();
+//		lowerVolume(15);
 
 		backgroundMusic.loop();
 		backgroundMusic.play();
@@ -1095,14 +1223,16 @@ public class GraphicsPanel extends JFrame {
 		}
 
 		for (int i = 0; i < renderProps.size(); i++) {
-
-			if (renderProps.get(i).getCollider().intersects(getMarioRectangle())
-					&& renderProps.get(i).isObstructive()) {
-
-				answer = true;
-
-				return answer;
-
+			
+			if (renderProps.get(i).isObstructive()) {
+				if (renderProps.get(i).getCollider().intersects(getMarioRectangle())
+						&& renderProps.get(i).isObstructive()) {
+	
+					answer = true;
+	
+					return answer;
+	
+				}
 			}
 
 		}
@@ -1690,6 +1820,15 @@ public class GraphicsPanel extends JFrame {
 
 			allProps.add(new Gate((int) (BLOCKSPACING * (Integer.parseInt(temp12.get(i)[1])) - 1),
 					(int) (BASEFLOOR - (Integer.parseInt(temp12.get(i)[2]) * BLOCKSPACING))));
+
+		}
+		
+		LinkedList<String[]> temp13 = data.getAllMushrooms();
+
+		for (int i = 0; i < temp13.size(); i++) {
+
+			allPowerUps.add(new Mushroom((int) (BLOCKSPACING * (Integer.parseInt(temp13.get(i)[1])) - 1),
+					(int) (BASEFLOOR - (Integer.parseInt(temp13.get(i)[2]) * BLOCKSPACING))));
 
 		}
 

@@ -12,7 +12,6 @@ public class EndCastle implements Prop{
 	private final ImageIcon IMAGEICON;
 	private final int XCORD;
 	private final int YCORD;
-	private final Polygon COLLIDER;
 	
 	public EndCastle(int x, int y) {
 		
@@ -23,12 +22,6 @@ public class EndCastle implements Prop{
 		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("PropImages/EndCastle.png"));
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
-		
-		// These points are not corresponding to the castle because the castle is not an obstruction to mario
-		int [] xPoints = {XCORD, XCORD, XCORD + 6, XCORD + 6, XCORD + 102, XCORD + 102, XCORD + IMAGEICON.getIconWidth(), XCORD + IMAGEICON.getIconWidth()};
-		int [] yPoints = {YCORD, YCORD + 50, YCORD + 50, YCORD + IMAGEICON.getIconHeight(), YCORD + IMAGEICON.getIconHeight(), YCORD + 50, YCORD + 50, YCORD};
-		int nPoints = xPoints.length;
-		COLLIDER = new Polygon(xPoints, yPoints, nPoints);
 	}
 	
 	// Returns the image

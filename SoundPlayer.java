@@ -61,22 +61,24 @@ public class SoundPlayer {
 	}
 	
 	public void play() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-
-				try {
-					Thread.sleep(initDelay);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		if (!clip.isRunning()) {
+			new Thread(new Runnable() {
+	
+				@Override
+				public void run() {
+	
+					try {
+						Thread.sleep(initDelay);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					clip.start();
+					
 				}
-				clip.start();
 				
-			}
-			
-		}).start();;
+			}).start();;
+		}
 	}
 	
 	public void loop() {

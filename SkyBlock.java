@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class SkyBlock implements Prop{
+public class SkyBlock implements Block {
 	private final Image IMAGE;
 	private final ImageIcon IMAGEICON;
 	private final int XCORD;
@@ -17,7 +17,7 @@ public class SkyBlock implements Prop{
 		XCORD = x;
 		YCORD = y;
 		// Gets the ImageIcon of the short pipe
-		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("PropImages/SkyBlock.png"));
+		IMAGEICON = new ImageIcon(getClass().getClassLoader().getResource("TileImages/SkyBlock.png"));
 		// Gets the image from the ImageIcon
 		IMAGE = IMAGEICON.getImage();
 		
@@ -51,18 +51,6 @@ public class SkyBlock implements Prop{
 	public Rectangle getRectangle() {
 		// TODO Auto-generated method stub
 		return new Rectangle(XCORD, YCORD, IMAGEICON.getIconWidth(), IMAGEICON.getIconHeight());
-	}
-
-	@Override
-	public boolean isObstructive() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Polygon getCollider() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

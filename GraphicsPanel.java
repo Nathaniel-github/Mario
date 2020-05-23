@@ -88,6 +88,10 @@ public class GraphicsPanel extends JFrame {
 	private boolean isBig = false;
 	
 	private boolean firstFix = true;
+	
+	private boolean immunity = false;
+	
+	private boolean animation = false;
 
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
@@ -194,9 +198,11 @@ public class GraphicsPanel extends JFrame {
 	private SoundPlayer slideDownPoleSound = new SoundPlayer("MarioFlagpoleMusic.wav");
 	private SoundPlayer stompSound = new SoundPlayer("MarioStompMusic.wav");
 	private SoundPlayer timeToPointsSound = new SoundPlayer("MarioTimeToPointsMusic.wav");
+	private SoundPlayer powerUpSound = new SoundPlayer("MarioPowerUpMusic.wav");
+	private SoundPlayer powerUpAppearingSound = new SoundPlayer("MarioPowerUpAppearsMusic.wav");
 
 	private SoundPlayer[] allSounds = { backgroundMusic, jumpSound, deathSound, endingMusic, slideDownPoleSound,
-			stompSound, timeToPointsSound };
+			stompSound, timeToPointsSound, powerUpSound, powerUpAppearingSound};
 
 	private PointData displayPoints = new PointData();
 
@@ -285,7 +291,7 @@ public class GraphicsPanel extends JFrame {
 
 				changeCount++;
 				
-				endingAnimation = true;
+				animation = true;
 				
 				if (changeCount == 3) {
 					yCord -= 27;
@@ -299,7 +305,7 @@ public class GraphicsPanel extends JFrame {
 					yCord -= 54;
 					marioGrow.stop();
 					isBig = true;
-					endingAnimation = false;
+					animation = false;
 				}
 				
 			}
@@ -526,7 +532,7 @@ public class GraphicsPanel extends JFrame {
 			// Checks if Mario is currently jumping because if so we don't want to inflict
 			// gravity
 			// Mario obeys no physics :)
-			if (!jump.isRunning() && !endingAnimation) {
+			if (!jump.isRunning() && !animation) {
 
 				Image temp = getFrameImage();
 
@@ -665,10 +671,24 @@ public class GraphicsPanel extends JFrame {
 							displayPoints.addData(new int[] { renderSprites.get(i).getXCord(),
 									renderSprites.get(i).getYCord(), renderSprites.get(i).killPoints() });
 
-						} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive()) {
+						} else if (!renderSprites.get(i).isDying() && renderSprites.get(i).isAlive() && !immunity) {
 
-							die();
-
+							if (!isBig) {
+								die();
+							} else {
+								isBig = false;
+								if (back) {
+									for (int k = 0; k < 10; k ++) {
+										undoBack();
+									}
+								} else {
+									for (int k = 0; k < 10; k ++) {
+										undoForward();
+									}
+								}
+								immunity = true;
+								tempImmunity.start();
+							}
 						}
 
 					}
@@ -686,7 +706,8 @@ public class GraphicsPanel extends JFrame {
 						pointCounter.addPoints(renderPowerUps.get(i).killPoints());
 						displayPoints.addData(new int[] { renderPowerUps.get(i).getXCord(),
 								renderPowerUps.get(i).getYCord(), renderPowerUps.get(i).killPoints() });
-
+						powerUpSound.play();
+						
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -698,6 +719,7 @@ public class GraphicsPanel extends JFrame {
 				if ((((trueX + currentImage.getWidth(observer) > renderPowerUps.get(i).getXCord() && trueX + currentImage.getWidth(observer) < renderPowerUps.get(i).getXCord() + renderPowerUps.get(i).getImage().getWidth(observer) + 9) || (trueX > renderPowerUps.get(i).getXCord() && trueX < renderPowerUps.get(i).getXCord() + renderPowerUps.get(i).getImage().getWidth(observer) + 9)) && (yCord - MOVELENGTH < renderPowerUps.get(i).getYCord() + renderPowerUps.get(i).getImage().getHeight(observer) + 9 && yCord + MOVELENGTH > renderPowerUps.get(i).getYCord())) && !renderPowerUps.get(i).hasAppeared()) {
 					
 					renderPowerUps.get(i).appear();
+					powerUpAppearingSound.play();
 					
 				}
 				
@@ -705,6 +727,31 @@ public class GraphicsPanel extends JFrame {
 
 		}
 
+	});
+	
+	private Timer tempImmunity = new Timer (200, new ActionListener() {
+
+		int count = 0;
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if (visible) {
+				visible = false;
+			} else {
+				visible = true;
+			}
+			
+			count ++;
+			
+			if (count == 10) {
+				immunity = false;
+				visible = true;
+				tempImmunity.stop();
+			}
+			
+		}
+		
 	});
 
 	private Timer moveSprites = new Timer((int) (SPEED * 1.5), new ActionListener() {
@@ -714,17 +761,6 @@ public class GraphicsPanel extends JFrame {
 
 			for (int i = 0; i < renderSprites.size(); i++) {
 				try {
-					renderSprites.get(i).shiftX();
-
-					for (int k = 0; k < renderBlocks.size(); k++) {
-
-						if (renderSprites.get(i).getCollider().intersects(renderBlocks.get(k).getRectangle())) {
-
-							renderSprites.get(i).reverseDirection();
-
-						}
-
-					}
 
 					for (int k = 0; k < renderProps.size(); k++) {
 
@@ -751,6 +787,9 @@ public class GraphicsPanel extends JFrame {
 						}
 
 					}
+					
+					renderSprites.get(i).shiftX();
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -889,7 +928,7 @@ public class GraphicsPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			// If Mario is currently moving right
-			if (!rightMove.isRunning() && !endingAnimation && !isDead) {
+			if (!rightMove.isRunning() && !endingAnimation && !isDead && !animation) {
 
 				fixMovement();
 
@@ -922,7 +961,7 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			if (!leftMove.isRunning() && !endingAnimation && !isDead) {
+			if (!leftMove.isRunning() && !endingAnimation && !isDead && !animation) {
 
 				fixMovement();
 
@@ -2016,7 +2055,7 @@ public class GraphicsPanel extends JFrame {
 
 		for (int i = 0; i < temp14.size(); i++) {
 
-			allProps.add(new SkyBlock((int) (BLOCKSPACING * (Integer.parseInt(temp14.get(i)[1])) - 1),
+			allBlocks.add(new SkyBlock((int) (BLOCKSPACING * (Integer.parseInt(temp14.get(i)[1])) - 1),
 					(int) (BASEFLOOR - (Integer.parseInt(temp14.get(i)[2]) * BLOCKSPACING))));
 
 		}
@@ -2040,6 +2079,7 @@ public class GraphicsPanel extends JFrame {
 		renderProps.clear();
 		renderSprites.clear();
 		renderBlocks.clear();
+		displayPoints.clearList();
 	}
 	
 	// This method scrolls the stage
@@ -2120,8 +2160,18 @@ public class GraphicsPanel extends JFrame {
 	}
 
 	private void goToNextLevel() {
-		levelData = new DataReader("Mario-1-"+currentLevel+".txt");
-		setStage(levelData);
+		try {
+			levelData = new DataReader("Mario-1-"+currentLevel+".txt");
+			setStage(levelData);
+		} catch(Exception e) {
+			finishGame();
+		}
+	}
+	
+	private void finishGame() {
+		
+		
+		
 	}
 	
 }

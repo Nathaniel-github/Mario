@@ -322,11 +322,11 @@ public class GraphicsPanel extends JFrame {
 				endingZoomIn.stop();
 				if(!isDead) {
 					resetAllFields();
+					currentLevel++;
 					flag.resetYCord();
 					removeStage();
 					goToNextLevel();
 					levelTimeLeft.restartTimer();
-					currentLevel++;
 					startEndingZoomOut();
 				}
 
@@ -2049,15 +2049,6 @@ public class GraphicsPanel extends JFrame {
 					(int) (BASEFLOOR - (Integer.parseInt(temp13.get(i)[2]) * BLOCKSPACING))));
 
 		}
-		
-		LinkedList<String[]> temp14 = data.getAllSkyBlocks();
-
-		for (int i = 0; i < temp14.size(); i++) {
-
-			allBlocks.add(new SkyBlock((int) (BLOCKSPACING * (Integer.parseInt(temp14.get(i)[1])) - 1),
-					(int) (BASEFLOOR - (Integer.parseInt(temp14.get(i)[2]) * BLOCKSPACING))));
-
-		}
 
 		flagPole = new FlagPole((int) (BLOCKSPACING * (Integer.parseInt(data.getFlagPole()[1])) - 1),
 				(int) (BASEFLOOR - (Integer.parseInt(data.getFlagPole()[2]) * BLOCKSPACING)));
@@ -2160,6 +2151,7 @@ public class GraphicsPanel extends JFrame {
 
 	private void goToNextLevel() {
 		try {
+			
 			levelData = new DataReader("Mario-1-"+currentLevel+".txt");
 			setStage(levelData);
 		} catch(Exception e) {

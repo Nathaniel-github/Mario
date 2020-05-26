@@ -92,6 +92,8 @@ public class GraphicsPanel extends JFrame {
 	private boolean immunity = false;
 	
 	private boolean animation = false;
+	
+	private boolean gameFinished = false;
 
 	// An ImageObserver is an interface for determining states of images in its
 	// window, this is used
@@ -229,7 +231,7 @@ public class GraphicsPanel extends JFrame {
 	private LinkedList<PowerUp> allPowerUps = new LinkedList<PowerUp>();
 
 	// This is the object that reads the text
-	private DataReader levelData = new DataReader("Mario-1-1.txt");
+	private DataReader levelData = new DataReader("Mario-1-" + Integer.toString(currentLevel) + ".txt");
 
 	
 
@@ -1088,6 +1090,11 @@ public class GraphicsPanel extends JFrame {
 			if (zoomIn) {
 				currentEndingImage = getCurrentEndingImage();
 				g.drawImage(currentEndingImage, 0, 0, observer);
+			}
+			
+			if (gameFinished) {
+				g.drawImage(new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("EndingImages/Ending20.png")).getImage().getScaledInstance(1440, 800, Image.SCALE_DEFAULT)).getImage(), 0, 0, observer);
+				g.drawString("Congratulations You Finished The Game!", 550, 400);
 			}
 
 		}
@@ -2166,7 +2173,11 @@ public class GraphicsPanel extends JFrame {
 	
 	private void finishGame() {
 		
+		SoundPlayer yes = new SoundPlayer("MarioRescuedPeachMusic.wav");
 		
+		yes.play();
+		
+		gameFinished = true;
 		
 	}
 	

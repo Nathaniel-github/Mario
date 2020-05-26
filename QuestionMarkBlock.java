@@ -1,3 +1,5 @@
+//Notes; this class is used to add Question mark blocks to
+// the level which sometimes have mushrooms hidden inside them
 import java.awt.Image;
 import java.awt.Rectangle;
 

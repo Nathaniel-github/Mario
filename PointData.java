@@ -1,4 +1,5 @@
-
+//Notes: this class is used to display points and add points to
+// the total when Mario stomps on a Goomba or Koopa
 import java.util.LinkedList;
 
 public class PointData {

@@ -1,4 +1,5 @@
-
+//Notes: this class is used to set the time for 
+// each level,and it also sets how fast the time decreases
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

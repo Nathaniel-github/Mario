@@ -1,3 +1,5 @@
+// Notes: This class is used to add an end castle to the game
+// If the player reaches the castle they move on to the next level
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

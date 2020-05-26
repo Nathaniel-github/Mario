@@ -1,3 +1,6 @@
+//Notes: This class is used to add enemies to
+//the level which will kill Mario if he touches them
+// but they will die if he jumps on top of them
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

@@ -1,4 +1,4 @@
-
+//Notes: this is the main class that makes a window to start the game
 import javax.swing.JFrame;
 
 public class Main {

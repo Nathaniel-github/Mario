@@ -1,3 +1,5 @@
+// Notes: an interface that sets the base line for other classes
+// that are blocks
 import java.awt.*;
 
 import javax.swing.Icon;

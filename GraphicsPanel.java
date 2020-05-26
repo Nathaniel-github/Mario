@@ -1,3 +1,7 @@
+//Notes: this class is used to start the game and display the GUI
+// It also sets the physics for the game like movement and jumping
+//while also adding animations to the game when mario dies, finishes 
+// the level, stomps on a Goomba or Koopa, or when he eats a mushroom
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

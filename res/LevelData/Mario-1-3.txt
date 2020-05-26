@@ -250,7 +250,7 @@ Koopa;330;2;
 Koopa;336;2;
 Koopa;337;2;
 Koopa;338;2;
-LongPipe;340;3;
+LongPipe;340;4;
 ShortTree;343;2;
 LongTree;345;3;
 Gate;346;1;

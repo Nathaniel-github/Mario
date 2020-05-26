@@ -56,7 +56,7 @@ public class Pipe implements Prop{
 
 	// Returns the ImageIcon
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		
 		return IMAGEICON;
 		

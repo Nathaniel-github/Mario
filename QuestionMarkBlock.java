@@ -50,7 +50,7 @@ public class QuestionMarkBlock implements Block{
 
 	// Returns the ImageIcon
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		
 		return IMAGEICON;
 		

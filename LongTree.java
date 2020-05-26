@@ -43,7 +43,7 @@ public class LongTree implements Prop{
 	}
 
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		// TODO Auto-generated method stub
 		return IMAGEICON;
 	}

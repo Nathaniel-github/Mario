@@ -1,3 +1,5 @@
+//Notes: this class is used as a base-line class to make other
+// classes like Koopa and Goomba
 import java.awt.Image;
 
 public interface Sprite extends Prop {

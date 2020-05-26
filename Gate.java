@@ -1,3 +1,5 @@
+//Notes: This class is used to add gates to the level 
+// which are used as decoration for the level 
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

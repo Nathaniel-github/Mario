@@ -1,3 +1,5 @@
+// Notes: This class adds a flag pole to the level which is used 
+// when Mario reaches the end and touches the pole
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

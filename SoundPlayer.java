@@ -1,3 +1,6 @@
+//Notes: this plays the audio for the game
+// It has different audio for different situations 
+// like dying, finishing the level and jumping
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;

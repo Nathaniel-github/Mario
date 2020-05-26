@@ -1,3 +1,5 @@
+// Notes: this class is used to add a tree to the game
+// which is used as decoration
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

@@ -1,3 +1,6 @@
+//Notes: This class is used to add a flag to the game
+// which moves when the player reaches the end of the 
+// level and touches the flag pole
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

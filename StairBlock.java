@@ -1,3 +1,5 @@
+// Notes: A stair block is created and used in the game.
+//Mario can walk on theese blocks
 import java.awt.Image;
 import java.awt.Rectangle;
 

@@ -1,3 +1,5 @@
+// Notes: this class is used to add a pipe to the game
+// which mario can jump on top of
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

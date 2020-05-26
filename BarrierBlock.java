@@ -1,3 +1,6 @@
+//Notes: This class is used to create a block that is invisible so that
+//the player can not reach places that will cause bugs in the game
+
 import java.awt.Image;
 import java.awt.Rectangle;
 

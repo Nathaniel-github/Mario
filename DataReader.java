@@ -1,3 +1,6 @@
+//Notes: This class is used to read and add the data in the 
+//text files to create the level 
+
 import java.util.LinkedList;
 import java.util.Scanner;
 

@@ -1,3 +1,4 @@
+//Notes: this class is used to display all the points that the player has
 public class Points {
 	private int points;
 	

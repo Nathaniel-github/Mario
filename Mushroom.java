@@ -1,3 +1,5 @@
+//Notes: this class is used to add a mushroom to
+// the level which makes mario grow if he touches them
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;

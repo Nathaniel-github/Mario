@@ -1,8 +1,11 @@
+// Notes: A Brick block is created and used in the game.
+//Mario can walk on theese blocks
 import java.awt.Image;
 import java.awt.Rectangle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+
 
 public class BrickBlock implements Block{
 

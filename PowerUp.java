@@ -1,4 +1,5 @@
-
+//Notes: this is a class which is used as a base-line
+//to create the mushroom class
 public interface PowerUp extends Prop {
 	
 	public boolean moves();

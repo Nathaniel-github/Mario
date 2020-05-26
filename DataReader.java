@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: This class is used to read and add the data in the 
 //text files to create the level 
 

@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this class is used to add a mushroom to
 // the level which makes mario grow if he touches them
 import java.awt.Image;

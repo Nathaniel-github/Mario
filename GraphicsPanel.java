@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this class is used to start the game and display the GUI
 // It also sets the physics for the game like movement and jumping
 //while also adding animations to the game when mario dies, finishes 

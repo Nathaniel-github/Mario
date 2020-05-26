@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 // Notes: this class is used to add a tree to the game
 // which is used as decoration
 import java.awt.Image;

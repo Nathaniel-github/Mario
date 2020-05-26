@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this is a class which is used as a base-line
 //to create the mushroom class
 public interface PowerUp extends Prop {

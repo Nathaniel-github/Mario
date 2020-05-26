@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this class is used to set the time for 
 // each level,and it also sets how fast the time decreases
 import java.awt.event.ActionEvent;

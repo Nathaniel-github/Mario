@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 // Notes: A Brick block is created and used in the game.
 //Mario can walk on theese blocks
 import java.awt.Image;

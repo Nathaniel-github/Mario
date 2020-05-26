@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: This class is used to add gates to the level 
 // which are used as decoration for the level 
 import java.awt.Image;

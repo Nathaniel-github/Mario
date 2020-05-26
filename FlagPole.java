@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 // Notes: This class adds a flag pole to the level which is used 
 // when Mario reaches the end and touches the pole
 import java.awt.Image;

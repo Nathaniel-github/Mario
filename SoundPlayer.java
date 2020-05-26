@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this plays the audio for the game
 // It has different audio for different situations 
 // like dying, finishing the level and jumping

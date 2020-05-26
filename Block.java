@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 // Notes: an interface that sets the base line for other classes
 // that are blocks
 import java.awt.*;

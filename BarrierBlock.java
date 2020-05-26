@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: This class is used to create a block that is invisible so that
 //the player can not reach places that will cause bugs in the game
 

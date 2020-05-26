@@ -58,8 +58,8 @@ StairBlock;59;1;
 
 ShortPipe;63;2;
 Pipe;67;3;
-LongPipe;71;4
-Goomba;71;5
+LongPipe;71;4;
+Goomba;71;5;
 
 BrickBlock;72;8;
 BrickBlock;73;8;
@@ -102,7 +102,6 @@ BrickBlock;104;5
 BrickBlock;105;5
 BrickBlock;106;5
 BrickBlock;107;5
-Koopa;107;7;
 
 BrickBlock;109;2;
 BrickBlock;110;2;

@@ -160,7 +160,7 @@ public class GraphicsPanel extends JFrame {
 	private int backX3 = SCREENWIDTH * 2;
 
 	private int currentWorld = 1;
-	private int currentLevel = 5;
+	private int currentLevel = 1;
 
 	// This is the number of pixels the stage has been scrolled already, this is
 	// used to render stage

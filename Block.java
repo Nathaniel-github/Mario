@@ -1,6 +1,7 @@
 import java.awt.*;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public interface Block {
 
@@ -14,7 +15,7 @@ public interface Block {
 	public int getYCord();
 	
 	// Should return the ImageIcon of the block
-	public Icon getImageIcon();
+	public ImageIcon getImageIcon();
 	
 	// Should return the rectangle that encompasses this block, this is used as the collider
 	public Rectangle getRectangle();

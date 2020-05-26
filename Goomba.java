@@ -75,7 +75,7 @@ public class Goomba implements Sprite{
 	}
 
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		// TODO Auto-generated method stub
 		return IMAGEICON;
 	}

@@ -216,8 +216,7 @@ Gate;301;1;
 StairBlock;302;1;
 StairBlock;302;2;
 Gate;303;1;
-Gatel;304;1;
-Koopa;303;2;
+Gate;304;1;
 StairBlock;306;1;
 StairBlock;306;2;
 LongTree;308;3;
@@ -250,7 +249,7 @@ Koopa;330;2;
 Koopa;336;2;
 Koopa;337;2;
 Koopa;338;2;
-LongPipe;340;3;
+LongPipe;340;4;
 ShortTree;343;2;
 LongTree;345;3;
 Gate;346;1;
@@ -298,5 +297,3 @@ StairBlock;363;8;
 FlagPole;371;11;
 StairBlock;372;1;
 EndCastle;376;6;
-
-

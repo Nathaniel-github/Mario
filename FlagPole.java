@@ -57,7 +57,7 @@ public class FlagPole implements Prop{
 
 	// Returns the ImageIcon
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		
 		return IMAGEICON;
 		

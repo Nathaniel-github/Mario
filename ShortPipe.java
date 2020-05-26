@@ -58,7 +58,7 @@ public class ShortPipe extends Pipe {
 
 	// Returns the ImageIcon
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		
 		return IMAGEICON;
 		

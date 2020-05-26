@@ -83,7 +83,7 @@ public class Mushroom implements PowerUp {
 	}
 
 	@Override
-	public Icon getImageIcon() {
+	public ImageIcon getImageIcon() {
 		// TODO Auto-generated method stub
 		return IMAGEICON;
 	}

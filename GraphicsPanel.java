@@ -376,11 +376,11 @@ public class GraphicsPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (yCord + currentImage.getHeight(observer) < flagPole.getYCord() + flagPole.getImageIcon().getIconHeight()
-					&& yCord <= flag.getYCord()) {
+					&& yCord - (2 * MOVELENGTH) <= flag.getYCord()) {
 				yCord += MOVELENGTH;
 			}
 			if (flag.getYCord() + flag.getImageIcon().getIconHeight() < flagPole.getYCord()
-					+ flagPole.getImageIcon().getIconHeight() && yCord >= flag.getYCord()) {
+					+ flagPole.getImageIcon().getIconHeight() && yCord + currentImage.getHeight(observer) >= flag.getYCord() + flag.getImageIcon().getIconHeight()) {
 				flag.changeYCord(MOVELENGTH);
 			} else if (flag.getYCord() + flag.getImageIcon().getIconHeight() >= flagPole.getYCord()
 					+ flagPole.getImageIcon().getIconHeight()) {
@@ -560,7 +560,7 @@ public class GraphicsPanel extends JFrame {
 
 				for (int k = 0; k < MOVELENGTH; k++) {
 
-					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight() < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord())) {
+					if (renderSprites.get(i).getYCord() + renderSprites.get(i).getImageIcon().getIconHeight() < getFloor(renderSprites.get(i).getXCord(), renderSprites.get(i).getYCord(), renderSprites.get(i).getImageIcon())) {
 
 						renderSprites.get(i).shiftY();
 
@@ -578,7 +578,7 @@ public class GraphicsPanel extends JFrame {
 
 				for (int k = 0; k < MOVELENGTH; k++) {
 
-					if (renderPowerUps.get(i).getYCord() + renderPowerUps.get(i).getImageIcon().getIconHeight() < getFloor(renderPowerUps.get(i).getXCord(), renderPowerUps.get(i).getYCord()) && renderPowerUps.get(i).hasAppeared()) {
+					if (renderPowerUps.get(i).getYCord() + renderPowerUps.get(i).getImageIcon().getIconHeight() < getFloor(renderPowerUps.get(i).getXCord(), renderPowerUps.get(i).getYCord(), renderPowerUps.get(i).getImageIcon()) && renderPowerUps.get(i).hasAppeared()) {
 
 						renderPowerUps.get(i).shiftY();
 
@@ -1167,7 +1167,7 @@ public class GraphicsPanel extends JFrame {
 	}
 
 	// Returns the floor respective to the given x coordinate
-	private int getFloor(int x, int y) {
+	private int getFloor(int x, int y, ImageIcon img) {
 
 		// The default return is the brick floor
 		int answer = SCREENHEIGHT - 107;
@@ -1176,7 +1176,7 @@ public class GraphicsPanel extends JFrame {
 
 			// If this block is higher up than the // If this block is below Mario
 			// If the block is where Mario is currently at // current answer
-			if ((endOfImageXOverlaps(i, renderBlocks, x) || startOfImageXOverlaps(i, renderBlocks, x))
+			if ((endOfImageXOverlaps(i, renderBlocks, x, img) || startOfImageXOverlaps(i, renderBlocks, x, img))
 					&& renderBlocks.get(i).getYCord() < answer && y < renderBlocks.get(i).getYCord()) {
 
 				answer = renderBlocks.get(i).getYCord();
@@ -1190,7 +1190,7 @@ public class GraphicsPanel extends JFrame {
 			// If this prop is closer to Mario than the current
 			// If the prop is where Mario is currently at // answer // If this prop is below
 			// Mario // If the prop is obstructive to Mario
-			if ((endOfImageXOverlaps(i, renderProps, true, x) || startOfImageXOverlaps(i, renderProps, true, x))
+			if ((endOfImageXOverlaps(i, renderProps, true, x, img) || startOfImageXOverlaps(i, renderProps, true, x, img))
 					&& renderProps.get(i).getYCord() < answer && y < renderProps.get(i).getYCord()
 					&& renderProps.get(i).isObstructive()) {
 
@@ -1265,16 +1265,16 @@ public class GraphicsPanel extends JFrame {
 
 	// Returns true or false based on whether or not the right side of Mario's image
 	// overlaps with a block
-	private boolean endOfImageXOverlaps(int i, LinkedList<Block> list, int x) {
+	private boolean endOfImageXOverlaps(int i, LinkedList<Block> list, int x, ImageIcon img) {
 
-		return (x + currentImage.getWidth(observer) > list.get(i).getXCord()
-				&& x + currentImage.getWidth(observer) < list.get(i).getXCord() + BLOCKWIDTH);
+		return (x + img.getIconWidth() > list.get(i).getXCord()
+				&& x + img.getIconWidth() < list.get(i).getXCord() + BLOCKWIDTH);
 
 	}
 
 	// Returns true or false based on whether or not the left side of Mario's image
 	// overlaps with a block
-	private boolean startOfImageXOverlaps(int i, LinkedList<Block> list, int x) {
+	private boolean startOfImageXOverlaps(int i, LinkedList<Block> list, int x, ImageIcon img) {
 
 		return (x > list.get(i).getXCord() && x < list.get(i).getXCord() + BLOCKWIDTH);
 
@@ -1282,16 +1282,16 @@ public class GraphicsPanel extends JFrame {
 
 	// Returns true or false based on whether or not the right side of Mario's image
 	// overlaps with a prop
-	private boolean endOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop, int x) {
+	private boolean endOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop, int x, ImageIcon img) {
 
-		return (x + currentImage.getWidth(observer) > list.get(i).getXCord() && x
-				+ currentImage.getWidth(observer) < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
+		return (x + img.getIconWidth() > list.get(i).getXCord() && x
+				+ img.getIconWidth() < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
 
 	}
 
 	// Returns true or false based on whether or not the left side of Mario's image
 	// overlaps with a prop
-	private boolean startOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop, int x) {
+	private boolean startOfImageXOverlaps(int i, LinkedList<Prop> list, boolean prop, int x, ImageIcon img) {
 
 		return (x > list.get(i).getXCord() && x < list.get(i).getXCord() + list.get(i).getImageIcon().getIconWidth());
 
@@ -1867,8 +1867,13 @@ public class GraphicsPanel extends JFrame {
 
 		} else if (slideDownPole.isRunning() && !isBig) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole.png")).getImage();
-		} else if (turnAround) {
+		} else if (slideDownPole.isRunning() && isBig) {
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BigMarioFlagPole.png")).getImage();
+		} else if (turnAround && !isBig) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioFlagPole_back.png"))
+					.getImage();
+		} else if (turnAround && isBig) {
+			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "BigMarioFlagPole_back.png"))
 					.getImage();
 		} else if (isDead) {
 			answer = new ImageIcon(getClass().getClassLoader().getResource(EXTENSION + "MarioDead.png")).getImage();

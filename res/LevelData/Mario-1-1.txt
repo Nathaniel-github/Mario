@@ -1,4 +1,5 @@
 QuestionMarkBlock;17;4;
+Mushroom;17;4;
 BrickBlock;21;4;
 QuestionMarkBlock;22;4;
 Goomba;22;1;

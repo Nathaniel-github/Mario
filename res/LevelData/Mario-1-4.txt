@@ -102,7 +102,6 @@ BrickBlock;104;5
 BrickBlock;105;5
 BrickBlock;106;5
 BrickBlock;107;5
-Koopa;107;7;
 
 BrickBlock;109;2;
 BrickBlock;110;2;

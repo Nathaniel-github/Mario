@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this is the main class that makes a window to start the game
 import javax.swing.JFrame;
 

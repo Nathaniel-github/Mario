@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 // Notes: this class is used to add a pipe to the game
 // which mario can jump on top of
 import java.awt.Image;

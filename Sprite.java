@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: this class is used as a base-line class to make other
 // classes like Koopa and Goomba
 import java.awt.Image;

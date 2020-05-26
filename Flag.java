@@ -1,3 +1,4 @@
+//Author: Nathaniel Thomas, Aayush Lakhotia, and Dhruv Masurekar(Team Effort)
 //Notes: This class is used to add a flag to the game
 // which moves when the player reaches the end of the 
 // level and touches the flag pole

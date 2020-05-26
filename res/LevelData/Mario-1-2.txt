@@ -52,7 +52,7 @@ LongTree;94;3;
 LongPipe;97;4;
 LongPipe;107;4;
 Goomba;110;1
-ShortTree;110;1;
+ShortTree;110;2;
 Goomba;111;1
 Goomba;112;1
 LongTree;112;3;
@@ -298,5 +298,3 @@ StairBlock;363;8;
 FlagPole;371;11;
 StairBlock;372;1;
 EndCastle;376;6;
-
-

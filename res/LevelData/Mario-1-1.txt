@@ -9,7 +9,7 @@ QuestionMarkBlock;24;4;
 BrickBlock;25;4;
 ShortPipe;29;2;
 Pipe;39;3;
-Goomba;41;1;
+Goomba;43;1;
 LongPipe;47;4;
 Goomba;54;1;
 Goomba;56;1;
